@@ -12,6 +12,8 @@ import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.openstack.glance.v1_0.GlanceApi;
 import org.jclouds.openstack.keystone.v2_0.config.CredentialTypes;
 import org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Closeables;
@@ -19,6 +21,9 @@ import com.google.inject.Module;
 
 public class Authentication implements Closeable {
 	final GlanceApi glanceApi;
+	
+	private static Logger log = LoggerFactory
+			.getLogger(MainIntegrationTest.class);
 
 	public static void main(String[] args) throws IOException {
 		Authentication authentication = new Authentication(args);
@@ -60,11 +65,11 @@ public class Authentication implements Closeable {
 	 * result in an org.jclouds.rest.AuthorizationException
 	 */
 	private void authenticateOnCall() {
-		System.out.format("Authenticate On Call%n");
+		log.info("Authenticate On Call%n");
 
 		glanceApi.getConfiguredRegions();
 
-		System.out.format("  Authenticated%n");
+		log.info("  Authenticated%n");
 	}
 
 	/**

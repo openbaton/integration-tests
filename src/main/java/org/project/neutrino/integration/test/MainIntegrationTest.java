@@ -14,9 +14,12 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainIntegrationTest {
-
+	
 	private static Logger log = LoggerFactory
 			.getLogger(MainIntegrationTest.class);
 
@@ -31,13 +34,13 @@ public class MainIntegrationTest {
 	public static boolean available(String host, int port) {
 		try {
 			Socket s = new Socket(host, port);
-			System.out.println("Server is listening on port " + port + " of "
+			log.warn("Server is listening on port " + port + " of "
 					+ host);
 			s.close();
 			return true;
 		} catch (IOException ex) {
 			// The remote host is not listening on this port
-			System.out.println("Server is not listening on port " + port
+			log.error("Server is not listening on port " + port
 					+ " of " + host);
 			return false;
 		}
@@ -66,36 +69,34 @@ public class MainIntegrationTest {
 			}
 		}
 
-		System.out.println("STARTED!!!");
+		log.info("STARTED!!!");
+		//log.info("Working Directory = " +
+		//log.info("user.dir"));
+		
 
+		ExecutorService threadpool = Executors.newFixedThreadPool(1);
 
-		Thread.sleep(120000);
-		// System.out.println("Working Directory = " +
-		// System.getProperty("user.dir"));
+		Configuration task = new Configuration();
+		log.debug("Submitting Task ...");
 
-//		ExecutorService threadpool = Executors.newFixedThreadPool(1);
-//
-//		Configuration task = new Configuration();
-//		System.out.println("Submitting Task ...");
-//
-//		@SuppressWarnings({ "unchecked", "rawtypes" })
-//		Future future = threadpool.submit(task);
-//		System.out.println("Task is submitted");
-//
-//		while (!future.isDone()) {
-//			System.out.println("Task is not completed yet....");
-//			Thread.sleep(1); // sleep for 1 millisecond before checking again
-//		}
-//
-//		System.out.println("Task is completed, let's check result");
-//		Boolean result = (Boolean) future.get();
-//		if (result.TRUE) {
-//			System.out.println("TRUE");
-//		} else {
-//			System.out.println("FALSE");
-//		}
-//
-//		threadpool.shutdown();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Future future = threadpool.submit(task);
+		log.debug("Task is submitted");
+
+		while (!future.isDone()) {
+			log.debug("Task is not completed yet....");
+			Thread.sleep(1); // sleep for 1 millisecond before checking again
+		}
+
+		log.info("Task is completed, let's check result");
+		Boolean result = (Boolean) future.get();
+		if (result.TRUE) {
+			log.info("TRUE");
+		} else {
+			log.info("FALSE");
+		}
+
+		threadpool.shutdown();
 
 		
 
