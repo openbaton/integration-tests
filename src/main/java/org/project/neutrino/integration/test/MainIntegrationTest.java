@@ -52,7 +52,7 @@ public class MainIntegrationTest {
 
 		Runnable r = new Runnable() {
 			public void run() {
-				log.info("################################# TEST CONFIGURATION#############################################");
+				log.info("################################# TEST CONFIGURATION #############################################");
 				context = SpringApplication.run(Application.class);
 			}
 		};
@@ -73,10 +73,12 @@ public class MainIntegrationTest {
 		//log.info("Working Directory = " +
 		//log.info("user.dir"));
 		
-
+        
 		ExecutorService threadpool = Executors.newFixedThreadPool(1);
 
-		Configuration task = new Configuration();
+		//Configuration task = new Configuration();
+		NetworkServiceRecord task = new NetworkServiceRecord();
+		
 		log.debug("Submitting Task ...");
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -97,7 +99,7 @@ public class MainIntegrationTest {
 		}
 
 		threadpool.shutdown();
-
+         
 		
 
 	}
