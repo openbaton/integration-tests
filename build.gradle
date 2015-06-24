@@ -30,6 +30,8 @@ dependencies {
 	compile('org.springframework.data:spring-data-jpa:1.8.0.RELEASE')
 
 	compile('org.project.neutrino:main:0.3-SNAPSHOT')
+	compile('org.project.neutrino:dummy-vnfm:0.3-SNAPSHOT')
+
 
 	compile 'commons-io:commons-io:2.4'
 	compile('org.apache.commons:commons-dbcp2:2.1')

@@ -3,6 +3,7 @@
 /**
  * Error codes:
  * 	1) NFVO not started correctly
+ * 	2) VNFM not started correctly
  *
  * 	*	status > 200:
  *	*	*	800) NetworkServiceDescriptor Test failed
@@ -13,7 +14,6 @@
 
 package org.project.neutrino.integration.test;
 
-import org.hsqldb.lib.StringInputStream;
 import org.project.neutrino.integration.test.utils.Utils;
 import org.project.neutrino.nfvo.main.Application;
 import org.slf4j.Logger;
@@ -23,21 +23,21 @@ import org.springframework.boot.SpringApplication;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainIntegrationTest {
-	
+
 	private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
 
 	private static String nfvoIp;
 	private static String nfvoPort;
 	private static String nfvoUsr;
 	private static String nfvoPsw;
+	private static String dbUri;
+	private static String dbUsr;
+	private static String dbPsw;
 
 	private static void loadProperties() throws IOException {
 		Properties properties = Utils.getProperties();
@@ -45,10 +45,54 @@ public class MainIntegrationTest {
 		nfvoPort = properties.getProperty("nfvo-port");
 		nfvoUsr = properties.getProperty("nfvo-usr");
 		nfvoPsw = properties.getProperty("nfvo-psw");
+		dbUsr = properties.getProperty("db-usr");
+		dbPsw = properties.getProperty("db-psw");
+		dbUri = properties.getProperty("db-uri");
 	}
+
+	public static boolean vnfmReady() {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
+			st = con.createStatement();
+			rs = st.executeQuery("select * from vnfm_manager_endpoint");
+
+			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
+			if(val==false){
+				return false;
+			}else
+			{
+				return true;
+			}
+
+		} catch (SQLException ex) {
+			log.debug("error db");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+
+			} catch (SQLException ex) {
+				log.debug("error db");
+			}
+		}
+		return false;
+	}
+
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException,
 			URISyntaxException, InterruptedException, ExecutionException {
+
 		loadProperties();
 
 		Nfvo nfvo = new Nfvo();
@@ -60,6 +104,24 @@ public class MainIntegrationTest {
 		}
 
 		log.info("Nfvo is started");
+
+		Vnfm vnfm = new Vnfm();
+		vnfm.start();
+
+		int i = 0;
+		while (!vnfmReady()) {
+			log.debug("waiting for vnfm registration...");
+			i++;
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (i > 50){
+				log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
+				System.exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
+			}
+		}
 
 		boolean vimCreateResult = VimInstanceTest.create();
 
@@ -82,7 +144,22 @@ public class MainIntegrationTest {
 		}
 
 		log.info("Test finished correctly :)");
-		System.setIn(new StringInputStream("exit"));
+
+	}
+
+	private static class Vnfm extends Thread{
+		@Override
+		public void run() {
+			try {
+				log.info("Starting Vnfm");
+//				SpringApplication.run(DummyJMSVNFManager.class);
+				Runtime.getRuntime().exec("java -jar /home/tce/neutrino/vnfm/dummy-vnfm/build/libs/dummy-vnfm.jar" );
+			} catch (IOException e) {
+				log.error("Vnfn not started correctly");
+				e.printStackTrace();
+				System.exit(2);
+			}
+		}
 	}
 
 	private static class Nfvo extends Thread{
@@ -92,42 +169,6 @@ public class MainIntegrationTest {
 			log.info("Starting Nfvo");
 			SpringApplication.run(Application.class);
 		}
-	}
-
-	public static void testConfiguration() throws ClassNotFoundException, SQLException, IOException, URISyntaxException, InterruptedException, ExecutionException {
-
-		//log.info("Working Directory = " +
-		//log.info("user.dir"));
-
-
-		ExecutorService threadpool = Executors.newFixedThreadPool(1);
-
-		//Configuration task = new Configuration();
-		NetworkServiceRecord task = new NetworkServiceRecord();
-
-		log.debug("Submitting Task ...");
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Future future = threadpool.submit(task);
-		log.debug("Task is submitted");
-
-		while (!future.isDone()) {
-			log.debug("Task is not completed yet....");
-			Thread.sleep(1); // sleep for 1 millisecond before checking again
-		}
-
-		log.info("Task is completed, let's check result");
-		Boolean result = (Boolean) future.get();
-		if (result.TRUE) {
-			log.info("TRUE");
-		} else {
-			log.info("FALSE");
-		}
-
-		threadpool.shutdown();
-
-
-
 	}
 
 }
