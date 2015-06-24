@@ -153,7 +153,7 @@ public class MainIntegrationTest {
 			try {
 				log.info("Starting Vnfm");
 //				SpringApplication.run(DummyJMSVNFManager.class);
-				Runtime.getRuntime().exec("java -jar /home/tce/neutrino/vnfm/dummy-vnfm/build/libs/dummy-vnfm.jar" );
+				Runtime.getRuntime().exec("java -jar ../vnfm/dummy-vnfm/build/libs/dummy-vnfm-0.3-SNAPSHOT.jar" );
 			} catch (IOException e) {
 				log.error("Vnfn not started correctly");
 				e.printStackTrace();
