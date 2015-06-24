@@ -6,9 +6,11 @@
  * 	2) VNFM not started correctly
  *
  * 	*	status > 200:
- *	*	*	800) NetworkServiceDescriptor Test failed
+ *	*	*	7XX) NetworkServiceRecord Test failed
+ *  *   *   *	701) create test
+ *	*	*	8XX) NetworkServiceDescriptor Test failed
  *  *   *   *	801) create test
- *	*	*	900) Vim Test failed
+ *	*	*	9XX) Vim Test failed
  *  *   *   *	901) create test
  */
 
@@ -95,6 +97,10 @@ public class MainIntegrationTest {
 
 		loadProperties();
 
+		/******************************
+		 * Running NFVO				  *
+		 ******************************/
+
 		Nfvo nfvo = new Nfvo();
 		nfvo.start();
 
@@ -104,6 +110,10 @@ public class MainIntegrationTest {
 		}
 
 		log.info("Nfvo is started");
+
+		/******************************
+		 * Running VNFM				  *
+		 ******************************/
 
 		Vnfm vnfm = new Vnfm();
 		vnfm.start();
@@ -123,6 +133,12 @@ public class MainIntegrationTest {
 			}
 		}
 
+		log.info("Vnfm is started correctly");
+
+		/******************************
+		 * Now create the VIM		  *
+		 ******************************/
+
 		boolean vimCreateResult = VimInstanceTest.create();
 
 		log.debug("Received vim create: " + vimCreateResult);
@@ -133,15 +149,42 @@ public class MainIntegrationTest {
 			System.exit(901);
 		}
 
-		boolean nsdCreateResult = NetworkServiceDescriptorTest.create();
+		/******************************
+		 * Now create the NSD		  *
+		 ******************************/
 
-		log.debug("Received NetworkServiceDescriptor create: " + nsdCreateResult);
+		String nsd_id = NetworkServiceDescriptorTest.create();
+
+		log.debug("Received NetworkServiceDescriptor create: " + nsd_id);
 		try {
-			assert nsdCreateResult;
+			assert nsd_id != null;
 		}catch (Exception e){
 			log.error("The NetworkServiceDescriptor create test was unsuccessful. Exit now...");
 			System.exit(801);
 		}
+
+		/******************************
+		 * Now create the NSR		  *
+		 ******************************/
+
+		String  nsr_id = NetworkServiceRecordTest.create(nsd_id);
+		log.debug("Received NetworkServiceRecord create: " + nsr_id);
+		try {
+			assert nsr_id != null;
+		}catch (Exception e){
+			log.error("The NetworkServiceRecord create test was unsuccessful. Exit now...");
+			System.exit(701);
+		}
+
+		/******************************
+		 * Now delete the NSR		  *
+		 ******************************/
+
+		NetworkServiceRecordTest.delete(nsr_id);
+
+		/**
+		 * TODO check it is really gone!
+		 */
 
 		log.info("Test finished correctly :)");
 
@@ -152,7 +195,6 @@ public class MainIntegrationTest {
 		public void run() {
 			try {
 				log.info("Starting Vnfm");
-//				SpringApplication.run(DummyJMSVNFManager.class);
 				Runtime.getRuntime().exec("java -jar ../vnfm/dummy-vnfm/build/libs/dummy-vnfm-0.3-SNAPSHOT.jar" );
 			} catch (IOException e) {
 				log.error("Vnfn not started correctly");

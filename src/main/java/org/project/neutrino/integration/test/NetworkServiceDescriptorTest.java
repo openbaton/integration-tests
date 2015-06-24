@@ -14,11 +14,11 @@ import java.util.Properties;
  * Created by lto on 24/06/15.
  */
 public class NetworkServiceDescriptorTest {
-    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor.json";
+    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
     private static Logger log = LoggerFactory.getLogger(VimInstanceTest.class);
     private static String path = "ns-descriptors";
 
-    public static boolean create(String nfvoIp, String nfvoPort) throws URISyntaxException {
+    public static String create(String nfvoIp, String nfvoPort) throws URISyntaxException {
         String body = Utils.getStringFromInputStream(NetworkServiceDescriptorTest.class.getResourceAsStream(FILE_NAME));
 
         JSONObject jsonObject;
@@ -32,20 +32,20 @@ public class NetworkServiceDescriptorTest {
 
         } catch (IntegrationTestException e) {
             e.printStackTrace();
-            return false;
+            return null;
         } catch (IOException ex) {
             ex.printStackTrace();
-            return false;
+            return null;
         }
 
         /**
          * TODO assert everything is created!
          */
 
-        return true;
+        return jsonObject.getString("id");
     }
 
-    public static boolean create() throws IOException, URISyntaxException {
+    public static String create() throws IOException, URISyntaxException {
         Properties properties = Utils.getProperties();
         return NetworkServiceDescriptorTest.create(properties.getProperty("nfvo-ip"), properties.getProperty("nfvo-port"));
     }

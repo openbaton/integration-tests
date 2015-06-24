@@ -1,6 +1,7 @@
 package org.project.neutrino.integration.test.utils;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -34,13 +35,19 @@ public class Utils {
         return properties;
     }
 
+    public static JSONObject executePostCall(String nfvoIp, String nfvoPort, String path) throws URISyntaxException, IOException, IntegrationTestException {
+        return executePostCall(nfvoIp,nfvoPort,null,path);
+    }
     public static JSONObject executePostCall(String nfvoIp, String nfvoPort, String body, String path) throws URISyntaxException, IOException, IntegrationTestException {
-
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         URI uri = new URI("http://" + nfvoIp + ":" + nfvoPort, "/api/v1/" + path, null);
         HttpPost request = new HttpPost(uri);
-        StringEntity params = new StringEntity(body);
         request.addHeader("content-type", "application/json");
+        request.addHeader("accept", "application/json");
+        if(body == null){
+            body = "{}";
+        }
+        StringEntity params = new StringEntity(body);
         request.setEntity(params);
         HttpResponse response = httpClient.execute(request);
 
@@ -96,5 +103,12 @@ public class Utils {
             log.warn("Server is not listening on port " + port	+ " of " + host);
             return false;
         }
+    }
+
+    public static void executeDeleteCall(String nfvoIp, String nfvoPort, String path) throws URISyntaxException, IOException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        URI uri = new URI("http://" + nfvoIp + ":" + nfvoPort, "/api/v1/" + path, null);
+        HttpDelete request = new HttpDelete(uri);
+        HttpResponse response = httpClient.execute(request);
     }
 }
