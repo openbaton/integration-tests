@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,65 +21,66 @@ import java.util.concurrent.Future;
 
 public class MainIntegrationTest {
 	
-	private static Logger log = LoggerFactory
-			.getLogger(MainIntegrationTest.class);
+	private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
 
+	private static final String PROPERTIES_FILE = "/integration-test.properties";
 	static ConfigurableApplicationContext context;
 
-	public static void main(String[] args) throws ClassNotFoundException,
-			SQLException, FileNotFoundException, IOException,
-			URISyntaxException, InterruptedException, ExecutionException {
-		testConfiguration();
+	private static String nfvoIp;
+	private static String nfvoPort;
+	private static String nfvoUsr;
+	private static String nfvoPsw;
+
+	private static void loadProperties() throws IOException {
+
+		Properties properties = new Properties();
+		properties.load(MainIntegrationTest.class.getResourceAsStream(PROPERTIES_FILE));
+		log.debug("Loaded properties: " + properties);
+		nfvoIp = properties.getProperty("nfvo-ip");
+		nfvoPort = properties.getProperty("nfvo-port");
+		nfvoUsr = properties.getProperty("nfvo-usr");
+		nfvoPsw = properties.getProperty("nfvo-psw");
+
 	}
 
-	public static boolean available(String host, int port) {
-		try {
-			Socket s = new Socket(host, port);
-			log.warn("Server is listening on port " + port + " of "
-					+ host);
-			s.close();
-			return true;
-		} catch (IOException ex) {
-			// The remote host is not listening on this port
-			log.error("Server is not listening on port " + port
-					+ " of " + host);
-			return false;
+	public static void main(String[] args) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException,
+			URISyntaxException, InterruptedException, ExecutionException {
+		loadProperties();
+
+		Nfvo nfvo = new Nfvo();
+		nfvo.start();
+
+		if (!isNfvoStarted()){
+			log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
+			System.exit(1); // 1 stands for the error in running nfvo TODO define error codes
+		}
+
+		log.info("Nfvo is started");
+
+//		testConfiguration();
+	}
+
+	private static class Nfvo extends Thread{
+		@Override
+		public void run() {
+
+			log.info("Starting Nfvo");
+//			context = SpringApplication.run(Application.class);
+			SpringApplication.run(Application.class);
 		}
 	}
 
-	public static void testConfiguration() throws ClassNotFoundException,
-			SQLException, FileNotFoundException, IOException,
-			URISyntaxException, InterruptedException, ExecutionException {
+	public static void testConfiguration() throws ClassNotFoundException, SQLException, IOException, URISyntaxException, InterruptedException, ExecutionException {
 
-		Runnable r = new Runnable() {
-			public void run() {
-				log.info("################################# TEST CONFIGURATION #############################################");
-				context = SpringApplication.run(Application.class);
-			}
-		};
-
-		new Thread(r).start();
-
-		while (!available("127.0.0.1", 8080)) {
-			log.debug("waiting the server to start");
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		log.info("STARTED!!!");
 		//log.info("Working Directory = " +
 		//log.info("user.dir"));
-		
-        
+
+
 		ExecutorService threadpool = Executors.newFixedThreadPool(1);
 
 		//Configuration task = new Configuration();
 		NetworkServiceRecord task = new NetworkServiceRecord();
-		
+
 		log.debug("Submitting Task ...");
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -99,9 +101,39 @@ public class MainIntegrationTest {
 		}
 
 		threadpool.shutdown();
-         
-		
 
+
+
+	}
+
+	private static boolean isNfvoStarted() {
+		int i = 0;
+		while (!available(nfvoIp, nfvoPort)) {
+			log.debug("waiting the server to start");
+			i++;
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (i > 50){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean available(String host, String port) {
+		try {
+			Socket s = new Socket(host, Integer.parseInt(port));
+			log.info("Server is listening on port " + port + " of " + host);
+			s.close();
+			return true;
+		} catch (IOException ex) {
+			// The remote host is not listening on this port
+			log.warn("Server is not listening on port " + port	+ " of " + host);
+			return false;
+		}
 	}
 
 }
