@@ -187,20 +187,31 @@ public class MainIntegrationTest {
 		 */
 
 		log.info("Test finished correctly :)");
+		vnfm.getProcess().destroy();
 		System.exit(0);
 	}
 
-	private static class Vnfm extends Thread{
-		@Override
-		public void run() {
+	private static class Vnfm {
+
+		private Process process;
+
+		public void start() {
 			try {
 				log.info("Starting Vnfm");
-				Runtime.getRuntime().exec("java -jar ../vnfm/dummy-vnfm/build/libs/dummy-vnfm-0.3-SNAPSHOT.jar" );
+				process = new ProcessBuilder().command ("java", "-jar", "../vnfm/dummy-vnfm/build/libs/dummy-vnfm-0.3-SNAPSHOT.jar").start();
 			} catch (IOException e) {
 				log.error("Vnfn not started correctly");
 				e.printStackTrace();
 				System.exit(2);
 			}
+		}
+
+		public Process getProcess() {
+			return process;
+		}
+
+		public void setProcess(Process process) {
+			this.process = process;
 		}
 	}
 
