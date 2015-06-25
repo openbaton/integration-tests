@@ -187,7 +187,7 @@ public class MainIntegrationTest {
 		 */
 
 		log.info("Test finished correctly :)");
-
+		System.exit(0);
 	}
 
 	private static class Vnfm extends Thread{
