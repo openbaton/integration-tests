@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class NetworkServiceRecordTest {
 
-	private static Logger log = LoggerFactory.getLogger(VimInstanceTest.class);
+	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordTest.class);
 	private static String path = "ns-records";
 
 	public static String create(String nfvoIp, String nfvoPort, String id) throws URISyntaxException {
@@ -23,7 +23,7 @@ public class NetworkServiceRecordTest {
 		log.info("Sending request create NetworkServiceRecord on url: " + url);
 
 		try {
-			jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, path);
+			jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, path + "/" + id);
 			log.debug("received: " + jsonObject.toString());
 
 		} catch (IntegrationTestException e) {
@@ -45,7 +45,7 @@ public class NetworkServiceRecordTest {
 		String url = "http://" + nfvoIp + ":" + nfvoPort+ "/api/v1/" + path + "/" + id;
 		log.info("Sending request delete NetworkServiceRecord on url: " + url);
 		try {
-			Utils.executeDeleteCall(nfvoIp, nfvoPort, path);
+			Utils.executeDeleteCall(nfvoIp, nfvoPort, path + "/" + id);
 			log.debug("delete executed");
 		} catch (IOException ex) {
 			ex.printStackTrace();

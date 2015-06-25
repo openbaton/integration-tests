@@ -44,13 +44,12 @@ public class Utils {
         HttpPost request = new HttpPost(uri);
         request.addHeader("content-type", "application/json");
         request.addHeader("accept", "application/json");
-        if(body == null){
+        if(body == null) {
             body = "{}";
         }
         StringEntity params = new StringEntity(body);
         request.setEntity(params);
         HttpResponse response = httpClient.execute(request);
-
         if (response.getEntity().getContentLength() != 0) {
             return new JSONObject(getStringFromInputStream(response.getEntity().getContent()));
         }

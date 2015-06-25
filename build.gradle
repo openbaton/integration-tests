@@ -25,17 +25,10 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-websocket:1.2.4.RELEASE")
-	compile('org.springframework:spring-test:4.1.6.RELEASE')
-	compile('org.springframework.data:spring-data-jpa:1.8.0.RELEASE')
-
 	compile('org.project.neutrino:main:0.3-SNAPSHOT')
-//	compile('org.project.neutrino:dummy-vnfm:0.3-SNAPSHOT')
 
 
 	compile 'commons-io:commons-io:2.4'
-	compile('org.apache.commons:commons-dbcp2:2.1')
-	compile('org.hsqldb:hsqldb:2.3.2')
 	compile 'org.aspectj:aspectjweaver:1.8.5'
 	compile('org.apache.httpcomponents:httpclient:4.5')
 
@@ -50,3 +43,10 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
 }
 // end::wrapper[]
+
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'org.project.neutrino.integration.test.MainIntegrationTest'
+	}
+}
