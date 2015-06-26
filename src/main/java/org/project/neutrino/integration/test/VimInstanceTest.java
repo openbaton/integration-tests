@@ -25,6 +25,9 @@ public class VimInstanceTest {
      * @return
      * @throws URISyntaxException
      */
+        
+        
+        
     public static boolean create(String nfvoIp, String nfvoPort) throws URISyntaxException {
         String body = Utils.getStringFromInputStream(VimInstanceTest.class.getResourceAsStream(FILE_NAME));
         JSONObject jsonObject;
@@ -33,7 +36,11 @@ public class VimInstanceTest {
         log.info("Sending request create vim on url: " + url);
         try {
             jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
-            log.debug("received: " + jsonObject.toString());
+            //log.debug("received: " + jsonObject.toString());
+            
+            Utils.evaluateJSONObject(jsonObject);
+            
+            
 
         } catch (IntegrationTestException e) {
             e.printStackTrace();
@@ -42,6 +49,10 @@ public class VimInstanceTest {
             ex.printStackTrace();
             return false;
         }
+        
+        
+       
+        
 
         /**
          * TODO assert everything is created!

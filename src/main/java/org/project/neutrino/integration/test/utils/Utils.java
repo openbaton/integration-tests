@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.project.neutrino.integration.test.exceptions.IntegrationTestException;
 import org.slf4j.Logger;
@@ -110,4 +111,45 @@ public class Utils {
         HttpDelete request = new HttpDelete(uri);
         HttpResponse response = httpClient.execute(request);
     }
+    
+    
+	public static void evaluateJSONObject(JSONObject jsonObject) {
+		
+		for (Object obj : jsonObject.keySet()) {
+			String key = (String) obj;
+
+			Object value = jsonObject.get(key);
+			if (value instanceof JSONArray) {
+				JSONArray array = (JSONArray) value;
+				evaluateJSONArray(array);
+
+			} else if (value instanceof JSONObject) {
+				JSONObject obj2 = (JSONObject) value;
+				evaluateJSONObject(obj2);
+
+			} else 
+			{
+				log.info("key:" + key + " - value:" + value.toString());
+			}
+		}
+
+	}
+
+	private static void evaluateJSONArray(JSONArray array) {
+
+		for (int i = 0; i < array.length(); i++) {
+			Object obj = array.get(i);
+			if (obj instanceof JSONArray) {
+				JSONArray array2 = (JSONArray) obj;
+				evaluateJSONArray(array2);
+			} else if (obj instanceof JSONObject) {
+
+				JSONObject obj2 = (JSONObject) obj;
+				evaluateJSONObject(obj2);
+			}
+
+		}
+		  
+    
+}
 }

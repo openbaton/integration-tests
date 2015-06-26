@@ -28,7 +28,10 @@ public class NetworkServiceDescriptorTest {
 
         try {
             jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
-            log.debug("received: " + jsonObject.toString());
+            //log.debug("received: " + jsonObject.toString());
+            
+            Utils.evaluateJSONObject(jsonObject);
+
 
         } catch (IntegrationTestException e) {
             e.printStackTrace();
