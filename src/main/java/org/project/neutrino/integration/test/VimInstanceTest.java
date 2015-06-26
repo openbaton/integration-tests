@@ -30,15 +30,15 @@ public class VimInstanceTest {
         
     public static boolean create(String nfvoIp, String nfvoPort) throws URISyntaxException {
         String body = Utils.getStringFromInputStream(VimInstanceTest.class.getResourceAsStream(FILE_NAME));
-        JSONObject jsonObject;
-
+        JSONObject obtained;
+        JSONObject expected = new JSONObject(body);
         String url = "http://" + nfvoIp + ":" + nfvoPort+ "/api/v1/" + path;
         log.info("Sending request create vim on url: " + url);
         try {
-            jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
-            //log.debug("received: " + jsonObject.toString());
+            obtained = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
+            //log.debug("received: " + obtained.toString());
             
-            Utils.evaluateJSONObject(jsonObject);
+            Utils.evaluateJSONObject(expected, obtained);
             
             
 

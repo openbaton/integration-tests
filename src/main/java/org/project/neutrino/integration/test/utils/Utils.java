@@ -100,7 +100,7 @@ public class Utils {
             return true;
         } catch (IOException ex) {
             // The remote host is not listening on this port
-            log.warn("Server is not listening on port " + port	+ " of " + host);
+            log.warn("Server is not listening on port " + port + " of " + host);
             return false;
         }
     }
@@ -113,43 +113,58 @@ public class Utils {
     }
     
     
-	public static void evaluateJSONObject(JSONObject jsonObject) {
+	public static boolean evaluateJSONObject(JSONObject expected, JSONObject obtained) {
 		
-		for (Object obj : jsonObject.keySet()) {
+		for (Object obj : expected.keySet()) {
 			String key = (String) obj;
 
-			Object value = jsonObject.get(key);
-			if (value instanceof JSONArray) {
-				JSONArray array = (JSONArray) value;
-				evaluateJSONArray(array);
+			Object valueExp = expected.get(key);
+            Object valueObt = obtained.get(key);
 
-			} else if (value instanceof JSONObject) {
-				JSONObject obj2 = (JSONObject) value;
-				evaluateJSONObject(obj2);
+            if (valueExp instanceof JSONArray) {
+                JSONArray array = (JSONArray) valueExp;
+                evaluateJSONArray(array, (JSONArray) valueObt);
 
-			} else 
-			{
-				log.info("key:" + key + " - value:" + value.toString());
-			}
+            } else {
+                if (valueExp instanceof JSONObject) {
+                    JSONObject obj2 = (JSONObject) valueExp;
+                    evaluateJSONObject(obj2, (JSONObject) valueObt);
+
+                } else
+                {
+                    log.trace("key:" + key + " - valueExp expected:" + valueExp.toString() + ", value obtained: " + valueObt);
+                    return (valueExp.equals(valueObt));
+                }
+            }
 		}
 
-	}
+        return false;
+    }
 
-	private static void evaluateJSONArray(JSONArray array) {
+	private static boolean evaluateJSONArray(JSONArray expected, JSONArray obtained) {
 
-		for (int i = 0; i < array.length(); i++) {
-			Object obj = array.get(i);
+        boolean res = false;
+
+		for (int i = 0; i < expected.length(); i++) {
+
+            Object obj = expected.get(i);
+
 			if (obj instanceof JSONArray) {
-				JSONArray array2 = (JSONArray) obj;
-				evaluateJSONArray(array2);
+				JSONArray expArr = (JSONArray) obj;
+				evaluateJSONArray(expArr, obtained);
 			} else if (obj instanceof JSONObject) {
-
-				JSONObject obj2 = (JSONObject) obj;
-				evaluateJSONObject(obj2);
+				JSONObject jsonObjectExp = (JSONObject) obj;
+				for(int j = 0; j < expected.length(); j++)
+                    res = res || evaluateJSONObject(jsonObjectExp, (JSONObject) obtained.get(j));
+                return res;
 			}
+            else {// here obj is primitive
+                /**
+                 *
+                 */
+            }
 
 		}
-		  
-    
-}
+        return res;
+    }
 }

@@ -30,7 +30,7 @@ public class NetworkServiceDescriptorTest {
             jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
             //log.debug("received: " + jsonObject.toString());
             
-            Utils.evaluateJSONObject(jsonObject);
+            Utils.evaluateJSONObject(jsonObject, );
 
 
         } catch (IntegrationTestException e) {
