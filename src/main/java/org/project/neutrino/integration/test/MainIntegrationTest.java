@@ -17,10 +17,8 @@
 package org.project.neutrino.integration.test;
 
 import org.project.neutrino.integration.test.utils.Utils;
-import org.project.neutrino.nfvo.main.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -188,6 +186,7 @@ public class MainIntegrationTest {
 
 		log.info("Test finished correctly :)");
 		vnfm.getProcess().destroy();
+		nfvo.getProcess().destroy();
 		System.exit(0);
 	}
 
@@ -215,13 +214,47 @@ public class MainIntegrationTest {
 		}
 	}
 
-	private static class Nfvo extends Thread{
-		@Override
-		public void run() {
 
-			log.info("Starting Nfvo");
-			SpringApplication.run(Application.class);
+	private static class Nfvo {
+
+		private Process process;
+
+		public void start() {
+			try {
+				//TODO need to be downloaded from git
+//				log.info("Compiling Nfvo");
+//				process = new ProcessBuilder().command ("../nfvo/gradlew", "clean", "build", "-x", "test", "install").start();
+//				process.waitFor();
+				log.info("Starting Nfvo");
+				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", "../nfvo/build/libs/neutrino-0.3-SNAPSHOT.jar");
+//				processBuilder.inheritIO();
+				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+				process = processBuilder.start();
+//				process.waitFor();
+			} catch (IOException e) {
+				log.error("Nfvo not started correctly");
+				e.printStackTrace();
+				System.exit(2);
+			}
+		}
+
+		public Process getProcess() {
+			return process;
+		}
+
+		public void setProcess(Process process) {
+			this.process = process;
 		}
 	}
+
+
+//	private static class Nfvo extends Thread{
+//		@Override
+//		public void run() {
+//
+//			log.info("Starting Nfvo");
+//			SpringApplication.run(Application.class);
+//		}
+//	}
 
 }

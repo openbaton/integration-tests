@@ -24,6 +24,7 @@ import java.util.Properties;
 /**
  * Created by lto on 24/06/15.
  */
+//TODO create singleton
 public class Utils {
 
     private static final String PROPERTIES_FILE = "/integration-test.properties";
@@ -40,14 +41,19 @@ public class Utils {
         return executePostCall(nfvoIp,nfvoPort,null,path);
     }
     public static JSONObject executePostCall(String nfvoIp, String nfvoPort, String body, String path) throws URISyntaxException, IOException, IntegrationTestException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        URI uri = new URI("http://" + nfvoIp + ":" + nfvoPort, "/api/v1/" + path, null);
-        HttpPost request = new HttpPost(uri);
-        request.addHeader("content-type", "application/json");
-        request.addHeader("accept", "application/json");
         if(body == null) {
             body = "{}";
         }
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        log.trace("Invoking POST on URL: " + "http://" + nfvoIp + ":" + nfvoPort + "/api/v1/" + path);
+        URI uri = new URI("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/" + path);
+        HttpPost request = new HttpPost("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/" + path);
+        request.addHeader("content-type", "application/json");
+        request.addHeader("accept", "application/json");
+        body = body.replaceAll("\\t", "");
+        body = body.replaceAll("\\n", "");
+        body = body.replaceAll(" ", "");
+        log.trace("With body: " + body);
         StringEntity params = new StringEntity(body);
         request.setEntity(params);
         HttpResponse response = httpClient.execute(request);
