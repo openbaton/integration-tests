@@ -123,48 +123,112 @@ public class Utils {
 
             if (valueExp instanceof JSONArray) {
                 JSONArray array = (JSONArray) valueExp;
-                evaluateJSONArray(array, (JSONArray) valueObt);
+                log.trace("array - " + key);
+                evaluateJSONArray(array, (JSONArray) valueObt, key);
 
             } else {
                 if (valueExp instanceof JSONObject) {
                     JSONObject obj2 = (JSONObject) valueExp;
+                    log.trace("object key - " + key);
                     evaluateJSONObject(obj2, (JSONObject) valueObt);
 
                 } else
                 {
                     log.trace("key:" + key + " - valueExp expected:" + valueExp.toString() + ", value obtained: " + valueObt);
-                    return (valueExp.equals(valueObt));
+                    if(!valueExp.equals(valueObt))
+                    {
+                    	log.trace("FALSE");
+                    	return false;
+                    }
                 }
             }
 		}
 
-        return false;
+        return true;
     }
-
-	private static boolean evaluateJSONArray(JSONArray expected, JSONArray obtained) {
+	
+	
+	private static boolean evaluateJSONArray(JSONArray expected, JSONArray obtained,String key) {
 
         boolean res = false;
 
 		for (int i = 0; i < expected.length(); i++) {
-
+			
             Object obj = expected.get(i);
 
-			if (obj instanceof JSONArray) {
-				JSONArray expArr = (JSONArray) obj;
-				evaluateJSONArray(expArr, obtained);
-			} else if (obj instanceof JSONObject) {
+			if (obj instanceof JSONObject) {
 				JSONObject jsonObjectExp = (JSONObject) obj;
+				log.trace("- object key - " + key);
 				for(int j = 0; j < expected.length(); j++)
                     res = res || evaluateJSONObject(jsonObjectExp, (JSONObject) obtained.get(j));
-                return res;
+				
 			}
-            else {// here obj is primitive
-                /**
-                 *
-                 */
+            else {
+            	log.trace("- key:" + key + " valueExp expected:"+ obj.toString()+ ", value obtained: " + obtained.getString(0));
+            	if(!obj.toString().equals(obtained.getString(0)))
+                {
+                	log.trace("FALSE");
+                	return false;
+                }
             }
 
 		}
-        return res;
+       return res;
     }
+	
+
+//print json object
+	
+	public static boolean printJSONObject(JSONObject expected) {
+
+		for (Object obj : expected.keySet()) {
+
+			String key = (String) obj;
+
+			Object valueExp = expected.get(key);
+
+			if (valueExp instanceof JSONObject) {
+				JSONObject obj2 = (JSONObject) valueExp;
+				log.trace("object key - " + key);
+				printJSONObject(obj2);
+
+			} else if (valueExp instanceof JSONArray) {
+				JSONArray array = (JSONArray) valueExp;
+				log.trace("array - " + key);
+
+				printJSONArray(array, key);
+
+			} else {
+				log.trace("key:" + key + " - valueExp expected:"
+						+ valueExp.toString());
+
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean printJSONArray(JSONArray expected, String key) {
+
+		boolean res = true;
+		for (int i = 0; i < expected.length(); i++) {
+
+			Object obj = expected.get(i);
+
+			if (obj instanceof JSONObject) {
+				log.trace("- object key - " + key);
+				JSONObject jsonObjectExp = (JSONObject) obj;
+				printJSONObject(jsonObjectExp);
+
+			} else {
+				log.trace("- key:" + key + " valueExp expected:"
+						+ obj.toString());
+			}
+
+		}
+
+		return res;
+	}
+	
+	
 }
