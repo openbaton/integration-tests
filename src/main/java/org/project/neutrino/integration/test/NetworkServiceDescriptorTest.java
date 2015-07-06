@@ -21,16 +21,23 @@ public class NetworkServiceDescriptorTest {
     public static String create(String nfvoIp, String nfvoPort) throws URISyntaxException {
         String body = Utils.getStringFromInputStream(NetworkServiceDescriptorTest.class.getResourceAsStream(FILE_NAME));
 
-        JSONObject jsonObject;
-
+        JSONObject obtained;
+        JSONObject expected = new JSONObject(body);
         String url = "http://" + nfvoIp + ":" + nfvoPort+ "/api/v1/" + path;
         log.info("Sending request create NetworkServiceDescriptor on url: " + url);
 
         try {
-            jsonObject = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
-            //log.debug("received: " + jsonObject.toString());
+            obtained = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
+            log.trace("received: " + obtained.toString());
+        	
+            Boolean resultEvaluate = Utils.evaluateJSONObject(expected, obtained);
             
-//            Utils.evaluateJSONObject(jsonObject);
+            if(resultEvaluate == false)
+            	log.debug("NSD RESPONSE - FALSE");
+            else
+            	log.debug("NSD RESPONSE - TRUE");
+
+            
 
 
         } catch (IntegrationTestException e) {
@@ -45,7 +52,7 @@ public class NetworkServiceDescriptorTest {
          * TODO assert everything is created!
          */
 
-        return jsonObject.getString("id");
+        return obtained.getString("id");
     }
 
     public static String create() throws IOException, URISyntaxException {

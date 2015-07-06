@@ -38,7 +38,13 @@ public class VimInstanceTest {
             obtained = Utils.executePostCall(nfvoIp, nfvoPort, body, path);
             log.trace("Received: " + obtained.toString());
             
-            Utils.evaluateJSONObject(expected, obtained);
+            Boolean resultEvaluate = Utils.evaluateJSONObject(expected, obtained);
+            
+            if(resultEvaluate == false)
+            	log.debug("VIM RESPONSE - FALSE");
+            else
+            	log.debug("VIM RESPONSE - TRUE");
+            
             
             
 
