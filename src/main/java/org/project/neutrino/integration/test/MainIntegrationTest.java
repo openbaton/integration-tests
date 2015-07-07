@@ -226,7 +226,7 @@ public class MainIntegrationTest {
 //				process = new ProcessBuilder().command ("../nfvo/gradlew", "clean", "build", "-x", "test", "install").start();
 //				process.waitFor();
 				log.info("Starting Nfvo");
-				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", "../nfvo/build/libs/neutrino-0.3-SNAPSHOT.jar");
+				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", "../nfvo/build/libs/openbaton-0.5-SNAPSHOT.jar");
 //				processBuilder.inheritIO();
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				process = processBuilder.start();
