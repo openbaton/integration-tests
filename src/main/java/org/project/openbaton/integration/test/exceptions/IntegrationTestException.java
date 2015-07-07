@@ -1,4 +1,4 @@
-package org.project.neutrino.integration.test.exceptions;
+package org.project.openbaton.integration.test.exceptions;
 
 /**
  * Created by lto on 24/06/15.

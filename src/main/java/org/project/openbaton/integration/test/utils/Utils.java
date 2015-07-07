@@ -1,4 +1,4 @@
-package org.project.neutrino.integration.test.utils;
+package org.project.openbaton.integration.test.utils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -9,7 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.project.neutrino.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,22 +82,7 @@ public class Utils {
 		return sb.toString();
 	}
 
-	public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
-		int i = 0;
-		while (!available(nfvoIp, nfvoPort)) {
-			log.debug("waiting the server to start");
-			i++;
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			if (i > 50){
-				return false;
-			}
-		}
-		return true;
-	}
+
 
 	public static boolean available(String host, String port) {
 		try {

@@ -1,8 +1,8 @@
-package org.project.neutrino.integration.test;
+package org.project.openbaton.integration.test;
 
 import org.json.JSONObject;
-import org.project.neutrino.integration.test.exceptions.IntegrationTestException;
-import org.project.neutrino.integration.test.utils.Utils;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
