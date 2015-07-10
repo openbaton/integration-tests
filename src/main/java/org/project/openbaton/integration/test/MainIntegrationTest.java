@@ -44,8 +44,9 @@ public class MainIntegrationTest {
 	private static String dbUsr;
 	private static String dbPsw;
 
+	private static final String VNFM_DUMMY_PATH = "../vnfm/dummy-vnfm-jms/build/libs/";
 	private static String NFVO_FILE_NAME = "openbaton-" + NFVO_VERSION + ".jar";
-	private static final String VNFM_FILE_NAME = "dummy-vnfm-" + VNFM_VERSION + ".jar";
+	private static final String VNFM_FILE_NAME = "dummy-vnfm-jms-" + VNFM_VERSION + ".jar";
 
 	private static Nfvo nfvo;
 	private static Vnfm vnfm;
@@ -249,12 +250,13 @@ public class MainIntegrationTest {
 	}
 
 	private static class Vnfm {
+		
 		private Process process;
 
 		public void start() throws IntegrationTestException {
 			try {
 				log.info("Starting Vnfm");
-				String pathVnfm = "../vnfm/dummy-vnfm/build/libs/" + VNFM_FILE_NAME;
+				String pathVnfm = VNFM_DUMMY_PATH + VNFM_FILE_NAME;
 				File f = new File(pathVnfm);
 				if (!f.exists() || f.isDirectory()) {
 					throw new IntegrationTestException("File " + pathVnfm + " doesn't exist. Have you compiled the VNFM v" + VNFM_VERSION);

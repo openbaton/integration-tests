@@ -31,8 +31,9 @@ dependencies {
 	compile 'commons-io:commons-io:2.4'
 	compile 'org.aspectj:aspectjweaver:1.8.5'
 	compile('org.apache.httpcomponents:httpclient:4.5')
-
-	runtime 'org.project.openbaton:api:0.5-SNAPSHOT'
+	compile 'org.json:json:20141113'
+	
+//	runtime 'org.project.openbaton:api:0.5-SNAPSHOT'
 
 	testCompile("org.mockito:mockito-all:1.10.19")
 	testCompile('junit:junit:4.12')

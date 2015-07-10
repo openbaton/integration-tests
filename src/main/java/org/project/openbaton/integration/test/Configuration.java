@@ -1,6 +1,8 @@
 package org.project.openbaton.integration.test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,9 +17,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.shell.support.util.FileUtils;
+//import org.springframework.shell.support.util.FileUtils;
 
 @SuppressWarnings("rawtypes")
 public class Configuration implements Callable{
@@ -36,7 +39,14 @@ public class Configuration implements Callable{
 	
 	private boolean ConfigurationCreate() throws URISyntaxException
 	{
-		String body = FileUtils.read(new File("./src/main/resources/configuration.json"));
+		String body;
+		try {
+			body = Utils.getStringFromInputStream(new FileInputStream(new File("./src/main/resources/configuration.json")));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 		 
 		 log.info("SEND REQUEST CREATE");
 		 try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
