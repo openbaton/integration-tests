@@ -14,12 +14,14 @@
  *  *   *   *	901) create test
  */
 
-package org.project.neutrino.integration.test;
+package org.project.openbaton.integration.test;
 
-import org.project.neutrino.integration.test.utils.Utils;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,6 +30,9 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 public class MainIntegrationTest {
+
+	private static String NFVO_VERSION = "0.5-SNAPSHOT";
+	private static String VNFM_VERSION = "0.3-SNAPSHOT";
 
 	private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
 
@@ -38,6 +43,12 @@ public class MainIntegrationTest {
 	private static String dbUri;
 	private static String dbUsr;
 	private static String dbPsw;
+
+	private static String NFVO_FILE_NAME = "openbaton-" + NFVO_VERSION + ".jar";
+	private static final String VNFM_FILE_NAME = "dummy-vnfm-" + VNFM_VERSION + ".jar";
+
+	private static Nfvo nfvo;
+	private static Vnfm vnfm;
 
 	private static void loadProperties() throws IOException {
 		Properties properties = Utils.getProperties();
@@ -88,10 +99,37 @@ public class MainIntegrationTest {
 		}
 		return false;
 	}
+	private static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
+		int i = 0;
+		while (!Utils.available(nfvoIp, nfvoPort)) {
+			i++;
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (i > 50){
+				return false;
+			}
+			Integer exitVal = null;
+			try{
+				exitVal=nfvo.getProcess().exitValue();
+			}catch (IllegalThreadStateException e){
+				log.debug("waiting the server to start");
+			}
+			if (exitVal != null && exitVal != 0){
+				log.error("NFVO not started correctly");
+				exit(2);
+			}
+		}
+		return true;
+	}
 
-
+	// TODO move to test
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException,
 			URISyntaxException, InterruptedException, ExecutionException {
+
+		System.out.println(log.getClass());
 
 		loadProperties();
 
@@ -99,10 +137,15 @@ public class MainIntegrationTest {
 		 * Running NFVO				  *
 		 ******************************/
 
-		Nfvo nfvo = new Nfvo();
-		nfvo.start();
+		nfvo = new Nfvo();
+		try {
+			nfvo.start();
+		} catch (IntegrationTestException e) {
+			e.printStackTrace();
+			exit(1);
+		}
 
-		if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)){
+		if (!isNfvoStarted(nfvoIp, nfvoPort)){
 			log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
 			System.exit(1); // 1 stands for the error in running nfvo TODO define error codes (doing)
 		}
@@ -113,12 +156,17 @@ public class MainIntegrationTest {
 		 * Running VNFM				  *
 		 ******************************/
 
-		Vnfm vnfm = new Vnfm();
-		vnfm.start();
+		vnfm = new Vnfm();
+		try {
+			vnfm.start();
+		} catch (IntegrationTestException e) {
+			e.printStackTrace();
+			exit(2);
+		}
 
 		int i = 0;
 		while (!vnfmReady()) {
-			log.debug("waiting for vnfm registration...");
+
 			i++;
 			try {
 				Thread.sleep(3000);
@@ -127,7 +175,17 @@ public class MainIntegrationTest {
 			}
 			if (i > 50){
 				log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
-				System.exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
+				exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
+			}
+			Integer exitVal = null;
+			try{
+				 exitVal=vnfm.getProcess().exitValue();
+			}catch (IllegalThreadStateException e){
+				log.debug("waiting for vnfm registration...");
+			}
+			if (exitVal != null && exitVal != 0){
+				log.error("VNFM not started correctly");
+				exit(2);
 			}
 		}
 
@@ -191,17 +249,24 @@ public class MainIntegrationTest {
 	}
 
 	private static class Vnfm {
-
 		private Process process;
 
-		public void start() {
+		public void start() throws IntegrationTestException {
 			try {
 				log.info("Starting Vnfm");
-				process = new ProcessBuilder().command ("java", "-jar", "../vnfm/dummy-vnfm/build/libs/dummy-vnfm-0.3-SNAPSHOT.jar").start();
+				String pathVnfm = "../vnfm/dummy-vnfm/build/libs/" + VNFM_FILE_NAME;
+				File f = new File(pathVnfm);
+				if (!f.exists() || f.isDirectory()) {
+					throw new IntegrationTestException("File " + pathVnfm + " doesn't exist. Have you compiled the VNFM v" + VNFM_VERSION);
+				}
+				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", pathVnfm);
+//				processBuilder.inheritIO();
+				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+				process = processBuilder.start();
 			} catch (IOException e) {
 				log.error("Vnfn not started correctly");
 				e.printStackTrace();
-				System.exit(2);
+				exit(2);
 			}
 		}
 
@@ -219,14 +284,19 @@ public class MainIntegrationTest {
 
 		private Process process;
 
-		public void start() {
+		public void start() throws IntegrationTestException {
 			try {
 				//TODO need to be downloaded from git
 //				log.info("Compiling Nfvo");
 //				process = new ProcessBuilder().command ("../nfvo/gradlew", "clean", "build", "-x", "test", "install").start();
 //				process.waitFor();
 				log.info("Starting Nfvo");
-				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", "../nfvo/build/libs/openbaton-0.5-SNAPSHOT.jar");
+				String pathNFVO = "../nfvo/build/libs/" + NFVO_FILE_NAME;
+				File f = new File(pathNFVO);
+				if (!f.exists() || f.isDirectory()) {
+					throw new IntegrationTestException("File " + pathNFVO + " doesn't exist. Have you compiled the NFVO v" + NFVO_VERSION);
+				}
+				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", pathNFVO);
 //				processBuilder.inheritIO();
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				process = processBuilder.start();
@@ -245,16 +315,14 @@ public class MainIntegrationTest {
 		public void setProcess(Process process) {
 			this.process = process;
 		}
+
 	}
 
-
-//	private static class Nfvo extends Thread{
-//		@Override
-//		public void run() {
-//
-//			log.info("Starting Nfvo");
-//			SpringApplication.run(Application.class);
-//		}
-//	}
-
+	private static void exit(int i) {
+		if (nfvo.getProcess() != null)
+			nfvo.getProcess().destroy();
+		if (vnfm.getProcess() != null)
+			vnfm.getProcess().destroy();
+		System.exit(i);
+	}
 }

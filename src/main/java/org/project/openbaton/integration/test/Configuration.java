@@ -1,4 +1,4 @@
-package org.project.neutrino.integration.test;
+package org.project.openbaton.integration.test;
 
 import java.io.File;
 import java.io.IOException;
