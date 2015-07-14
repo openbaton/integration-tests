@@ -238,6 +238,10 @@ public class Utils {
 
 		return res;
 	}
-
+	
+	public static boolean evaluateObjects(Object vimInstance, Object res) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 }
