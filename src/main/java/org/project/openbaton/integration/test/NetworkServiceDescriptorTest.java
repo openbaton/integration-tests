@@ -39,7 +39,7 @@ public class NetworkServiceDescriptorTest {
 		}
  		
  		log.trace("Received: " + obtained.toString());
- 		
+ 	
  		boolean resultEvaluate = Utils.evaluateObjects(networkServiceDescriptor,obtained);
  				
 		if(resultEvaluate == false)
