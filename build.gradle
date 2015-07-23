@@ -1,6 +1,17 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+	}
+}
+
 plugins {
 	id 'net.researchgate.release' version '2.1.2'
 }
+apply plugin: 'gradle-one-jar'
+
 
 apply from: 'openbaton-client/openbaton-libs/gradle/gradle/git.release.gradle'
 apply plugin: 'java'
@@ -39,10 +50,11 @@ project.ext {
 	/**
 	 * gradle Related Vars
 	 */
-	mainClass = 'org.project.openbaton.integration.test.MainIntegrationTest'
+	mainClass = theMainClass = 'org.project.openbaton.integration.test.MainIntegrationTest'
 	//------------------------------------------------//
 }
 apply from: 'openbaton-client/openbaton-libs/gradle/gradle/application.java.gradle'
+apply from: 'openbaton-client/openbaton-libs/gradle/gradle/one.jar.application.java.gradle'
 
 repositories {
 	mavenCentral()
@@ -60,10 +72,4 @@ dependencies {
 	compile 'commons-io:commons-io:2.4'
 }
 
-jar {
-	manifest {
-		attributes 'Main-Class': mainClass
-	}
-}
-
-mainClassName = mainClass
+mainClassName = theMainClass
