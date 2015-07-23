@@ -1,13 +1,5 @@
 package org.project.openbaton.integration.test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,9 +12,15 @@ import org.apache.http.util.EntityUtils;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.shell.support.util.FileUtils;
 
-@SuppressWarnings("rawtypes")
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.concurrent.Callable;
+
 public class Configuration implements Callable{
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());

@@ -1,6 +1,6 @@
 package org.project.openbaton.integration.test;
 
-import org.project.openbaton.common.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.project.openbaton.sdk.NFVORequestor;
 import org.project.openbaton.sdk.api.exception.SDKException;
@@ -19,7 +19,7 @@ import java.util.Properties;
  */
 public class NetworkServiceDescriptorTest {
     private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
-    private static Logger log = LoggerFactory.getLogger(VimInstanceTest.class);
+    private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptorTest.class);
     private static NFVORequestor requestor = new NFVORequestor("1");
     private static Gson mapper;  
 

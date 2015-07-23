@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.*;
@@ -44,14 +43,14 @@ public class MainIntegrationTest {
 	private static String dbUsr;
 	private static String dbPsw;
 
-	private static final String VNFM_DUMMY_PATH = "../vnfm/dummy-vnfm-jms/build/libs/";
+	private static final String VNFM_DUMMY_PATH = "../dummy-vnfm-jms/build/libs/";
 	private static String NFVO_FILE_NAME = "openbaton-" + NFVO_VERSION + ".jar";
 	private static final String VNFM_FILE_NAME = "dummy-vnfm-jms-" + VNFM_VERSION + ".jar";
 
 	private static Nfvo nfvo;
 	private static Vnfm vnfm;
 
-	private static void loadProperties() throws IOException {
+	private static Properties loadProperties() throws IOException {
 		Properties properties = Utils.getProperties();
 		nfvoIp = properties.getProperty("nfvo-ip");
 		nfvoPort = properties.getProperty("nfvo-port");
@@ -60,6 +59,7 @@ public class MainIntegrationTest {
 		dbUsr = properties.getProperty("db-usr");
 		dbPsw = properties.getProperty("db-psw");
 		dbUri = properties.getProperty("db-uri");
+		return properties;
 	}
 
 	public static boolean vnfmReady() {
@@ -100,6 +100,7 @@ public class MainIntegrationTest {
 		}
 		return false;
 	}
+
 	private static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
 		int i = 0;
 		while (!Utils.available(nfvoIp, nfvoPort)) {
@@ -125,14 +126,38 @@ public class MainIntegrationTest {
 		}
 		return true;
 	}
+	private static boolean isVnfmReady(){
+		int i = 0;
+		while (!vnfmReady()) {
+			i++;
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (i > 50){
+				return false;
+			}
+			Integer exitVal = null;
+			try{
+				exitVal=vnfm.getProcess().exitValue();
+			}catch (IllegalThreadStateException e){
+				log.debug("waiting for vnfm registration...");
+			}
+			if (exitVal != null && exitVal != 0){
+				log.error("VNFM not started correctly");
+				exit(2);
+			}
+		}
+		return true;
+	}
 
 	// TODO move to test
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException,
+	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException,
 			URISyntaxException, InterruptedException, ExecutionException {
 
 		System.out.println(log.getClass());
-
-		loadProperties();
+		Properties properties = loadProperties();
 
 		/******************************
 		 * Running NFVO				  *
@@ -165,29 +190,9 @@ public class MainIntegrationTest {
 			exit(2);
 		}
 
-		int i = 0;
-		while (!vnfmReady()) {
-
-			i++;
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			if (i > 50){
-				log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
-				exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
-			}
-			Integer exitVal = null;
-			try{
-				 exitVal=vnfm.getProcess().exitValue();
-			}catch (IllegalThreadStateException e){
-				log.debug("waiting for vnfm registration...");
-			}
-			if (exitVal != null && exitVal != 0){
-				log.error("VNFM not started correctly");
-				exit(2);
-			}
+		if (!isVnfmReady()){
+			log.error("After 150 sec the Vnfm is not started yet. Is there an error?");
+			exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
 		}
 
 		log.info("Vnfm is started correctly");
@@ -196,7 +201,11 @@ public class MainIntegrationTest {
 		 * Now create the VIM		  *
 		 ******************************/
 
-		boolean vimCreateResult = VimInstanceTest.create();
+		log.debug("Properties: " + properties);
+
+		VimInstanceTest vimInstanceTest = new VimInstanceTest(properties);
+
+		boolean vimCreateResult = vimInstanceTest.create();
 
 		log.debug("Received vim create: " + vimCreateResult);
 		try {
@@ -210,39 +219,39 @@ public class MainIntegrationTest {
 		 * Now create the NSD		  *
 		 ******************************/
 
-		String nsd_id = NetworkServiceDescriptorTest.create();
-
-		log.debug("Received NetworkServiceDescriptor create: " + nsd_id);
-		try {
-			assert nsd_id != null;
-		}catch (Exception e){
-			log.error("The NetworkServiceDescriptor create test was unsuccessful. Exit now...");
-			System.exit(801);
-		}
-
-		/******************************
-		 * Now create the NSR		  *
-		 ******************************/
-
-		String  nsr_id = NetworkServiceRecordTest.create(nsd_id);
-		log.debug("Received NetworkServiceRecord create: " + nsr_id);
-		try {
-			assert nsr_id != null;
-		}catch (Exception e){
-			log.error("The NetworkServiceRecord create test was unsuccessful. Exit now...");
-			System.exit(701);
-		}
-
-		/******************************
-		 * Now delete the NSR		  *
-		 ******************************/
-
-		NetworkServiceRecordTest.delete(nsr_id);
-
-		/**
-		 * TODO check it is really gone!
-		 */
-
+//		String nsd_id = NetworkServiceDescriptorTest.create();
+//
+//		log.debug("Received NetworkServiceDescriptor create: " + nsd_id);
+//		try {
+//			assert nsd_id != null;
+//		}catch (Exception e){
+//			log.error("The NetworkServiceDescriptor create test was unsuccessful. Exit now...");
+//			System.exit(801);
+//		}
+//
+//		/******************************
+//		 * Now create the NSR		  *
+//		 ******************************/
+//
+//		String  nsr_id = NetworkServiceRecordTest.create(nsd_id);
+//		log.debug("Received NetworkServiceRecord create: " + nsr_id);
+//		try {
+//			assert nsr_id != null;
+//		}catch (Exception e){
+//			log.error("The NetworkServiceRecord create test was unsuccessful. Exit now...");
+//			System.exit(701);
+//		}
+//
+//		/******************************
+//		 * Now delete the NSR		  *
+//		 ******************************/
+//
+//		NetworkServiceRecordTest.delete(nsr_id);
+//
+//		/**
+//		 * TODO check it is really gone!
+//		 */
+//
 		log.info("Test finished correctly :)");
 		vnfm.getProcess().destroy();
 		nfvo.getProcess().destroy();
@@ -262,7 +271,6 @@ public class MainIntegrationTest {
 					throw new IntegrationTestException("File " + pathVnfm + " doesn't exist. Have you compiled the VNFM v" + VNFM_VERSION);
 				}
 				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", pathVnfm);
-//				processBuilder.inheritIO();
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				process = processBuilder.start();
 			} catch (IOException e) {
