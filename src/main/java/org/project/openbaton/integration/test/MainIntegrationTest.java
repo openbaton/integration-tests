@@ -16,8 +16,10 @@
 
 package org.project.openbaton.integration.test;
 
+import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.project.openbaton.integration.test.utils.Utils;
+import org.project.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 public class MainIntegrationTest {
 
 	private static String NFVO_VERSION = "0.5-SNAPSHOT";
-	private static String VNFM_VERSION = "0.3-SNAPSHOT";
+	private static String VNFM_VERSION = "0.5-SNAPSHOT";
 
 	private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
 
@@ -171,7 +173,7 @@ public class MainIntegrationTest {
 			exit(1);
 		}
 
-		if (!isNfvoStarted(nfvoIp, nfvoPort)){
+		if (!isNfvoStarted(nfvoIp, nfvoPort)) {
 			log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
 			System.exit(1); // 1 stands for the error in running nfvo TODO define error codes (doing)
 		}
@@ -190,7 +192,7 @@ public class MainIntegrationTest {
 			exit(2);
 		}
 
-		if (!isVnfmReady()){
+		if (!isVnfmReady()) {
 			log.error("After 150 sec the Vnfm is not started yet. Is there an error?");
 			exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
 		}
@@ -205,12 +207,18 @@ public class MainIntegrationTest {
 
 		VimInstanceTest vimInstanceTest = new VimInstanceTest(properties);
 
-		boolean vimCreateResult = vimInstanceTest.create();
+		VimInstance vimCreateResult = null;
+		try {
+			vimCreateResult = vimInstanceTest.create();
+		} catch (SDKException e) {
+			log.error("error");
+			exit(399);
+		}
 
 		log.debug("Received vim create: " + vimCreateResult);
 		try {
-			assert vimCreateResult;
-		}catch (Exception e){
+			assert vimCreateResult != null;
+		} catch (Exception e) {
 			log.error("The vim create test was unsuccessful. Exit now...");
 			System.exit(901);
 		}
