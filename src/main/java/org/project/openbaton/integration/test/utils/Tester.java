@@ -10,14 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
 /**
  * Created by lto on 15/07/15.
  */
-public class Tester<T extends Serializable> {
-    private static String FILE_NAME;
+public abstract class Tester<T extends Serializable> extends SubTask{
+    private String FILE_NAME;
     protected static final Logger log = LoggerFactory.getLogger(Tester.class);
-    private final Class<T> aClass;
+    protected final Class<T> aClass;
     private final AbstractRestAgent abstractRestAgent;
     protected NFVORequestor requestor ;
     protected Gson mapper;
@@ -33,6 +34,7 @@ public class Tester<T extends Serializable> {
      * @param filePath: example "/etc/json_file/vim_instances/vim-instance.json"
      */
     public Tester(Properties properties, Class<T> aClass, String filePath, String basePath) {
+        super(Integer.parseInt(properties.getProperty("num-successor")));
         this.FILE_NAME = filePath;
         GsonBuilder builder = new GsonBuilder();
         mapper = builder.create();
@@ -43,9 +45,7 @@ public class Tester<T extends Serializable> {
     }
 
     public T create() throws SDKException {
-        String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
-
-        T expected = mapper.fromJson(body, aClass);
+        T expected = prepareObject();
 
         T obtained;
         obtained = (T) abstractRestAgent.create(expected);
@@ -56,7 +56,10 @@ public class Tester<T extends Serializable> {
         return obtained;
     }
 
+    protected abstract T prepareObject();
+
     public void delete(String id) throws SDKException {
         abstractRestAgent.delete(id);
     }
+
 }

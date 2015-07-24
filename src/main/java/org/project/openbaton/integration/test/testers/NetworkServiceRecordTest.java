@@ -1,14 +1,9 @@
-package org.project.openbaton.integration.test;
+package org.project.openbaton.integration.test.testers;
 
-import org.json.JSONObject;
-import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.project.openbaton.integration.test.utils.Tester;
-import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -30,5 +25,21 @@ public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
 	 */
 	public NetworkServiceRecordTest(Properties properties, String filePath, String basePath) {
 		super(properties, NetworkServiceRecord.class, filePath, basePath);
+	}
+
+	@Override
+	protected Object doWork() throws Exception {
+		return create();
+	}
+
+	@Override
+	protected void handleException(Exception e) {
+		e.printStackTrace();
+		log.error("there was an exception: " + e.getMessage());
+	}
+
+	@Override
+	protected NetworkServiceRecord prepareObject() {
+		return null;
 	}
 }

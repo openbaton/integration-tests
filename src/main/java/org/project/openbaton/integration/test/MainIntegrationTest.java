@@ -18,6 +18,9 @@ package org.project.openbaton.integration.test;
 
 import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.testers.NetworkServiceDescriptorTest;
+import org.project.openbaton.integration.test.testers.VimInstanceCreateTest;
+import org.project.openbaton.integration.test.utils.SubTask;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.project.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
@@ -33,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 public class MainIntegrationTest {
 
 	private static String NFVO_VERSION = "0.5-SNAPSHOT";
-	private static String VNFM_VERSION = "0.5-SNAPSHOT";
+	private static String VNFM_VERSION = "0.3-SNAPSHOT";
 
 	private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
 
@@ -71,11 +74,13 @@ public class MainIntegrationTest {
 
 		try {
 			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
+
 			st = con.createStatement();
 			rs = st.executeQuery("select * from vnfm_manager_endpoint");
 
 			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
 			if(val==false){
+				log.debug("vnfm endpoint not present yet");
 				return false;
 			}else
 			{
@@ -84,6 +89,7 @@ public class MainIntegrationTest {
 
 		} catch (SQLException ex) {
 			log.debug("error db");
+			ex.printStackTrace();
 		} finally {
 			try {
 				if (rs != null) {
@@ -140,14 +146,14 @@ public class MainIntegrationTest {
 			if (i > 50){
 				return false;
 			}
-			Integer exitVal = null;
+			Integer exitVal=null;
 			try{
 				exitVal=vnfm.getProcess().exitValue();
 			}catch (IllegalThreadStateException e){
 				log.debug("waiting for vnfm registration...");
 			}
-			if (exitVal != null && exitVal != 0){
-				log.error("VNFM not started correctly");
+			if (exitVal!=null && exitVal != 0){
+				log.error("VNFM not started correctly: exitval="+exitVal);
 				exit(2);
 			}
 		}
@@ -155,11 +161,15 @@ public class MainIntegrationTest {
 	}
 
 	// TODO move to test
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException,
-			URISyntaxException, InterruptedException, ExecutionException {
+	public static void main(String[] args){
 
 		System.out.println(log.getClass());
-		Properties properties = loadProperties();
+		Properties properties = null;
+		try {
+			properties = loadProperties();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		/******************************
 		 * Running NFVO				  *
@@ -205,61 +215,33 @@ public class MainIntegrationTest {
 
 		log.debug("Properties: " + properties);
 
-		VimInstanceTest vimInstanceTest = new VimInstanceTest(properties);
+		SubTask vimInstanceCreateTest = new VimInstanceCreateTest(properties);
 
-		VimInstance vimCreateResult = null;
+		NetworkServiceDescriptorTest networkServiceDescriptorTest = new NetworkServiceDescriptorTest(properties);
+		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
+
+		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest);
+		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
+
+		VimInstance vimInstanceReceived=null;
 		try {
-			vimCreateResult = vimInstanceTest.create();
-		} catch (SDKException e) {
-			log.error("error");
-			exit(399);
+			vimInstanceReceived = (VimInstance) vimInstanceCreateTest.call();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		log.debug("Received vim create: " + vimCreateResult);
+
+
+		log.debug("Received vim create: " + vimInstanceReceived);
 		try {
-			assert vimCreateResult != null;
+			assert vimInstanceReceived != null;
 		} catch (Exception e) {
 			log.error("The vim create test was unsuccessful. Exit now...");
 			System.exit(901);
 		}
+		log.info("Waiting for successors....");
+		vimInstanceCreateTest.shutdownAndAwaitTermination();
 
-		/******************************
-		 * Now create the NSD		  *
-		 ******************************/
-
-//		String nsd_id = NetworkServiceDescriptorTest.create();
-//
-//		log.debug("Received NetworkServiceDescriptor create: " + nsd_id);
-//		try {
-//			assert nsd_id != null;
-//		}catch (Exception e){
-//			log.error("The NetworkServiceDescriptor create test was unsuccessful. Exit now...");
-//			System.exit(801);
-//		}
-//
-//		/******************************
-//		 * Now create the NSR		  *
-//		 ******************************/
-//
-//		String  nsr_id = NetworkServiceRecordTest.create(nsd_id);
-//		log.debug("Received NetworkServiceRecord create: " + nsr_id);
-//		try {
-//			assert nsr_id != null;
-//		}catch (Exception e){
-//			log.error("The NetworkServiceRecord create test was unsuccessful. Exit now...");
-//			System.exit(701);
-//		}
-//
-//		/******************************
-//		 * Now delete the NSR		  *
-//		 ******************************/
-//
-//		NetworkServiceRecordTest.delete(nsr_id);
-//
-//		/**
-//		 * TODO check it is really gone!
-//		 */
-//
 		log.info("Test finished correctly :)");
 		vnfm.getProcess().destroy();
 		nfvo.getProcess().destroy();
@@ -281,8 +263,9 @@ public class MainIntegrationTest {
 				ProcessBuilder processBuilder = new ProcessBuilder().command("java", "-jar", pathVnfm);
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				process = processBuilder.start();
+				log.info("Vnfm started!");
 			} catch (IOException e) {
-				log.error("Vnfn not started correctly");
+				log.error("Vnfm class: Vnfm not started correctly");
 				e.printStackTrace();
 				exit(2);
 			}

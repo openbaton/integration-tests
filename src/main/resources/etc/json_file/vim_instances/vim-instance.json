@@ -8,7 +8,7 @@
   "securityGroups": [
     "default"
   ],
-  "type":"openstack",
+  "type":"test",
   "location":{
 	"name":"Berlin",
 	"latitude":"52.525876",
