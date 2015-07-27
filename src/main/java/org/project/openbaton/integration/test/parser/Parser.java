@@ -19,7 +19,7 @@ public class Parser {
     private static Logger log = LoggerFactory.getLogger(Parser.class);
     private static Map<String,String> namesAlreadyReplicated;
 
-    public static JsonElement randomize(String json, String path){
+    public static String randomize(String json, String path){
 
         GsonBuilder builder = new GsonBuilder();
         Gson mapper = builder.create();
@@ -33,8 +33,7 @@ public class Parser {
         }
 
         namesAlreadyReplicated=new HashMap<>();
-
-        return parse(jsonRoot);
+        return mapper.toJson(parse(jsonRoot));
     }
 
     private static JsonElement parse(JsonElement jsonRoot) {
@@ -77,7 +76,7 @@ public class Parser {
         return false;
     }
 
-    public static String getNameToReplace(String nameToReplace){
+    private static String getNameToReplace(String nameToReplace){
 
         String name=nameToReplace.replace("<::","").replace("::>","");
         if(namesAlreadyReplicated.containsKey(name))
@@ -99,9 +98,8 @@ public class Parser {
         namesAlreadyReplicated.put(name,valueFromProperties.toString());
         return valueFromProperties.toString();
     }
-/*
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream("/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json"));
-        System.out.println(Parser.randomize(body, "/etc/json_file/network_service_descriptors/nsd1.properties"));
+        System.out.println(Parser.randomize(body, "/etc/json_file/parser_configuration_properties/nsd.properties"));
     }*/
 }
