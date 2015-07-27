@@ -172,7 +172,7 @@ public class MainIntegrationTest {
 		SubTask vimInstanceCreateTest = new VimInstanceCreateTest(properties);
 
 		NetworkServiceDescriptorTest networkServiceDescriptorTest = new NetworkServiceDescriptorTest(properties);
-//		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
+		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
 
 		int nsrCreator = 5;
 		for (int i=0; i< nsrCreator;i++){
@@ -181,6 +181,7 @@ public class MainIntegrationTest {
 		}
 
 		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest);
+		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
 
 		VimInstance vimInstanceReceived=null;
 		try {
