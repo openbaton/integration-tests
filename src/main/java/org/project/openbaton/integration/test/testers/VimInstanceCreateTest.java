@@ -2,6 +2,7 @@ package org.project.openbaton.integration.test.testers;
 
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.catalogue.nfvo.VimInstance;
+import org.project.openbaton.integration.test.parser.Parser;
 import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.project.openbaton.sdk.api.exception.SDKException;
@@ -41,9 +42,11 @@ public class VimInstanceCreateTest extends Tester<VimInstance> {
     protected VimInstance prepareObject() {
         String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
-        log.debug("Casting " + body.trim() + " into " + aClass.getName());
+        String vimRandom = new Parser("/etc/json_file/parser_configuration_properties/vim.properties").randomize(body);
+        log.debug("vim-instance.json (old): " + body);
+        log.debug("vim-instance.json (random): " + vimRandom);
 
-        return mapper.fromJson(body, aClass);
+        return mapper.fromJson(vimRandom, aClass);
     }
 }
 

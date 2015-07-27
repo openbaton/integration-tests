@@ -2,8 +2,8 @@
   "name":"vim-instance",
   "authUrl":"http://192.168.41.45:5000/v2.0",
   "tenant":"admin",
-  "username":"admin",
-  "password":"pass",
+  "username":"<::admin::>",
+  "password":"<::pass::>",
   "keyPair":"stack",
   "securityGroups": [
     "default"

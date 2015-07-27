@@ -1,10 +1,12 @@
 package org.project.openbaton.integration.test.testers;
 
+import com.google.gson.JsonElement;
 import org.project.openbaton.catalogue.mano.common.VNFDependency;
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.project.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.project.openbaton.catalogue.nfvo.VimInstance;
+import org.project.openbaton.integration.test.parser.Parser;
 import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.project.openbaton.sdk.NFVORequestor;
@@ -44,23 +46,11 @@ public class NetworkServiceDescriptorTest extends Tester<NetworkServiceDescripto
         {
             String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
-            log.debug("Casting " + body.trim() + " into " + aClass.getName());
+            String nsdRandom = new Parser("/etc/json_file/parser_configuration_properties/nsd.properties").randomize(body);
+            log.debug("NetworkServiceDescriptor (old): " + body);
+            log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
-            NetworkServiceDescriptor networkServiceDescriptor = mapper.fromJson(body, aClass);
-
-            networkServiceDescriptor.setVnf_dependency(new HashSet<VNFDependency>());
-            //TODO jason parser che prende in ingresso un NSD e ne restituisce uno random
-            for (VirtualNetworkFunctionDescriptor virtualNetworkFunctionDescriptor : networkServiceDescriptor.getVnfd()){
-                double random=Math.random();
-                virtualNetworkFunctionDescriptor.setName(virtualNetworkFunctionDescriptor.getName() + "-" + random);
-                log.debug("NSD -> VNF name:" + virtualNetworkFunctionDescriptor.getName());
-                for (VirtualDeploymentUnit virtualDeploymentUnit : virtualNetworkFunctionDescriptor.getVdu()){
-                    virtualDeploymentUnit.getVimInstance().setName(((VimInstance)this.param).getName());
-                    log.debug("NSD -> VNF -> VimInstanceName:" + virtualDeploymentUnit.getVimInstance().getName());
-                }
-
-            }
-            return networkServiceDescriptor;
+            return mapper.fromJson(nsdRandom, aClass);
         }
     }
 }
