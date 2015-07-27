@@ -26,7 +26,7 @@ public class NSDParser {
         //
         for(String element : javaRootMapObject.keySet()){
             if(element.equals(param))
-                javaRootMapObject.get(param)
+                javaRootMapObject.get(param);
         }
 
         //
@@ -59,6 +59,6 @@ public class NSDParser {
 
     public static void main(String[] args){
         String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream("/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json"));
-        NSDParser.randomize(body);
+        NSDParser.randomize(body,"name","vimdummy");
     }
 }
