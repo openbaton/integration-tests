@@ -11,9 +11,6 @@ plugins {
 	id 'net.researchgate.release' version '2.1.2'
 }
 apply plugin: 'gradle-one-jar'
-
-
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/git.release.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
@@ -73,3 +70,5 @@ dependencies {
 }
 
 mainClassName = theMainClass
+
+apply from: 'openbaton-client/openbaton-libs/gradle/gradle/git.release.gradle'

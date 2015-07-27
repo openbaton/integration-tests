@@ -174,10 +174,13 @@ public class MainIntegrationTest {
 		NetworkServiceDescriptorTest networkServiceDescriptorTest = new NetworkServiceDescriptorTest(properties);
 //		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
 
-		NetworkServiceRecordTest networkServiceRecordTest = new NetworkServiceRecordTest(properties);
-		networkServiceDescriptorTest.addSuccessor(networkServiceRecordTest);
+		int nsrCreator = 5;
+		for (int i=0; i< nsrCreator;i++){
+
+			networkServiceDescriptorTest.addSuccessor(new NetworkServiceRecordTest(properties));
+		}
+
 		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest);
-//		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
 
 		VimInstance vimInstanceReceived=null;
 		try {
@@ -195,12 +198,12 @@ public class MainIntegrationTest {
 			System.exit(901);
 		}
 		log.info("Waiting for successors....");
-		vimInstanceCreateTest.shutdownAndAwaitTermination();
-//		try {
-//			Thread.sleep(15000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+//		vimInstanceCreateTest.shutdownAndAwaitTermination();
+		try {
+			Thread.sleep(15000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		log.info("Test finished correctly :)");
 
