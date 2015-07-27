@@ -8,6 +8,7 @@
     </appender>
 
     <logger name="org.project.openbaton.nfvo" level="DEBUG"/>
+    <logger name="org.project.openbaton.sdk" level="DEBUG"/>
     <logger name="org.project.openbaton.integration" level="TRACE"/>
     <logger name="org.project.openbaton.vnfm" level="DEBUG"/>
     <logger name="org.apache" level="WARN"/>

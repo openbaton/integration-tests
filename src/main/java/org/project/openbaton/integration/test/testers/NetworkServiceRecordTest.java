@@ -1,15 +1,17 @@
 package org.project.openbaton.integration.test.testers;
 
+import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.project.openbaton.integration.test.utils.Tester;
+import org.project.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
-
 public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
 
+	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
 	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordTest.class);
 	private static String path = "ns-records";
 
@@ -23,8 +25,8 @@ public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
 	 * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
 	 * @param basePath
 	 */
-	public NetworkServiceRecordTest(Properties properties, String filePath, String basePath) {
-		super(properties, NetworkServiceRecord.class, filePath, basePath);
+	public NetworkServiceRecordTest(Properties properties) {
+		super(properties, NetworkServiceRecord.class, FILE_NAME, "/ns-records");
 	}
 
 	@Override
@@ -36,6 +38,20 @@ public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
 	protected void handleException(Exception e) {
 		e.printStackTrace();
 		log.error("there was an exception: " + e.getMessage());
+	}
+
+	@Override
+	public NetworkServiceRecord create() throws SDKException {
+
+		NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
+
+		log.debug("Obtained param: " + param);
+		log.debug("Obtained id: " + nsd.getId());
+
+		NetworkServiceRecord networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create("/" + nsd.getId());
+		log.debug("Created: " + networkServiceRecord);
+		return networkServiceRecord;
+
 	}
 
 	@Override

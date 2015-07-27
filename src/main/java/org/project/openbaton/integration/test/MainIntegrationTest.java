@@ -18,6 +18,7 @@ package org.project.openbaton.integration.test;
 
 import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.testers.NetworkServiceDescriptorTest;
+import org.project.openbaton.integration.test.testers.NetworkServiceRecordTest;
 import org.project.openbaton.integration.test.testers.VimInstanceCreateTest;
 import org.project.openbaton.integration.test.utils.SubTask;
 import org.project.openbaton.integration.test.utils.Utils;
@@ -171,10 +172,12 @@ public class MainIntegrationTest {
 		SubTask vimInstanceCreateTest = new VimInstanceCreateTest(properties);
 
 		NetworkServiceDescriptorTest networkServiceDescriptorTest = new NetworkServiceDescriptorTest(properties);
-		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
+//		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
 
+		NetworkServiceRecordTest networkServiceRecordTest = new NetworkServiceRecordTest(properties);
+		networkServiceDescriptorTest.addSuccessor(networkServiceRecordTest);
 		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest);
-		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
+//		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
 
 		VimInstance vimInstanceReceived=null;
 		try {
@@ -193,6 +196,11 @@ public class MainIntegrationTest {
 		}
 		log.info("Waiting for successors....");
 		vimInstanceCreateTest.shutdownAndAwaitTermination();
+//		try {
+//			Thread.sleep(15000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 		log.info("Test finished correctly :)");
 
