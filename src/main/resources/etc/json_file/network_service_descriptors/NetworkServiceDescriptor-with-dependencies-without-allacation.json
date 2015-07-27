@@ -5,7 +5,7 @@
 	{
 	  "vendor":"fokus",
 	  "version":"0.1",
-	  "name":"vnf-dummy-1",
+	  "name":"<::vnf-dummy-1::>",
 	  "type":"dummy",
 	  "vdu":[
 		{
@@ -68,7 +68,7 @@
 	{
 	  "vendor":"fokus",
 	  "version":"0.1",
-	  "name":"vnf-dummy-2",
+	  "name":"<::vnf-dummy-2::>",
 	  "type":"dummy",
 	  "vdu":[
 		{
@@ -138,10 +138,10 @@
   "vnf_dependency":[
 	{
 	  "source" : {
-		"name": "vnf-dummy-1"
+		"name": "<::vnf-dummy-1::>"
 	  },
 	  "target":{
-		"name": "vnf-dummy-2"
+		"name": "<::vnf-dummy-2::>"
 	  }
 	}
   ],

@@ -1,8 +1,6 @@
 package org.project.openbaton.integration.test.parser;
 
 import com.google.gson.*;
-import org.project.openbaton.integration.test.utils.Tester;
-import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,32 +9,44 @@ import java.util.*;
 
 /**
  * Created by mob on 27.07.15.
+ *
+ * The Parser is used to obtain a new json file from a json file passed as a parameter to the
+ * method randomize. The new file has different values accordingly to the Parser configuration file.
+ *
  */
 public class Parser {
 
-    private Map<String, String> propertyMap = new HashMap<>();
-    private static Properties properties;
+    private Properties properties;
     private static Logger log = LoggerFactory.getLogger(Parser.class);
-    private static Map<String,String> namesAlreadyReplicated;
+    private Map<String,String> namesAlreadyReplicated;
+    private Gson mapper;
 
-    public static String randomize(String json, String path){
 
+    public Parser(String path){
         GsonBuilder builder = new GsonBuilder();
-        Gson mapper = builder.create();
-        JsonElement jsonRoot = mapper.fromJson(json, JsonElement.class);
-
+        mapper = builder.create();
         properties = new Properties();
         try {
             properties.load(Parser.class.getResourceAsStream(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         namesAlreadyReplicated=new HashMap<>();
+    }
+    /**
+     * This method takes as input:
+     * json: the old json file we want to modify
+     *
+     * Output:
+     * A new json file with some changed parameters accordingly to the Parser configuration file
+     *
+     */
+    public String randomize(String json){
+        JsonElement jsonRoot = mapper.fromJson(json, JsonElement.class);
         return mapper.toJson(parse(jsonRoot));
     }
 
-    private static JsonElement parse(JsonElement jsonRoot) {
+    private JsonElement parse(JsonElement jsonRoot) {
         if(jsonRoot instanceof JsonObject)
         {
             JsonObject jsonRootO = (JsonObject) jsonRoot;
@@ -45,7 +55,7 @@ public class Parser {
                 if(checkCompatibility(elementValue))
                 {
                     String nameToReplace = getNameToReplace(elementValue.getAsString());
-                    log.debug("Replicating: " + elementValue.getAsString() + " with: " + nameToReplace);
+                    log.debug("Replicated: " + elementValue.getAsString() + " with: " + nameToReplace);
 
                     jsonRootO.addProperty(entry.getKey(), nameToReplace);
                 }
@@ -76,7 +86,7 @@ public class Parser {
         return false;
     }
 
-    private static String getNameToReplace(String nameToReplace){
+    private String getNameToReplace(String nameToReplace){
 
         String name=nameToReplace.replace("<::","").replace("::>","");
         if(namesAlreadyReplicated.containsKey(name))
@@ -88,18 +98,14 @@ public class Parser {
             return "";
         }
         StringBuilder valueFromProperties = new StringBuilder(nameFromProperties);
-
+        Random r = new Random();
         for(int i=0 ; i<valueFromProperties.length(); i++)
         {
             if(valueFromProperties.charAt(i)=='*'){
-                valueFromProperties.setCharAt(i, ("" + ((int) (Math.random() * 10000) % 9)).charAt(0));
+                valueFromProperties.setCharAt(i,(char)(r.nextInt(26) + 'a'));
             }
         }
         namesAlreadyReplicated.put(name,valueFromProperties.toString());
         return valueFromProperties.toString();
     }
-    /*public static void main(String[] args){
-        String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream("/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json"));
-        System.out.println(Parser.randomize(body, "/etc/json_file/parser_configuration_properties/nsd.properties"));
-    }*/
 }

@@ -46,11 +46,11 @@ public class NetworkServiceDescriptorTest extends Tester<NetworkServiceDescripto
         {
             String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
-            log.debug("Casting " + body.trim() + " into " + aClass.getName());
-            String nsdRandom = Parser.randomize(body, "/etc/json_file/parser_configuration_properties/nsd.properties");
-            NetworkServiceDescriptor networkServiceDescriptor = mapper.fromJson(nsdRandom, aClass);
+            String nsdRandom = new Parser("/etc/json_file/parser_configuration_properties/nsd.properties").randomize(body);
+            log.debug("NetworkServiceDescriptor (old): " + body);
+            log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
-            return networkServiceDescriptor;
+            return mapper.fromJson(nsdRandom, aClass);
         }
     }
 }
