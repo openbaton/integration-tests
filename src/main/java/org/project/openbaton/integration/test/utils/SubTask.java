@@ -11,6 +11,7 @@ public abstract class SubTask implements Callable<Object>{
 
     private ExecutorService executorService;
     private List<SubTask> successors;
+    private List<Future> f;
     public Object param;
 
     public void setParam(Object param){
@@ -19,6 +20,7 @@ public abstract class SubTask implements Callable<Object>{
 
     public SubTask(int successors){
         this.successors = new LinkedList<>();
+        this.f=new LinkedList<>();
         executorService = Executors.newFixedThreadPool(successors);
     }
 
@@ -50,11 +52,28 @@ public abstract class SubTask implements Callable<Object>{
     }
 
     private void executeSuccessors() {
-        for (SubTask successor : successors)
-            this.executorService.submit(successor);
+        for (SubTask successor : successors) {
+            f.add(this.executorService.submit(successor));
+        }
     }
 
-    public void shutdownAndAwaitTermination() {
+    public void awaitTermination() {
+        try {
+            for (Future future : f) {
+                future.get(60, TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        for (SubTask successor : successors)
+            successor.awaitTermination();
+        shutdownAndAwaitTermination();
+    }
+    private void shutdownAndAwaitTermination() {
         executorService.shutdown(); // Disable new tasks from being submitted
         try {
             // Wait a while for existing tasks to terminate
@@ -62,7 +81,7 @@ public abstract class SubTask implements Callable<Object>{
                 executorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!executorService.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
+                    System.err.println("ExecutorService did not terminate");
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
