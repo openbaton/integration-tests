@@ -1,4 +1,4 @@
-*integration-test.properties
+src/main/resources/integration-test.properties
 
 *.class
 *.jar
@@ -26,7 +26,6 @@ activemq-data/
 .gradle/
 
 */build/*
-build/*
 build
 buildSrc/build
 /spring-*/build
