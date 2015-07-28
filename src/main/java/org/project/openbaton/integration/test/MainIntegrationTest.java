@@ -190,7 +190,6 @@ public class MainIntegrationTest {
 			e.printStackTrace();
 		}
 
-
 		log.debug("Received vim create: " + vimInstanceReceived);
 		try {
 			assert vimInstanceReceived != null;
@@ -199,13 +198,7 @@ public class MainIntegrationTest {
 			System.exit(901);
 		}
 		log.info("Waiting for successors....");
-//		vimInstanceCreateTest.shutdownAndAwaitTermination();
-		try {
-			Thread.sleep(15000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
+		vimInstanceCreateTest.awaitTermination();
 		log.info("Test finished correctly :)");
 
 		System.exit(0);
