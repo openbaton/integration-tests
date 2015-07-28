@@ -16,16 +16,21 @@
 
 package org.project.openbaton.integration.test;
 
+import org.ini4j.Ini;
+import org.ini4j.Profile;
 import org.project.openbaton.catalogue.nfvo.VimInstance;
-import org.project.openbaton.integration.test.testers.NetworkServiceDescriptorTest;
-import org.project.openbaton.integration.test.testers.NetworkServiceRecordTest;
-import org.project.openbaton.integration.test.testers.VimInstanceCreateTest;
+import org.project.openbaton.integration.test.testers.*;
 import org.project.openbaton.integration.test.utils.SubTask;
+import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Properties;
 
@@ -169,39 +174,123 @@ public class MainIntegrationTest {
 
 		log.debug("Properties: " + properties);
 
-		SubTask vimInstanceCreateTest = new VimInstanceCreateTest(properties);
+		Ini ini=loadFileIni(args);
 
-		NetworkServiceDescriptorTest networkServiceDescriptorTest = new NetworkServiceDescriptorTest(properties);
-		NetworkServiceDescriptorTest networkServiceDescriptorTest2 = new NetworkServiceDescriptorTest(properties);
-
-		int nsrCreator = 5;
-		for (int i=0; i< nsrCreator;i++){
-
-			networkServiceDescriptorTest.addSuccessor(new NetworkServiceRecordTest(properties));
-		}
-
-		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest);
-		vimInstanceCreateTest.addSuccessor(networkServiceDescriptorTest2);
-
-		VimInstance vimInstanceReceived=null;
+		Ini.Section root = ini.get("it");
+		SubTask rootSubTask = loadTesters(properties, root);
 		try {
-			vimInstanceReceived = (VimInstance) vimInstanceCreateTest.call();
+			rootSubTask.call();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		log.debug("Received vim create: " + vimInstanceReceived);
-		try {
-			assert vimInstanceReceived != null;
-		} catch (Exception e) {
-			log.error("The vim create test was unsuccessful. Exit now...");
-			System.exit(901);
-		}
-		log.info("Waiting for successors....");
-		vimInstanceCreateTest.awaitTermination();
+		rootSubTask.awaitTermination();
 		log.info("Test finished correctly :)");
-
 		System.exit(0);
+	}
+
+	private static Ini loadFileIni(String[] args) {
+		File f=null;
+		if(args.length>1) {
+			f = new File(args[1]);
+		}
+		InputStream is=null;
+		if(f==null || !f.exists() || f.isDirectory())
+		{
+			log.info("the name file passed is incorrect");
+			f=new File("/etc/openbaton/int-test/integration-test.ini");
+			if(!f.exists() || f.isDirectory())
+			{
+				log.info("the name file etc/openbaton/int-test/integration-test.ini is incorrect");
+				is =MainIntegrationTest.class.getResourceAsStream("/integration-test_properties.ini");
+			}
+		}
+
+		Ini ini = new Ini();
+		try {
+			if(is==null)
+				ini.load(new FileReader(f));
+			else
+				ini.load(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ini;
+	}
+
+	private static SubTask loadTesters(Properties properties, Profile.Section root) {
+
+		SubTask instance = null;
+
+		for (String child : root.childrenNames()) {
+			String[] splittedName = child.split("-");
+			String nameClass = splittedName[0] + splittedName[1].substring(0, 1).toUpperCase() + splittedName[1].substring(1);
+
+			try {
+
+				String className = "org.project.openbaton.integration.test.testers." + nameClass;
+				log.debug("Classname is:" + className);
+				Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(className);
+				instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
+				log.debug("Class is:" + instance.getClass());
+
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+
+			//If there are specific properties for a type of a tester in the configuration file (.ini)
+			//configureTester(instance,root.getChild(child));
+
+			for(String subChild : root.getChild(child).childrenNames()){
+				log.debug("SubChild is:" + subChild);
+				int instances=Integer.parseInt(root.getChild(child).getChild(subChild).get("num_instances", "1"));
+				log.debug("Num instances is:" + instances);
+				for(int i=0; i<instances;i++)
+					instance.addSuccessor(loadTesters(properties, root.getChild(child)));
+			}
+
+		}
+		return instance;
+	}
+
+	private static void configureTester(SubTask instance, Profile.Section currentSection) {
+		if(instance instanceof VimInstanceCreate)
+			configureVimInstanceCreate(instance,currentSection);
+		else if (instance instanceof NetworkServiceDescriptorCreate)
+			configureNetworkServiceDescriptorCreate(instance,currentSection);
+		else if (instance instanceof NetworkServiceRecordDelete)
+			configureNetworkServiceRecordDelete(instance,currentSection);
+		else if (instance instanceof NetworkServiceRecordCreate)
+			configureNetworkServiceRecordCreate(instance,currentSection);
+		else if (instance instanceof WaiterWait)
+			configureWaiterWait(instance,currentSection);
+	}
+
+	private static void configureWaiterWait(SubTask instance, Profile.Section currentSection) {
+		//cast and get specific properties
+	}
+
+	private static void configureNetworkServiceRecordCreate(SubTask instance, Profile.Section currentSection) {
+		//cast and get specific properties
+	}
+
+	private static void configureNetworkServiceRecordDelete(SubTask instance, Profile.Section currentSection) {
+		//cast and get specific properties
+	}
+
+	private static void configureNetworkServiceDescriptorCreate(SubTask instance, Profile.Section currentSection) {
+		//cast and get specific properties
+	}
+
+	private static void configureVimInstanceCreate(SubTask subTask, Profile.Section currentSection) {
+		//cast and get specific properties
 	}
 
 

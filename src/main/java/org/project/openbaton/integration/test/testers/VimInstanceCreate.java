@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Created by lto on 24/06/15.
  */
-public class VimInstanceCreateTest extends Tester<VimInstance> {
+public class VimInstanceCreate extends Tester<VimInstance> {
 
     private final static String FILE_NAME = "/etc/json_file/vim_instances/vim-instance.json";
     /**
@@ -22,7 +22,7 @@ public class VimInstanceCreateTest extends Tester<VimInstance> {
      *                   nfvo-ip
      *                   nfvo-port
      */
-    public VimInstanceCreateTest(Properties properties) {
+    public VimInstanceCreate(Properties properties) {
         super(properties, VimInstance.class, FILE_NAME, "/datacenters");
     }
 

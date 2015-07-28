@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
+public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
 	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
-	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordTest.class);
+	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
 	private static String path = "ns-records";
 
 	/**
@@ -25,7 +25,7 @@ public class NetworkServiceRecordTest extends Tester<NetworkServiceRecord> {
 	 * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
 	 * @param basePath
 	 */
-	public NetworkServiceRecordTest(Properties properties) {
+	public NetworkServiceRecordCreate(Properties properties) {
 		super(properties, NetworkServiceRecord.class, FILE_NAME, "/ns-records");
 	}
 

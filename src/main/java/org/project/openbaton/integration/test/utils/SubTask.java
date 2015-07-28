@@ -1,5 +1,8 @@
 package org.project.openbaton.integration.test.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -13,6 +16,7 @@ public abstract class SubTask implements Callable<Object>{
     private List<SubTask> successors;
     private List<Future> f;
     public Object param;
+    protected static final Logger log = LoggerFactory.getLogger(SubTask.class);
 
     public void setParam(Object param){
         this.param = param;
@@ -63,10 +67,13 @@ public abstract class SubTask implements Callable<Object>{
                 future.get(60, TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
+            log.error("The thread was interrupted while waiting for successors");
             e.printStackTrace();
         } catch (ExecutionException e) {
+            log.error("The computation of a successor threw an exception");
             e.printStackTrace();
         } catch (TimeoutException e) {
+            log.error("The wait of the thread timed out");
             e.printStackTrace();
         }
         for (SubTask successor : successors)
