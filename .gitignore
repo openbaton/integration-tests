@@ -1,3 +1,5 @@
+*integration-test.properties
+
 *.class
 *.jar
 *.zip
