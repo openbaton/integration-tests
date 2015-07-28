@@ -1,4 +1,4 @@
-integration-test.properties
+*integration-test.properties
 
 *.class
 *.jar
