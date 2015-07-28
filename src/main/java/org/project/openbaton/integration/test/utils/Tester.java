@@ -2,6 +2,7 @@ package org.project.openbaton.integration.test.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.project.openbaton.sdk.NFVORequestor;
 import org.project.openbaton.sdk.api.exception.SDKException;
 import org.project.openbaton.sdk.api.util.AbstractRestAgent;
@@ -17,7 +18,6 @@ import java.util.concurrent.Callable;
  */
 public abstract class Tester<T extends Serializable> extends SubTask{
     private String FILE_NAME;
-    protected static final Logger log = LoggerFactory.getLogger(Tester.class);
     protected final Class<T> aClass;
     private final AbstractRestAgent abstractRestAgent;
     protected NFVORequestor requestor ;
@@ -56,10 +56,13 @@ public abstract class Tester<T extends Serializable> extends SubTask{
         return obtained;
     }
 
-    protected abstract T prepareObject();
-
     public void delete(String id) throws SDKException {
+
         abstractRestAgent.delete(id);
+
+        log.trace("Deleted: " + id);
     }
+
+    protected abstract T prepareObject();
 
 }
