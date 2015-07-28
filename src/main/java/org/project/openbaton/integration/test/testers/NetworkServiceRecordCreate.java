@@ -48,7 +48,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 		log.debug("Obtained param: " + param);
 		log.debug("Obtained id: " + nsd.getId());
 
-		NetworkServiceRecord networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create("/" + nsd.getId());
+		NetworkServiceRecord networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
 		log.debug("Created: " + networkServiceRecord);
 		return networkServiceRecord;
 
