@@ -54,9 +54,12 @@ public class SdkTest {
         NetworkServiceRecord networkServiceRecord = requestor.getNetworkServiceRecordAgent().create(res2.getId());
         log.debug("RECORD: "+networkServiceRecord);
 
-        VirtualNetworkFunctionRecord response = requestor.getNetworkServiceRecordAgent().getVirtualNetworkFunctionRecord(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId());
+        VirtualNetworkFunctionRecord[] response = requestor.getNetworkServiceRecordAgent().getVirtualNetworkFunctionRecords(networkServiceRecord.getId());
 
-        log.debug("Received: " + response.toString());
+        for (VirtualNetworkFunctionRecord virtualNetworkFunctionRecord : response)
+            log.debug("Received: " + virtualNetworkFunctionRecord.toString());
+        
+        requestor.getNetworkServiceRecordAgent().deleteVirtualNetworkFunctionRecord(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId());
 
     }
 
