@@ -18,10 +18,8 @@ package org.project.openbaton.integration.test;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.testers.*;
 import org.project.openbaton.integration.test.utils.SubTask;
-import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
