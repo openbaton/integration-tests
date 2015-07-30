@@ -116,6 +116,7 @@ public class MainIntegrationTest {
 		}
 		return true;
 	}
+
 	private static boolean isVnfmReady(){
 		int i = 0;
 		while (!vnfmReady()) {
@@ -192,8 +193,7 @@ public class MainIntegrationTest {
 			f = new File(args[1]);
 		}
 		InputStream is=null;
-		if(f==null || !f.exists() || f.isDirectory())
-		{
+		if(f==null || !f.exists() || f.isDirectory()){
 			log.info("the name file passed is incorrect");
 			f=new File("/etc/openbaton/int-test/integration-test.ini");
 			if(!f.exists() || f.isDirectory())

@@ -33,10 +33,9 @@ public class NetworkServiceRecordRestAgent extends AbstractRestAgent<NetworkServ
 	 *
 	 */
 	@Help(help = "Get all the VirtualNetworkFunctionRecords of NetworkServiceRecord with specific id")
-	public String getVirtualNetworkFunctionRecords(final String id) throws SDKException {
-//		String url = this.url + "/" + id + "/vnfrecords";
-//		return requestGetWithStatusAccepted(url);
-		return null;
+	public VirtualNetworkFunctionRecord[] getVirtualNetworkFunctionRecords(final String id) throws SDKException {
+		String url = this.baseUrl + "/" + id + "/vnfrecords";
+		return (VirtualNetworkFunctionRecord[]) requestGetAll(url, VirtualNetworkFunctionRecord.class);
 	}
 
 	/**
@@ -51,10 +50,10 @@ public class NetworkServiceRecordRestAgent extends AbstractRestAgent<NetworkServ
 	/**
 	 *
 	 */
-	@Help(help = "I dont know...")
-	public void deleteVirtualNetworkFunctionDescriptor(final String id, final String id_vnf) throws SDKException {
-//		String url = this.url + "/" + id + "/vnfrecords" + "/" + id_vnf;
-//		requestDelete(url);
+	@Help(help = "Delete the VirtualNetworkFunctionRecord of NetworkServiceRecord with specific id")
+	public void deleteVirtualNetworkFunctionRecord(final String id, final String id_vnf) throws SDKException {
+		String url = this.baseUrl + "/" + id + "/vnfrecords" + "/" + id_vnf;
+		requestDelete(url);
 	}
 
 	/**
