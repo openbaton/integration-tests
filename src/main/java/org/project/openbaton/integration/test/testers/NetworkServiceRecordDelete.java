@@ -23,13 +23,12 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     protected Object doWork() throws Exception {
         NetworkServiceRecord nsr = (NetworkServiceRecord) param;
         delete(nsr.getId());
-        //TODO Send back id of NSD father
-        return null;
+        return nsr.getDescriptor_reference();
     }
 
     @Override
     protected void handleException(Exception e) {
         e.printStackTrace();
-        log.error("there was an exception: " + e.getMessage());
+        log.error("Exception NetworkServiceRecordDelete: there was an exception: " + e.getMessage());
     }
 }

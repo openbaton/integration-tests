@@ -18,10 +18,8 @@ package org.project.openbaton.integration.test;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.testers.*;
 import org.project.openbaton.integration.test.utils.SubTask;
-import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,13 +202,14 @@ public class MainIntegrationTest {
 				is =MainIntegrationTest.class.getResourceAsStream("/integration-test_properties.ini");
 			}
 		}
-
 		Ini ini = new Ini();
 		try {
 			if(is==null)
 				ini.load(new FileReader(f));
-			else
+			else{
 				ini.load(is);
+				is.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -246,7 +245,7 @@ public class MainIntegrationTest {
 			}
 
 			//If there are specific properties for a type of a tester in the configuration file (.ini)
-			//configureTester(instance,root.getChild(child));
+			configureTester(instance,root.getChild(child));
 
 			for(String subChild : root.getChild(child).childrenNames()){
 				log.debug("SubChild is:" + subChild);
@@ -269,12 +268,13 @@ public class MainIntegrationTest {
 			configureNetworkServiceRecordDelete(instance,currentSection);
 		else if (instance instanceof NetworkServiceRecordCreate)
 			configureNetworkServiceRecordCreate(instance,currentSection);
-		else if (instance instanceof WaiterWait)
+		else if (instance instanceof NetworkServiceRecordWaiterWait)
 			configureWaiterWait(instance,currentSection);
 	}
 
 	private static void configureWaiterWait(SubTask instance, Profile.Section currentSection) {
-		//cast and get specific properties
+		NetworkServiceRecordWaiterWait w = (NetworkServiceRecordWaiterWait) instance;
+		w.setTimeout(Integer.parseInt(currentSection.get("timeout","5")));
 	}
 
 	private static void configureNetworkServiceRecordCreate(SubTask instance, Profile.Section currentSection) {

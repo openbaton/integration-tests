@@ -28,13 +28,14 @@ public abstract class SubTask implements Callable<Object>{
         executorService = Executors.newFixedThreadPool(successors);
     }
 
-    private Object getResult() throws Exception {
+    private Object getResult() {
+        Object result=null;
         try {
-            return doWork();
+            result=doWork();
         } catch (Exception e){
             this.handleException(e);
-            throw e;
         }
+        return result;
     }
 
     protected abstract Object doWork() throws Exception;
@@ -47,7 +48,7 @@ public abstract class SubTask implements Callable<Object>{
 
 
     @Override
-    public Object call() throws Exception {
+    public Object call() {
         Object res = getResult();
         for (SubTask successor : successors)
             successor.setParam(res);

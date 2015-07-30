@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
-	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
+	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor.json";
 	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
 	private static String path = "ns-records";
 
@@ -37,7 +37,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	@Override
 	protected void handleException(Exception e) {
 		e.printStackTrace();
-		log.error("there was an exception: " + e.getMessage());
+		log.error("Exception NetworkServiceRecordCreate: there was an exception: " + e.getMessage());
 	}
 
 	@Override

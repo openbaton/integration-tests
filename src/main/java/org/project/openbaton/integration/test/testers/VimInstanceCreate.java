@@ -35,7 +35,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
     @Override
     protected void handleException(Exception e) {
         e.printStackTrace();
-        log.error("there was an exception: " + e.getMessage());
+        log.error("Exception VimInstanceCreate: there was an exception: " + e.getMessage());
     }
 
     @Override
