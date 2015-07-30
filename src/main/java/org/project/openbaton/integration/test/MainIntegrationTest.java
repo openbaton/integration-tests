@@ -44,6 +44,7 @@ public class MainIntegrationTest {
 	private static String dbUri;
 	private static String dbUsr;
 	private static String dbPsw;
+	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test.ini";;
 
 
 	private static Properties loadProperties() throws IOException {
@@ -112,7 +113,7 @@ public class MainIntegrationTest {
 			if (i > 50){
 				return false;
 			}
-			
+
 		}
 		return true;
 	}
@@ -129,7 +130,7 @@ public class MainIntegrationTest {
 			if (i > 50){
 				return false;
 			}
-			
+
 		}
 		return true;
 	}
@@ -162,7 +163,7 @@ public class MainIntegrationTest {
 
 		if (!isVnfmReady()) {
 			log.error("After 150 sec the Vnfm is not started yet. Is there an error?");
-			exit(2); // 1 stands for the error in running nfvo TODO define error codes (doing)
+			exit(2); // 2 stands for the error in running vnfm TODO define error codes (doing)
 		}
 
 		log.info("Vnfm is started correctly");
@@ -195,10 +196,11 @@ public class MainIntegrationTest {
 		InputStream is=null;
 		if(f==null || !f.exists() || f.isDirectory()){
 			log.info("the name file passed is incorrect");
-			f=new File("/etc/openbaton/int-test/integration-test.ini");
+
+			f=new File(CONF_FILE_PATH);
 			if(!f.exists() || f.isDirectory())
 			{
-				log.info("the name file etc/openbaton/int-test/integration-test.ini is incorrect");
+				log.info("the name file " + CONF_FILE_PATH + " is incorrect");
 				is =MainIntegrationTest.class.getResourceAsStream("/integration-test_properties.ini");
 			}
 		}

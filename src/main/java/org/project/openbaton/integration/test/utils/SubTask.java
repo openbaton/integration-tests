@@ -58,6 +58,7 @@ public abstract class SubTask implements Callable<Object>{
 
     private void executeSuccessors() {
         for (SubTask successor : successors) {
+            log.debug("Executing successor: " + successor.getClass().getSimpleName());
             f.add(this.executorService.submit(successor));
         }
     }
