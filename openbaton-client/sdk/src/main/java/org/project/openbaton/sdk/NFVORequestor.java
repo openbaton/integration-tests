@@ -3,6 +3,7 @@ package org.project.openbaton.sdk;
 
 import org.project.openbaton.sdk.api.rest.*;
 import org.project.openbaton.sdk.api.util.AbstractRestAgent;
+import org.project.openbaton.sdk.api.util.RestRequest;
 
 /**
  * OpenBaton api requestor. Can be extended with security features to provide instances only only to granted requestors.
@@ -98,4 +99,7 @@ public final class NFVORequestor {
 		return factory.getAbstractAgent(clazz, path);
 	}
 
+	public RestRequest getEventAgent() {
+		return factory.getEventAgent();
+	}
 }
