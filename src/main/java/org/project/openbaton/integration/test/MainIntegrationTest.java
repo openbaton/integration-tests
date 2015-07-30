@@ -264,12 +264,19 @@ public class MainIntegrationTest {
 			configureVimInstanceCreate(instance,currentSection);
 		else if (instance instanceof NetworkServiceDescriptorCreate)
 			configureNetworkServiceDescriptorCreate(instance,currentSection);
+		else if (instance instanceof NetworkServiceDescriptorDelete)
+			configureNetworkServiceDescriptorDelete(instance, currentSection);
 		else if (instance instanceof NetworkServiceRecordDelete)
-			configureNetworkServiceRecordDelete(instance,currentSection);
+			configureNetworkServiceRecordDelete(instance, currentSection);
 		else if (instance instanceof NetworkServiceRecordCreate)
-			configureNetworkServiceRecordCreate(instance,currentSection);
+			configureNetworkServiceRecordCreate(instance, currentSection);
 		else if (instance instanceof NetworkServiceRecordWaiterWait)
 			configureWaiterWait(instance,currentSection);
+	}
+
+	private static void configureNetworkServiceDescriptorDelete(SubTask instance, Profile.Section currentSection) {
+		NetworkServiceDescriptorDelete nSDD= (NetworkServiceDescriptorDelete) instance;
+		nSDD.setNSRCreated(Integer.parseInt(currentSection.getParent().getParent().getParent().get("num_instances")));
 	}
 
 	private static void configureWaiterWait(SubTask instance, Profile.Section currentSection) {

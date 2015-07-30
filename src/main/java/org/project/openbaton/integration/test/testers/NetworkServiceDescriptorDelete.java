@@ -3,12 +3,14 @@ package org.project.openbaton.integration.test.testers;
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.integration.test.utils.Tester;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
  * Created by mob on 29.07.15.
  */
-public class NetworkServiceDescriptionDelete extends Tester<NetworkServiceDescriptor> {
+public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescriptor> {
     /**
      * @param properties : IntegrationTest properties containing:
      *                   nfvo-usr
@@ -19,7 +21,10 @@ public class NetworkServiceDescriptionDelete extends Tester<NetworkServiceDescri
      * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
      * @param basePath
      */
-    public NetworkServiceDescriptionDelete(Properties p) {
+    private static Map<String,Integer> mapCounter=new HashMap<>();
+    private static int NSRCreated;
+
+    public NetworkServiceDescriptorDelete(Properties p) {
         super(p, NetworkServiceDescriptor.class,"","/ns-descriptors");
     }
 
@@ -28,11 +33,24 @@ public class NetworkServiceDescriptionDelete extends Tester<NetworkServiceDescri
         return null;
     }
 
+    public void setNSRCreated (int num){
+        NSRCreated=num;
+    }
+    public void nSRDeleted(String id){
+        if(mapCounter.get(id)==null)
+            mapCounter.put(id,1);
+        else{
+            Integer previousCounter=mapCounter.get(id);
+            mapCounter.put(id,++previousCounter);
+        }
+    }
     @Override
     protected Object doWork() throws Exception {
         String nsdId = (String) param;
-        log.debug("--Deleting NSD: "+nsdId);
-        delete(nsdId);
+        nSRDeleted(nsdId);
+        log.debug("--Deleting NSD: " + nsdId + " counter:" + mapCounter.get(nsdId) + " and NSRCreated:" + NSRCreated);
+        if(mapCounter.get(nsdId)==NSRCreated)
+            delete(nsdId);
         return null;
     }
 
