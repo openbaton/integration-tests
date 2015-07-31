@@ -1,7 +1,9 @@
-package org.project.openbaton.integration.test.testers;
+package org.project.openbaton.integration.test.interfaces;
 
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.jms.JMSWaiter;
+import org.project.openbaton.integration.test.rest.RestWaiter;
 import org.project.openbaton.integration.test.utils.Tester;
 import org.project.openbaton.sdk.api.exception.SDKException;
 

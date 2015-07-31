@@ -1,6 +1,7 @@
-package org.project.openbaton.integration.test.testers;
+package org.project.openbaton.integration.test.jms;
 
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.interfaces.WaiterInterface;
 
 
 /**

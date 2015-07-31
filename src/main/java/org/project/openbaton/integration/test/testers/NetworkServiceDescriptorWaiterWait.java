@@ -1,12 +1,14 @@
 package org.project.openbaton.integration.test.testers;
 
+import org.project.openbaton.integration.test.interfaces.Waiter;
+
 import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * Created by mob on 31.07.15.
  */
-public class NetworkServiceDescriptorWaiterWait extends Waiter{
+public class NetworkServiceDescriptorWaiterWait extends Waiter {
 
     private static final String name="NetworkServiceDescriptorWaiterWait";
     public NetworkServiceDescriptorWaiterWait(Properties properties) {

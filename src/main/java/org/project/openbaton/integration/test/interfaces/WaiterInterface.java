@@ -1,4 +1,4 @@
-package org.project.openbaton.integration.test.testers;
+package org.project.openbaton.integration.test.interfaces;
 
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
 

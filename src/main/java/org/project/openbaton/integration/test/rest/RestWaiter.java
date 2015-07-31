@@ -1,4 +1,4 @@
-package org.project.openbaton.integration.test.testers;
+package org.project.openbaton.integration.test.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.interfaces.WaiterInterface;
 import org.project.openbaton.sdk.NFVORequestor;
 import org.project.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import java.net.InetSocketAddress;
 /**
  * Created by mob on 31.07.15.
  */
-public class RestWaiter implements WaiterInterface{
+public class RestWaiter implements WaiterInterface {
 
     private HttpServer server;
     private MyHandler myHandler;

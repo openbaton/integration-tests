@@ -4,6 +4,7 @@ import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.interfaces.Waiter;
 
 import java.io.*;
 import java.util.Properties;
