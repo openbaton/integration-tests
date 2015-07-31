@@ -29,10 +29,7 @@ import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Properties;
@@ -49,7 +46,7 @@ public class MainIntegrationTest {
 	private static String dbUri;
 	private static String dbUsr;
 	private static String dbPsw;
-	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test.ini";;
+	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";;
 
 
 	private static Properties loadProperties() throws IOException {
@@ -141,7 +138,7 @@ public class MainIntegrationTest {
 	}
 
 	// TODO move to test
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException {
 
 		System.out.println(log.getClass());
 		Properties properties = null;
@@ -179,7 +176,22 @@ public class MainIntegrationTest {
 
 		log.debug("Properties: " + properties);
 
-		Ini ini=loadFileIni(args);
+
+
+		Ini ini=new Ini();
+
+		File f = loadFileIni(args);
+		if (f.isDirectory())
+			for (File file : f.listFiles())
+				runTestScenario(ini, properties, file);
+		else
+			runTestScenario(ini,properties,f);
+		log.info("Test finished correctly :)");
+		System.exit(0);
+	}
+
+	private static void runTestScenario(Ini ini, Properties properties, File file) throws IOException {
+		ini.load(new FileReader(file));
 
 		Ini.Section root = ini.get("it");
 		SubTask rootSubTask = loadTesters(properties, root);
@@ -187,40 +199,29 @@ public class MainIntegrationTest {
 			rootSubTask.call();
 		} catch (Exception e) {
 			e.printStackTrace();
+			exit(8);
 		}
 		rootSubTask.awaitTermination();
-		log.info("Test finished correctly :)");
-		System.exit(0);
 	}
 
-	private static Ini loadFileIni(String[] args) {
+	private static File loadFileIni(String[] args) throws FileNotFoundException {
 		File f=null;
 		if(args.length>1) {
 			f = new File(args[1]);
-		}
-		InputStream is=null;
-		if(f==null || !f.exists() || f.isDirectory()){
-			log.info("the name file passed is incorrect");
-
-			f=new File(CONF_FILE_PATH);
-			if(!f.exists() || f.isDirectory())
-			{
-				log.info("the name file " + CONF_FILE_PATH + " is incorrect");
-				is =MainIntegrationTest.class.getResourceAsStream("/integration-test_properties.ini");
+			if (f != null && f.exists()) {
+				return f;
 			}
 		}
-		Ini ini = new Ini();
-		try {
-			if(is==null)
-				ini.load(new FileReader(f));
-			else{
-				ini.load(is);
-				is.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		log.info("the name file passed is incorrect");
+		f=new File(CONF_FILE_PATH);
+		if(f.exists())
+			return f;
+		if(!f.exists())
+		{
+			log.info("the name file " + CONF_FILE_PATH + " is incorrect");
+			return new File(MainIntegrationTest.class.getResource("/integration-test-scenarios").getPath());
 		}
-		return ini;
+		throw new FileNotFoundException();
 	}
 
 	private static SubTask loadTesters(Properties properties, Profile.Section root) {
@@ -288,7 +289,7 @@ public class MainIntegrationTest {
 
 	private static void configureWaiterWait(SubTask instance, Profile.Section currentSection) {
 		NetworkServiceRecordWaiterWait w = (NetworkServiceRecordWaiterWait) instance;
-		w.setTimeout(Integer.parseInt(currentSection.get("timeout","5")));
+		w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
 	}
 
 	private static void configureNetworkServiceRecordCreate(SubTask instance, Profile.Section currentSection) {
