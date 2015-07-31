@@ -16,23 +16,11 @@ import java.util.*;
  */
 public class Parser {
 
-    private Properties properties;
+    private static Properties properties;
     private static Logger log = LoggerFactory.getLogger(Parser.class);
-    private Map<String,String> namesAlreadyReplicated;
-    private Gson mapper;
+    private static Gson mapper = new GsonBuilder().create();
+    private static Map<String,String> namesAlreadyReplicated;
 
-
-    public Parser(String path){
-        GsonBuilder builder = new GsonBuilder();
-        mapper = builder.create();
-        properties = new Properties();
-        try {
-            properties.load(Parser.class.getResourceAsStream(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        namesAlreadyReplicated=new HashMap<>();
-    }
     /**
      * This method takes as input:
      * json: the old json file we want to modify
@@ -41,12 +29,19 @@ public class Parser {
      * A new json file with some changed parameters accordingly to the Parser configuration file
      *
      */
-    public String randomize(String json){
+    public synchronized static String randomize(String json, String path){
+        properties=new Properties();
+        try {
+            properties.load(Parser.class.getResourceAsStream(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        namesAlreadyReplicated=new HashMap<>();
         JsonElement jsonRoot = mapper.fromJson(json, JsonElement.class);
         return mapper.toJson(parse(jsonRoot));
     }
 
-    private JsonElement parse(JsonElement jsonRoot) {
+    private static JsonElement parse(JsonElement jsonRoot) {
         if(jsonRoot instanceof JsonObject)
         {
             JsonObject jsonRootO = (JsonObject) jsonRoot;
@@ -86,7 +81,7 @@ public class Parser {
         return false;
     }
 
-    private String getNameToReplace(String nameToReplace){
+    private static String getNameToReplace(String nameToReplace){
 
         String name=nameToReplace.replace("<::","").replace("::>","");
         if(namesAlreadyReplicated.containsKey(name))

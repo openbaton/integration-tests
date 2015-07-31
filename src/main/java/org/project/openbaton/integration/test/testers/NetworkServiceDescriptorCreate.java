@@ -13,7 +13,7 @@ import java.util.Properties;
  * Created by lto on 24/06/15.
  */
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor>{
-    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor.json";
+    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
     private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptorCreate.class);
 
     public NetworkServiceDescriptorCreate(Properties p){
@@ -36,7 +36,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
         {
             String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
-            String nsdRandom = new Parser("/etc/json_file/parser_configuration_properties/nsd.properties").randomize(body);
+            String nsdRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/nsd.properties");
             log.debug("NetworkServiceDescriptor (old): " + body);
             log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 

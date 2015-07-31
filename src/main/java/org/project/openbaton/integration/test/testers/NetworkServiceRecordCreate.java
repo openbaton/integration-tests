@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
-	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor.json";
+	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
 	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
 	private static String path = "ns-records";
 

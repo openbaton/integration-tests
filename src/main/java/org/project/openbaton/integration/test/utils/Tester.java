@@ -46,7 +46,8 @@ public abstract class Tester<T extends Serializable> extends SubTask{
 
     public T create() throws SDKException {
         T expected = prepareObject();
-
+        if(expected==null)
+            throw new NullPointerException();
         T obtained;
         obtained = (T) abstractRestAgent.create(expected);
 

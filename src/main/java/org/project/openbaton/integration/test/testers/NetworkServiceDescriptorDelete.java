@@ -48,7 +48,6 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
     protected Object doWork() throws Exception {
         String nsdId = (String) param;
         nSRDeleted(nsdId);
-        log.debug("--Deleting NSD: " + nsdId + " counter:" + mapCounter.get(nsdId) + " and NSRCreated:" + NSRCreated);
         if(mapCounter.get(nsdId)==NSRCreated)
             delete(nsdId);
         return null;
