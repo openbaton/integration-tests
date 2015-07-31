@@ -22,6 +22,7 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     @Override
     protected Object doWork() throws Exception {
         NetworkServiceRecord nsr = (NetworkServiceRecord) param;
+        log.debug("Executing DELETE of " + nsr.getId());
         delete(nsr.getId());
         return nsr.getDescriptor_reference();
     }
