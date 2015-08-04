@@ -13,7 +13,6 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
 	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
 	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
-	private static String path = "ns-records";
 
 	/**
 	 * @param properties : IntegrationTest properties containing:
@@ -44,14 +43,10 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	public NetworkServiceRecord create() throws SDKException {
 
 		NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
-
-		log.debug("Obtained param: " + param);
-		log.debug("Obtained id: " + nsd.getId());
-
 		NetworkServiceRecord networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
-		log.debug("Created: " + networkServiceRecord);
-		return networkServiceRecord;
+		log.debug(" --- Creating nsr with id: " + networkServiceRecord.getId()+" from nsd with id: "+ nsd.getId());
 
+		return networkServiceRecord;
 	}
 
 	@Override

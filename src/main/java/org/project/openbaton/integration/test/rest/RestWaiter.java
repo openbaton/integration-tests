@@ -44,7 +44,7 @@ public class RestWaiter implements WaiterInterface {
             {
                 String url = "http://localhost:" + server.getAddress().getPort() + "/"+name;
                 eventEndpoint.setEndpoint(url);
-                EventEndpoint response=null;
+                EventEndpoint response;
                 try
                 {
                     response = this.requestor.getEventAgent().create(eventEndpoint);
@@ -131,8 +131,14 @@ public class RestWaiter implements WaiterInterface {
             JsonElement jsonElement=mapper.fromJson(message, JsonElement.class);
 
             String actionReceived= jsonElement.getAsJsonObject().get("action").getAsString();
-            if(actionReceived.equals(Action.INSTANTIATE_FINISH.toString()))
+            if(actionReceived.equals(ee.getEvent().toString()))
+            {
                 return true;
+            }
+            else
+            {
+                log.error("Received wrong action: "+ actionReceived);
+            }
             return false;
         }
 
@@ -157,8 +163,8 @@ public class RestWaiter implements WaiterInterface {
             try {
                 wait(timeOut*1000);
             } catch (InterruptedException e) {
+                log.error("Waiter ("+name+") was interrupted",e.getMessage());
                 e.printStackTrace();
-                log.error("Waiter ("+name+") was interrupted");
                 return false;
             }
             return true;

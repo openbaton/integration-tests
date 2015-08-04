@@ -43,8 +43,8 @@ public class VimInstanceCreate extends Tester<VimInstance> {
         String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
         String vimRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/vim.properties");
-        log.debug("vim-instance.json (old): " + body);
-        log.debug("vim-instance.json (random): " + vimRandom);
+        //log.debug("vim-instance.json (old): " + body);
+        //log.debug("vim-instance.json (random): " + vimRandom);
 
         return mapper.fromJson(vimRandom, aClass);
     }

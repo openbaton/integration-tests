@@ -22,7 +22,10 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
     @Override
     protected Object doWork() throws Exception {
-        return create();
+        Object received = create();
+        NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
+        log.debug(" --- Creating nsd with id: " + nsd.getId());
+        return received;
     }
 
     @Override
@@ -37,8 +40,8 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
             String body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(FILE_NAME));
 
             String nsdRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/nsd.properties");
-            log.debug("NetworkServiceDescriptor (old): " + body);
-            log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
+            //log.debug("NetworkServiceDescriptor (old): " + body);
+            //log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
             return mapper.fromJson(nsdRandom, aClass);
         }

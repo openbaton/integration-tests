@@ -21,8 +21,6 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
      * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
      * @param basePath
      */
-    private static Map<String,Integer> mapCounter=new HashMap<>();
-    private static int NSRCreated;
 
     public NetworkServiceDescriptorDelete(Properties p) {
         super(p, NetworkServiceDescriptor.class,"","/ns-descriptors");
@@ -33,23 +31,11 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
         return null;
     }
 
-    public void setNSRCreated (int num){
-        NSRCreated=num;
-    }
-    public void nSRDeleted(String id){
-        if(mapCounter.get(id)==null)
-            mapCounter.put(id,1);
-        else{
-            Integer previousCounter=mapCounter.get(id);
-            mapCounter.put(id,++previousCounter);
-        }
-    }
     @Override
     protected Object doWork() throws Exception {
-        String nsdId = (String) param;
-        nSRDeleted(nsdId);
-        if(mapCounter.get(nsdId)==NSRCreated)
-            delete(nsdId);
+        NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
+        delete(nsd.getId());
+        log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
         return null;
     }
 

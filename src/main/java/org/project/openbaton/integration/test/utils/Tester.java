@@ -38,7 +38,7 @@ public abstract class Tester<T extends Serializable> extends SubTask{
         this.FILE_NAME = filePath;
         GsonBuilder builder = new GsonBuilder();
         mapper = builder.create();
-        log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
+        //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
         requestor = new NFVORequestor(properties.getProperty("nfvo-usr"),properties.getProperty("nfvo-pwd"),properties.getProperty("nfvo-ip"),properties.getProperty("nfvo-port"),"1");
         this.aClass = aClass;
         abstractRestAgent = requestor.abstractRestAgent(aClass, basePath);

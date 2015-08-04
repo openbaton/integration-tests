@@ -13,7 +13,8 @@ import java.util.concurrent.*;
 public abstract class SubTask implements Callable<Object>{
 
     private ExecutorService executorService;
-    private List<SubTask> successors;
+    protected List<SubTask> successors;
+    private SubTask successorRemover;
     private List<Future> f;
     public Object param;
     protected static final Logger log = LoggerFactory.getLogger(SubTask.class);
@@ -26,9 +27,12 @@ public abstract class SubTask implements Callable<Object>{
         this.successors = new LinkedList<>();
         this.f=new LinkedList<>();
         executorService = Executors.newFixedThreadPool(successors);
+        successorRemover =null;
     }
-
-    private Object getResult() {
+    public void setSuccessorRemover(SubTask sr){
+        successorRemover =sr;
+    }
+    protected Object getResult() {
         Object result=null;
         try {
             result=doWork();
@@ -46,17 +50,20 @@ public abstract class SubTask implements Callable<Object>{
        this.successors.add(e);
     }
 
-
     @Override
     public Object call() {
         Object res = getResult();
         for (SubTask successor : successors)
             successor.setParam(res);
+        if (successorRemover !=null)
+        {
+            successorRemover.setParam(res);
+        }
         executeSuccessors();
         return res;
     }
 
-    private void executeSuccessors() {
+    protected void executeSuccessors() {
         for (SubTask successor : successors) {
             log.debug("Executing successor: " + successor.getClass().getSimpleName());
             f.add(this.executorService.submit(successor));
@@ -68,6 +75,13 @@ public abstract class SubTask implements Callable<Object>{
             for (Future future : f) {
                 future.get(60, TimeUnit.SECONDS);
             }
+            for (SubTask successor : successors)
+                successor.awaitTermination();
+            if (successorRemover !=null)
+            {
+                log.debug("Executing successorRemover: " + successorRemover.getClass().getSimpleName());
+                executorService.submit(successorRemover).get(60, TimeUnit.SECONDS);
+            }
         } catch (InterruptedException e) {
             log.error("The thread was interrupted while waiting for successors");
             e.printStackTrace();
@@ -78,8 +92,6 @@ public abstract class SubTask implements Callable<Object>{
             log.error("The wait of the thread timed out");
             e.printStackTrace();
         }
-        for (SubTask successor : successors)
-            successor.awaitTermination();
         shutdownAndAwaitTermination();
     }
     private void shutdownAndAwaitTermination() {

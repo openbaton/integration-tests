@@ -50,7 +50,7 @@ public class Parser {
                 if(checkCompatibility(elementValue))
                 {
                     String nameToReplace = getNameToReplace(elementValue.getAsString());
-                    log.debug("Replicated: " + elementValue.getAsString() + " with: " + nameToReplace);
+                    //log.debug("Replicated: " + elementValue.getAsString() + " with: " + nameToReplace);
 
                     jsonRootO.addProperty(entry.getKey(), nameToReplace);
                 }

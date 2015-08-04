@@ -12,11 +12,13 @@ import java.util.Properties;
 /**
  * Created by mob on 28.07.15.
  */
-public class NetworkServiceRecordWaiterWait extends Waiter {
+public class NetworkServiceRecordWait extends Waiter {
 
-    private static final String name="NetworkServiceRecordWaiterWait";
-    public NetworkServiceRecordWaiterWait(Properties properties) {
-        super(properties, NetworkServiceRecordWaiterWait.class, "", "");
+    private static final String name="NetworkServiceRecordWait";
+    private Action action;
+
+    public NetworkServiceRecordWait(Properties properties) {
+        super(properties, NetworkServiceRecordWait.class, "", "");
     }
 
     @Override
@@ -26,9 +28,8 @@ public class NetworkServiceRecordWaiterWait extends Waiter {
 
     @Override
     protected Object doWork() throws Exception {
-
         EventEndpoint eventEndpoint = new EventEndpoint();
-        eventEndpoint.setEvent(Action.INSTANTIATE_FINISH);
+        eventEndpoint.setEvent(getAction());
         NetworkServiceRecord nsr = (NetworkServiceRecord) param;
         eventEndpoint.setNetworkServiceId(nsr.getId());
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
@@ -37,22 +38,28 @@ public class NetworkServiceRecordWaiterWait extends Waiter {
 
         if(this.subscribe(eventEndpoint))
         {
-            log.debug(name + ": registration complete, start waiting...");
+            //log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
             if(this.waitForEvent())
                 if(this.unSubscribe())
                 {
-                    log.debug(name + ": unSubscription complete");
+                    //log.debug(name + ": --- unSubscription complete");
                     return param;
                 }
         }
-        log.debug(name + ": forward the param: " + param.toString());
+        //log.debug(name + ": --- forward the param: " + param.toString());
         return param;
     }
-
     @Override
     protected void handleException(Exception e) {
-        log.error("Exception "+name+" : there was an exception: " + e.getMessage());
+        log.error("Exception " + name + " : there was an exception: " + e.getMessage());
         e.printStackTrace();
     }
 
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action a) {
+        action=a;
+    }
 }

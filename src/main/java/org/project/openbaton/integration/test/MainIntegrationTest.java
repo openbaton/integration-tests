@@ -18,12 +18,8 @@ package org.project.openbaton.integration.test;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-import org.project.openbaton.integration.test.testers.NetworkServiceDescriptorCreate;
-import org.project.openbaton.integration.test.testers.NetworkServiceRecordCreate;
-import org.project.openbaton.integration.test.testers.VimInstanceCreate;
-import org.project.openbaton.integration.test.testers.NetworkServiceDescriptorDelete;
-import org.project.openbaton.integration.test.testers.NetworkServiceRecordDelete;
-import org.project.openbaton.integration.test.testers.NetworkServiceRecordWaiterWait;
+import org.project.openbaton.catalogue.nfvo.Action;
+import org.project.openbaton.integration.test.testers.*;
 import org.project.openbaton.integration.test.utils.SubTask;
 import org.project.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
@@ -205,7 +201,7 @@ public class MainIntegrationTest {
 	}
 
 	private static File loadFileIni(String[] args) throws FileNotFoundException {
-		File f=null;
+		File f;
 		if(args.length>1) {
 			f = new File(args[1]);
 			if (f != null && f.exists()) {
@@ -225,71 +221,112 @@ public class MainIntegrationTest {
 	}
 
 	private static SubTask loadTesters(Properties properties, Profile.Section root) {
+		/**Get some global properties**/
 
-		SubTask instance = null;
+		/****************************/
 
-		for (String child : root.childrenNames()) {
-			String[] splittedName = child.split("-");
-			String nameClass = splittedName[0] + splittedName[1].substring(0, 1).toUpperCase() + splittedName[1].substring(1);
-
-			try {
-
-				String className = "org.project.openbaton.integration.test.testers." + nameClass;
-				log.debug("Classname is:" + className);
-				Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(className);
-				instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
-				log.debug("Class is:" + instance.getClass());
-
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-
-			//If there are specific properties for a type of a tester in the configuration file (.ini)
-			configureTester(instance,root.getChild(child));
-
-			for(String subChild : root.getChild(child).childrenNames()){
-				log.debug("SubChild is:" + subChild);
-				int instances=Integer.parseInt(root.getChild(child).getChild(subChild).get("num_instances", "1"));
-				log.debug("Num instances is:" + instances);
-				for(int i=0; i<instances;i++)
-					instance.addSuccessor(loadTesters(properties, root.getChild(child)));
-			}
-
+		String firstChildName=root.childrenNames()[0];
+		return loadEntity(properties, root.getChild(firstChildName));
+	}
+	private static SubTask loadInstance (Properties properties, Profile.Section currentChild){
+		String[] splittedName = currentChild.getSimpleName().split("-");
+		String nameClass = getNameClass(splittedName);
+		SubTask instance=null;
+		try {
+			String classNamePath = "org.project.openbaton.integration.test.testers." + nameClass;
+			Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(classNamePath);
+			instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
+			log.debug("Class is:" + instance.getClass().getName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 		return instance;
 	}
 
+	private static String getNameClass(String[] splittedName) {
+		String nameClass=null;
+		switch(splittedName[0]) {
+			case "vim":	nameClass = getNameClassWithAction("VimInstance", splittedName[1]);break;
+			case "nsd":	nameClass = getNameClassWithAction("NetworkServiceDescriptor", splittedName[1]);break;
+			case "nsr":	nameClass = getNameClassWithAction("NetworkServiceRecord", splittedName[1]);break;
+		}
+		return nameClass;
+	}
+
+	private static String getNameClassWithAction(String nameClass, String action) {
+		String nameClassWithAction=null;
+		switch (action){
+			case "c": nameClassWithAction=nameClass+"Create";break;
+			case "w": nameClassWithAction=nameClass+"Wait";break;
+			case "d": nameClassWithAction=nameClass+"Delete";break;
+		}
+		return nameClassWithAction;
+	}
+
+	private static SubTask loadEntity(Properties properties, Profile.Section currentChild) {
+
+		SubTask instance = loadInstance(properties, currentChild);
+		//If there are specific properties for a type of a tester in the configuration file (.ini)
+		configureTester(instance, currentChild);
+		String successorRemover = getSuccessorRemover(currentChild);
+
+		for (String subChild : currentChild.childrenNames()) {
+			log.debug("SubChild is:" + subChild);
+			int instances = Integer.parseInt(currentChild.getChild(subChild).get("num_instances", "1"));
+			log.debug("Num instances is:" + instances);
+			if(!successorRemover.equals("false") && successorRemover.equals(subChild))
+			{
+				instance.setSuccessorRemover(loadEntity(properties,currentChild.getChild(subChild)));
+			}
+			else
+			{
+				for (int i = 0; i < instances; i++)
+					instance.addSuccessor(loadEntity(properties, currentChild.getChild(subChild)));
+			}
+		}
+		return instance;
+	}
+	private static String getSuccessorRemover(Profile.Section currentSection) {
+		return currentSection.get("successor-remover","false");
+	}
 	private static void configureTester(SubTask instance, Profile.Section currentSection) {
 		if(instance instanceof VimInstanceCreate)
 			configureVimInstanceCreate(instance,currentSection);
 		else if (instance instanceof NetworkServiceDescriptorCreate)
-			configureNetworkServiceDescriptorCreate(instance,currentSection);
+			configureNetworkServiceDescriptorCreate(instance, currentSection);
 		else if (instance instanceof NetworkServiceDescriptorDelete)
 			configureNetworkServiceDescriptorDelete(instance, currentSection);
+		else if (instance instanceof NetworkServiceDescriptorWait)
+			configureNetworkServiceDescriptorWaiterWait(instance, currentSection);
 		else if (instance instanceof NetworkServiceRecordDelete)
 			configureNetworkServiceRecordDelete(instance, currentSection);
 		else if (instance instanceof NetworkServiceRecordCreate)
 			configureNetworkServiceRecordCreate(instance, currentSection);
-		else if (instance instanceof NetworkServiceRecordWaiterWait)
-			configureWaiterWait(instance,currentSection);
+		else if (instance instanceof NetworkServiceRecordWait)
+			configureNetworkServiceRecordWait(instance, currentSection);
+	}
+
+	private static void configureNetworkServiceDescriptorWaiterWait(SubTask instance, Profile.Section currentSection) {
+		//cast and get specific properties
 	}
 
 	private static void configureNetworkServiceDescriptorDelete(SubTask instance, Profile.Section currentSection) {
-		NetworkServiceDescriptorDelete nSDD= (NetworkServiceDescriptorDelete) instance;
-		nSDD.setNSRCreated(Integer.parseInt(currentSection.getParent().getParent().getParent().get("num_instances")));
+		//cast and get specific properties
 	}
 
-	private static void configureWaiterWait(SubTask instance, Profile.Section currentSection) {
-		NetworkServiceRecordWaiterWait w = (NetworkServiceRecordWaiterWait) instance;
+	private static void configureNetworkServiceRecordWait(SubTask instance, Profile.Section currentSection) {
+		NetworkServiceRecordWait w = (NetworkServiceRecordWait) instance;
 		w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+		String action = currentSection.get("action");
+		w.setAction(Action.valueOf(action));
 	}
 
 	private static void configureNetworkServiceRecordCreate(SubTask instance, Profile.Section currentSection) {
