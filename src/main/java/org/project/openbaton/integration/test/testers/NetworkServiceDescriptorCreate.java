@@ -13,7 +13,7 @@ import java.util.Properties;
  * Created by lto on 24/06/15.
  */
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor>{
-    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
+    private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-release.json";
     private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptorCreate.class);
 
     public NetworkServiceDescriptorCreate(Properties p){
