@@ -29,6 +29,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
     @Override
     protected Object doWork() throws Exception {
+        log.debug(" --- VimInstance creation...");
         return create();
     }
 

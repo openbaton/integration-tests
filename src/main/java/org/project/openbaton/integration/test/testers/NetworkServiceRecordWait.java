@@ -36,11 +36,11 @@ public class NetworkServiceRecordWait extends Waiter {
         eventEndpoint.setName(name);
         eventEndpoint.setType(EndpointType.REST);
 
-        if(this.subscribe(eventEndpoint))
+        if(subscribe(eventEndpoint))
         {
-            //log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
-            if(this.waitForEvent())
-                if(this.unSubscribe())
+            log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
+            if(waitForEvent())
+                if(unSubscribe())
                 {
                     //log.debug(name + ": --- unSubscription complete");
                     return param;

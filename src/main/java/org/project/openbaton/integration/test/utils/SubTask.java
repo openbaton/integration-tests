@@ -30,7 +30,7 @@ public abstract class SubTask implements Callable<Object>{
         successorRemover =null;
     }
     public void setSuccessorRemover(SubTask sr){
-        successorRemover =sr;
+        successorRemover = sr;
     }
     protected Object getResult() {
         Object result=null;
@@ -70,13 +70,13 @@ public abstract class SubTask implements Callable<Object>{
         }
     }
 
-    public void awaitTermination() {
+    public void awaitTermination(int seconds) {
         try {
             for (Future future : f) {
-                future.get(60, TimeUnit.SECONDS);
+                future.get(seconds, TimeUnit.SECONDS);
             }
             for (SubTask successor : successors)
-                successor.awaitTermination();
+                successor.awaitTermination(seconds);
             if (successorRemover !=null)
             {
                 log.debug("Executing successorRemover: " + successorRemover.getClass().getSimpleName());

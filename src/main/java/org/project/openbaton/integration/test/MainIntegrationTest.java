@@ -197,7 +197,8 @@ public class MainIntegrationTest {
 			e.printStackTrace();
 			exit(8);
 		}
-		rootSubTask.awaitTermination();
+		// set the maximum time (in seconds) of the Integration tests. e.g. 10 min = 600 seconds
+		rootSubTask.awaitTermination(600);
 	}
 
 	private static File loadFileIni(String[] args) throws FileNotFoundException {

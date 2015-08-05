@@ -22,6 +22,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
     @Override
     protected Object doWork() throws Exception {
+
         Object received = create();
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
         log.debug(" --- Creating nsd with id: " + nsd.getId());

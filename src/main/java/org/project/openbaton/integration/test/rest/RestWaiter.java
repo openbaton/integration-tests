@@ -110,7 +110,6 @@ public class RestWaiter implements WaiterInterface {
         server.start();
         return true;
     }
-
     class MyHandler implements HttpHandler {
 
         @Override
@@ -128,9 +127,12 @@ public class RestWaiter implements WaiterInterface {
         }
 
         private boolean checkRequest(String message) {
-            JsonElement jsonElement=mapper.fromJson(message, JsonElement.class);
+            JsonElement jsonElement = mapper.fromJson(message, JsonElement.class);
 
             String actionReceived= jsonElement.getAsJsonObject().get("action").getAsString();
+            log.debug("Action received: " + actionReceived);
+            String payload= jsonElement.getAsJsonObject().get("payload").getAsString();
+            //log.debug("Payload received: "+payload);
             if(actionReceived.equals(ee.getEvent().toString()))
             {
                 return true;
@@ -142,7 +144,7 @@ public class RestWaiter implements WaiterInterface {
             return false;
         }
 
-        private String read(InputStream is) throws UnsupportedEncodingException {
+        private String read(InputStream is) throws IOException {
 
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
@@ -154,14 +156,20 @@ public class RestWaiter implements WaiterInterface {
             {
                 while ((inputStr = streamReader.readLine()) != null)
                     responseStrBuilder.append(inputStr);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
+            }
+            finally
+            {
+                streamReader.close();
             }
             return responseStrBuilder.toString();
         }
         public synchronized boolean await(int timeOut) {
             try {
-                wait(timeOut*1000);
+                wait(timeOut * 1000);
             } catch (InterruptedException e) {
                 log.error("Waiter ("+name+") was interrupted",e.getMessage());
                 e.printStackTrace();
