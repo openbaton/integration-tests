@@ -4,7 +4,7 @@
  * Error codes:
  * 	1) NFVO not started correctly
  * 	2) VNFM not started correctly
- *
+ *	3) Parameters in configuration file (ini) not setted correctly
  * 	*	status > 200:
  *	*	*	7XX) NetworkServiceRecord Test failed
  *  *   *   *	701) create test
@@ -18,7 +18,9 @@ package org.project.openbaton.integration.test;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile;
+import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.catalogue.nfvo.Action;
+import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.testers.*;
 import org.project.openbaton.integration.test.utils.SubTask;
 import org.project.openbaton.integration.test.utils.Utils;
@@ -29,6 +31,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
 
@@ -42,7 +45,8 @@ public class MainIntegrationTest {
 	private static String dbUri;
 	private static String dbUsr;
 	private static String dbPsw;
-	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";;
+	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";
+	private static int maxIntegrationTestTime=0;
 
 
 	private static Properties loadProperties() throws IOException {
@@ -177,16 +181,34 @@ public class MainIntegrationTest {
 		Ini ini=new Ini();
 
 		File f = loadFileIni(args);
+		boolean integrationTestResult=false;
+		long startTime,stopTime;
 		if (f.isDirectory())
-			for (File file : f.listFiles())
-				runTestScenario(ini, properties, file);
+		{
+			for (File file : f.listFiles()) {
+				startTime = System.currentTimeMillis();
+				if (runTestScenario(ini, properties, file)) {
+					stopTime = System.currentTimeMillis() - startTime;
+					log.info("Test: " + file.getName() + " finished correctly :) in " +
+							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+				}
+				else log.info("Test: " + file.getName() + " completed with errors :(");
+			}
+		}
 		else
-			runTestScenario(ini,properties,f);
-		log.info("Test finished correctly :)");
+		{
+			startTime = System.currentTimeMillis();
+			if (runTestScenario(ini, properties, f)) {
+				stopTime=System.currentTimeMillis() - startTime;
+				log.info("Test: " + f.getName() + " finished correctly :) in " +
+						String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime),TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+			}
+			else log.info("Test: " + f.getName() + " completed with errors :(");
+		}
 		System.exit(0);
 	}
 
-	private static void runTestScenario(Ini ini, Properties properties, File file) throws IOException {
+	private static boolean runTestScenario(Ini ini, Properties properties, File file) throws IOException {
 		ini.load(new FileReader(file));
 
 		Ini.Section root = ini.get("it");
@@ -197,8 +219,7 @@ public class MainIntegrationTest {
 			e.printStackTrace();
 			exit(8);
 		}
-		// set the maximum time (in seconds) of the Integration tests. e.g. 10 min = 600 seconds
-		rootSubTask.awaitTermination(600);
+		return rootSubTask.awaitTermination();
 	}
 
 	private static File loadFileIni(String[] args) throws FileNotFoundException {
@@ -223,11 +244,15 @@ public class MainIntegrationTest {
 
 	private static SubTask loadTesters(Properties properties, Profile.Section root) {
 		/**Get some global properties**/
-
+		try {
+			maxIntegrationTestTime = Integer.parseInt(root.get("max-integration-test-time"));
+		}catch(NumberFormatException e){
+			log.error("max-integration-test-time not has been set correctly");
+			exit(3);
+		}
 		/****************************/
 
-		String firstChildName=root.childrenNames()[0];
-		return loadEntity(properties, root.getChild(firstChildName));
+		return loadEntity(properties, root.getChild(root.childrenNames()[0]));
 	}
 	private static SubTask loadInstance (Properties properties, Profile.Section currentChild){
 		String[] splittedName = currentChild.getSimpleName().split("-");
@@ -237,18 +262,18 @@ public class MainIntegrationTest {
 			String classNamePath = "org.project.openbaton.integration.test.testers." + nameClass;
 			Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(classNamePath);
 			instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
-			log.debug("Class is:" + instance.getClass().getName());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			log.error("Problem during class loading: " + e.getMessage());
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			log.error("Problem during class loading: " + e.getMessage());
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.error("Problem during class loading: " + e.getMessage());
 		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			log.error("Problem during class loading: " + e.getMessage());
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			log.error("Problem during class loading: " + e.getMessage());
 		}
+		log.debug("Class is:" + instance.getClass().getName());
 		return instance;
 	}
 
@@ -278,11 +303,11 @@ public class MainIntegrationTest {
 		//If there are specific properties for a type of a tester in the configuration file (.ini)
 		configureTester(instance, currentChild);
 		String successorRemover = getSuccessorRemover(currentChild);
+		instance.setMaxIntegrationTestTime(maxIntegrationTestTime);
 
 		for (String subChild : currentChild.childrenNames()) {
 			log.debug("SubChild is:" + subChild);
 			int instances = Integer.parseInt(currentChild.getChild(subChild).get("num_instances", "1"));
-			log.debug("Num instances is:" + instances);
 			if(!successorRemover.equals("false") && successorRemover.equals(subChild))
 			{
 				instance.setSuccessorRemover(loadEntity(properties,currentChild.getChild(subChild)));
@@ -325,8 +350,18 @@ public class MainIntegrationTest {
 
 	private static void configureNetworkServiceRecordWait(SubTask instance, Profile.Section currentSection) {
 		NetworkServiceRecordWait w = (NetworkServiceRecordWait) instance;
-		w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+		try {
+			w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+		}catch(NumberFormatException e){
+			log.error("timeout for NetworkServiceRecordWait not has been set correctly");
+			exit(3);
+		}
+
 		String action = currentSection.get("action");
+		if(action==null){
+			log.error("action for NetworkServiceRecordWait not setted");
+			exit(3);
+		}
 		w.setAction(Action.valueOf(action));
 	}
 
@@ -339,11 +374,13 @@ public class MainIntegrationTest {
 	}
 
 	private static void configureNetworkServiceDescriptorCreate(SubTask instance, Profile.Section currentSection) {
-		//cast and get specific properties
+		NetworkServiceDescriptorCreate w = (NetworkServiceDescriptorCreate) instance;
+		w.setFileName(currentSection.get("name-file"));
 	}
 
-	private static void configureVimInstanceCreate(SubTask subTask, Profile.Section currentSection) {
-		//cast and get specific properties
+	private static void configureVimInstanceCreate(SubTask instance, Profile.Section currentSection) {
+		VimInstanceCreate w = (VimInstanceCreate) instance;
+		w.setFileName(currentSection.get("name-file"));
 	}
 
 

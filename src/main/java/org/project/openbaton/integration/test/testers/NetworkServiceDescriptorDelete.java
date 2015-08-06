@@ -2,9 +2,8 @@ package org.project.openbaton.integration.test.testers;
 
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.integration.test.utils.Tester;
+import org.project.openbaton.sdk.api.exception.SDKException;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -32,15 +31,15 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
     }
 
     @Override
-    protected Object doWork() throws Exception {
+    protected Object doWork() throws SDKException {
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
-        delete(nsd.getId());
-        log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
+        try {
+            delete(nsd.getId());
+        } catch (SDKException sdkEx) {
+            log.error("Exception during deleting of NetworkServiceDescription with id: "+nsd.getId(), sdkEx);
+            throw sdkEx;
+        }
+        //log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
         return null;
-    }
-
-    @Override
-    protected void handleException(Exception e) {
-
     }
 }

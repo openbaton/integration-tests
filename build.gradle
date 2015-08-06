@@ -56,7 +56,6 @@ apply from: 'openbaton-client/openbaton-libs/gradle/gradle/one.jar.application.j
 repositories {
 	mavenCentral()
 }
-
 dependencies {
 
 	compile project(':sdk')

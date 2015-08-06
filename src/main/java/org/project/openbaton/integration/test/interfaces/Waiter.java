@@ -50,7 +50,7 @@ public abstract class Waiter extends Tester {
         return waiter.waitForEvent(getTimeout());
     }
 
-    public boolean unSubscribe() throws SDKException {
+    public boolean unSubscribe() {
         if(waiter==null)
             throw new NullPointerException("Waiter is null (use subscribe and waitForEvent before unSubscribe)");
         return waiter.unSubscribe();

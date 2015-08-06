@@ -1,5 +1,7 @@
 package org.project.openbaton.integration.test.utils;
 
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +18,16 @@ public abstract class SubTask implements Callable<Object>{
     protected List<SubTask> successors;
     private SubTask successorRemover;
     private List<Future> f;
+    private int maxIntegrationTestTime;
     public Object param;
     protected static final Logger log = LoggerFactory.getLogger(SubTask.class);
 
     public void setParam(Object param){
         this.param = param;
+    }
+
+    public void setMaxIntegrationTestTime(int maxIntegrationTestTime){
+        this.maxIntegrationTestTime = maxIntegrationTestTime;
     }
 
     public SubTask(int successors){
@@ -29,29 +36,23 @@ public abstract class SubTask implements Callable<Object>{
         executorService = Executors.newFixedThreadPool(successors);
         successorRemover =null;
     }
-    public void setSuccessorRemover(SubTask sr){
-        successorRemover = sr;
-    }
-    protected Object getResult() {
-        Object result=null;
-        try {
-            result=doWork();
-        } catch (Exception e){
-            this.handleException(e);
-        }
-        return result;
+
+    public void setSuccessorRemover(SubTask successorRemover){
+        this.successorRemover = successorRemover;
     }
 
-    protected abstract Object doWork() throws Exception;
+    protected Object getResult() throws SDKException, IntegrationTestException {
+        return doWork();
+    }
 
-    protected abstract void handleException(Exception e);
+    protected abstract Object doWork() throws SDKException, IntegrationTestException;
 
     public void addSuccessor(SubTask e) {
        this.successors.add(e);
     }
 
     @Override
-    public Object call() {
+    public Object call() throws SDKException, IntegrationTestException {
         Object res = getResult();
         for (SubTask successor : successors)
             successor.setParam(res);
@@ -65,34 +66,42 @@ public abstract class SubTask implements Callable<Object>{
 
     protected void executeSuccessors() {
         for (SubTask successor : successors) {
-            log.debug("Executing successor: " + successor.getClass().getSimpleName());
+            //log.debug("Executing successor: " + successor.getClass().getSimpleName());
             f.add(this.executorService.submit(successor));
         }
     }
 
-    public void awaitTermination(int seconds) {
+    public boolean awaitTermination() {
+        boolean result=true;
         try {
             for (Future future : f) {
-                future.get(seconds, TimeUnit.SECONDS);
+                future.get(maxIntegrationTestTime, TimeUnit.SECONDS);
             }
             for (SubTask successor : successors)
-                successor.awaitTermination(seconds);
-            if (successorRemover !=null)
-            {
+                if(!successor.awaitTermination()){
+                   result=false;
+                   break;
+                }
+            if (successorRemover !=null && result) {
                 log.debug("Executing successorRemover: " + successorRemover.getClass().getSimpleName());
                 executorService.submit(successorRemover).get(60, TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
             log.error("The thread was interrupted while waiting for successors");
             e.printStackTrace();
+            result=false;
         } catch (ExecutionException e) {
-            log.error("The computation of a successor threw an exception");
-            e.printStackTrace();
+            log.error("The computation of a successor threw an exception the message is: "+ e.getMessage(),e);
+            result=false;
         } catch (TimeoutException e) {
-            log.error("The wait of the thread timed out");
+            log.error("Max Integration Test timeout is finished");
             e.printStackTrace();
+            result=false;
         }
-        shutdownAndAwaitTermination();
+        finally {
+            shutdownAndAwaitTermination();
+        }
+        return result;
     }
     private void shutdownAndAwaitTermination() {
         executorService.shutdown(); // Disable new tasks from being submitted

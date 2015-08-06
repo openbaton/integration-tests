@@ -4,7 +4,9 @@ import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.project.openbaton.integration.test.interfaces.Waiter;
+import org.project.openbaton.sdk.api.exception.SDKException;
 
 import java.io.*;
 import java.util.Properties;
@@ -27,7 +29,7 @@ public class NetworkServiceRecordWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws Exception {
+    protected Object doWork() throws IntegrationTestException {
         EventEndpoint eventEndpoint = new EventEndpoint();
         eventEndpoint.setEvent(getAction());
         NetworkServiceRecord nsr = (NetworkServiceRecord) param;
@@ -38,21 +40,26 @@ public class NetworkServiceRecordWait extends Waiter {
 
         if(subscribe(eventEndpoint))
         {
-            log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
-            if(waitForEvent())
+            //log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
+            if(waitForEvent()){
                 if(unSubscribe())
                 {
                     //log.debug(name + ": --- unSubscription complete");
                     return param;
                 }
+                else {
+                    log.error("Wait failed for event "+getAction() +" of nsr with id: "+nsr.getId());
+                    throw new IntegrationTestException("Waiter failed the unsubscription");
+                }
+            }else {
+                log.error("Wait failed for event "+getAction() +" of nsr with id: "+nsr.getId());
+                throw new IntegrationTestException("Waiter failed the wait");
+            }
         }
-        //log.debug(name + ": --- forward the param: " + param.toString());
-        return param;
-    }
-    @Override
-    protected void handleException(Exception e) {
-        log.error("Exception " + name + " : there was an exception: " + e.getMessage());
-        e.printStackTrace();
+        else {
+            log.error("Subscription failed to the eventPoint with action "+getAction() +" and nsr with id: "+nsr.getId());
+            throw new IntegrationTestException("Waiter failed the subscription");
+        }
     }
 
     public Action getAction() {

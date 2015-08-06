@@ -2,6 +2,7 @@ package org.project.openbaton.integration.test.testers;
 
 import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.project.openbaton.integration.test.utils.Tester;
+import org.project.openbaton.sdk.api.exception.SDKException;
 
 import java.util.Properties;
 
@@ -30,15 +31,15 @@ public class VimInstanceDelete extends Tester<VimInstance> {
     }
 
     @Override
-    protected Object doWork() throws Exception {
+    protected Object doWork() throws SDKException {
         VimInstance vi = (VimInstance) param;
-        delete(vi.getId());
-        log.debug(" --- VimInstanceDelete has deleted the vimInstance:"+vi.getId());
+        try {
+            delete(vi.getId());
+        } catch (SDKException sdkEx) {
+            log.error("Exception during deleting of VimInstance with id: "+vi.getId(), sdkEx);
+            throw sdkEx;
+        }
+        //log.debug(" --- VimInstanceDelete has deleted the vimInstance:"+vi.getId());
         return null;
-    }
-
-    @Override
-    protected void handleException(Exception e) {
-
     }
 }

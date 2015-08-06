@@ -27,7 +27,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws Exception {
+    protected Object doWork() {
 
         /**Endpoint creation**/
         EventEndpoint eventEndpoint = new EventEndpoint();
@@ -42,7 +42,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
 
         if(this.subscribe(eventEndpoint))
         {
-            log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:"+nsd.getId());
+            //log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:"+nsd.getId());
             int counter=0;
             while(counter<nsrCreated){
                 if(this.waitForEvent())
@@ -54,13 +54,9 @@ public class NetworkServiceDescriptorWait extends Waiter {
                 log.debug(name + ": --- unSubscription complete it's time to delete the nsd with id :"+ nsd.getId());
             }
         }
-        log.debug(name + ": --- forward the param: " + param.toString());
+        else log.error("Subscription failed to the eventPoint with action "+eventEndpoint.getEvent().toString() +" and nsd with id: "+nsd.getId());
+        //log.debug(name + ": --- forward the param: " + param.toString());
         return nsd.getId();
-    }
-
-    @Override
-    protected void handleException(Exception e) {
-
     }
 
     public void setNSRCreated(int nSRCreated){

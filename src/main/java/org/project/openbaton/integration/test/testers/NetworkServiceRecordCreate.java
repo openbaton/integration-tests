@@ -29,22 +29,23 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	}
 
 	@Override
-	protected Object doWork() throws Exception {
+	protected Object doWork() throws SDKException {
 		return create();
 	}
 
-	@Override
-	protected void handleException(Exception e) {
-		e.printStackTrace();
-		log.error("Exception NetworkServiceRecordCreate: there was an exception: " + e.getMessage());
-	}
 
 	@Override
 	public NetworkServiceRecord create() throws SDKException {
 
 		NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
-		NetworkServiceRecord networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
-		log.debug(" --- Creating nsr with id: " + networkServiceRecord.getId()+" from nsd with id: "+ nsd.getId());
+		NetworkServiceRecord networkServiceRecord = null;
+		try {
+			networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
+		} catch (SDKException sdkEx) {
+			log.error("Exception during the instantiation of NetworkServiceRecord from nsd of id: "+nsd.getId(),sdkEx);
+			throw sdkEx;
+		}
+		//log.debug(" --- Creating nsr with id: " + networkServiceRecord.getId()+" from nsd with id: "+ nsd.getId());
 
 		return networkServiceRecord;
 	}
