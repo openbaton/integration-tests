@@ -42,7 +42,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
 
         if(this.subscribe(eventEndpoint))
         {
-            //log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:"+nsd.getId());
+            log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:"+nsd.getId());
             int counter=0;
             while(counter<nsrCreated){
                 if(this.waitForEvent())

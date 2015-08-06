@@ -39,7 +39,7 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
             log.error("Exception during deleting of NetworkServiceDescription with id: "+nsd.getId(), sdkEx);
             throw sdkEx;
         }
-        //log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
+        log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
         return null;
     }
 }

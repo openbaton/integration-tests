@@ -55,7 +55,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             }
         }
         else{
-            log.error("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+            log.info("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
             body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
         }
         String vimRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/vim.properties");

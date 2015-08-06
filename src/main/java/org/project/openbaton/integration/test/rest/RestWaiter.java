@@ -130,7 +130,7 @@ public class RestWaiter implements WaiterInterface {
             JsonElement jsonElement = mapper.fromJson(message, JsonElement.class);
 
             String actionReceived= jsonElement.getAsJsonObject().get("action").getAsString();
-            //log.debug("Action received: " + actionReceived);
+            log.debug("Action received: " + actionReceived);
             String payload= jsonElement.getAsJsonObject().get("payload").getAsString();
             //log.debug("Payload received: "+payload);
             if(actionReceived.equals(ee.getEvent().toString()))
