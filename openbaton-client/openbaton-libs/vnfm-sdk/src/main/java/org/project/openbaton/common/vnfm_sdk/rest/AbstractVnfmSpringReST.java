@@ -64,11 +64,11 @@ public abstract class AbstractVnfmSpringReST extends AbstractVnfm {
 
     @PreDestroy
     public void shutdown(){
-        this.unregister(vnfmManagerEndpoint);
+        this.unregister();
     }
 
     @Override
-    protected void unregister(VnfmManagerEndpoint endpoint){
+    protected void unregister(){
         this.post("/admin/v1/vnfm_sdk-unregister", mapper.toJson(endpoint));
     }
 
@@ -87,8 +87,8 @@ public abstract class AbstractVnfmSpringReST extends AbstractVnfm {
         vnfmManagerEndpoint.setEndpoint(this.endpoint);
         vnfmManagerEndpoint.setEndpointType(EndpointType.REST);
 
-        log.debug("Registering to vnfm_sdk-register");
-        register(vnfmManagerEndpoint);
+        log.debug("Registering to vnfm-register");
+        register();
     }
 
     protected String get(String path) {
@@ -125,24 +125,28 @@ public abstract class AbstractVnfmSpringReST extends AbstractVnfm {
         this.status = status;
     }
 
-    protected void register(VnfmManagerEndpoint endpoint){
+    protected void register(){
         String json = mapper.toJson(endpoint);
-        log.debug("post on /admin/v1/vnfm_sdk-register with json: " + json);
-        this.post("/admin/v1/vnfm_sdk-register", mapper.toJson(endpoint));
+        log.debug("post on /admin/v1/vnfm-register with json: " + json);
+        this.post("/admin/v1/vnfm-register", mapper.toJson(endpoint));
     }
 
     protected void sendToCore(Serializable msg){
         String json = mapper.toJson(msg);
-        log.debug("post on vnfm_sdk-core-actions with json: " + json);
-        this.post("/admin/v1/vnfm_sdk-core-actions", json);
+        log.debug("post on " + this.type + "-core-actions with json: " + json);
+        this.post("/admin/v1/" + this.type + "-core-actions", json);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     //TODO add the validation
-    public @ResponseBody String  receive(@RequestBody /*@Valid*/ CoreMessage message){
+    public void  receive(@RequestBody /*@Valid*/ CoreMessage message){
         log.debug("Received: " + message);
         this.onAction(message);
-        return "ack";
+    }
+
+    @Override
+    protected void sendToNfvo(CoreMessage coreMessage) {
+        sendToCore(coreMessage);
     }
 }
