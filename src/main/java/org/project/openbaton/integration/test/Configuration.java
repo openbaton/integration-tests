@@ -22,19 +22,19 @@ import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 public class Configuration implements Callable{
-	
+
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public Boolean call() throws Exception {
 
 		Boolean output = false;
-        //output =  ConfigurationCreate();
+		//output =  ConfigurationCreate();
 		output =  ConfigurationFindAll();
-		
+
 		return output;
 	}
-	
+
 	private boolean ConfigurationCreate() throws URISyntaxException
 	{
 		String body;
@@ -45,67 +45,67 @@ public class Configuration implements Callable{
 			e.printStackTrace();
 			return false;
 		}
-		 
-		 log.info("SEND REQUEST CREATE");
-		 try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-			    URI uri = new URI(
-					    "http://127.0.0.1:8080", 
-					    "/api/v1/configurations",
-					    null);
-	            HttpPost request = new HttpPost(uri);
-	            StringEntity params = new StringEntity(body);
-	            request.addHeader("content-type", "application/json");
-	            request.setEntity(params);
-	            HttpResponse result = httpClient.execute(request);
-	            log.info("RESPONSE RECIVED");
-	     
-	            
-	            log.info(result.toString());
 
-	            
-	             } catch (IOException ex) {
-	        }
-		
+		log.info("SEND REQUEST CREATE");
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+			URI uri = new URI(
+					"http://127.0.0.1:8080",
+					"/api/v1/configurations",
+					null);
+			HttpPost request = new HttpPost(uri);
+			StringEntity params = new StringEntity(body);
+			request.addHeader("content-type", "application/json");
+			request.setEntity(params);
+			HttpResponse result = httpClient.execute(request);
+			log.info("RESPONSE RECIVED");
+
+
+			log.info(result.toString());
+
+
+		} catch (IOException ex) {
+		}
+
 		return true;
-		
+
 	}
-	
+
 	private boolean ConfigurationFindAll() throws URISyntaxException
 	{
-		 
-		 log.info("SEND REQUEST FIND ALL");
-		 try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-			    URI uri = new URI(
-					    "http://127.0.0.1:8080", 
-					    "/api/v1/configurations",
-					    null);
-	            HttpGet request = new HttpGet(uri);
-	            HttpResponse httpResponse = httpClient.execute(request);
-	            log.info("RESPONSE RECIVED");
-	            
-	            HttpEntity entity = httpResponse.getEntity();
-	            
-	            log.info("----------------------------------------");
-	            log.info(httpResponse.getStatusLine().toString());
-	            Header[] headers = httpResponse.getAllHeaders();
-	            for (int i = 0; i < headers.length; i++) {
-	            	log.info(headers[i].toString());
-	            }
-	            log.info("----------------------------------------");
-	       
-	            if (entity != null) {
-	            	log.info(EntityUtils.toString(entity));
-	            }
-	     
 
-	            
-	             } catch (IOException ex) {
-	        }
-		
+		log.info("SEND REQUEST FIND ALL");
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+			URI uri = new URI(
+					"http://127.0.0.1:8080",
+					"/api/v1/configurations",
+					null);
+			HttpGet request = new HttpGet(uri);
+			HttpResponse httpResponse = httpClient.execute(request);
+			log.info("RESPONSE RECIVED");
+
+			HttpEntity entity = httpResponse.getEntity();
+
+			log.info("----------------------------------------");
+			log.info(httpResponse.getStatusLine().toString());
+			Header[] headers = httpResponse.getAllHeaders();
+			for (int i = 0; i < headers.length; i++) {
+				log.info(headers[i].toString());
+			}
+			log.info("----------------------------------------");
+
+			if (entity != null) {
+				log.info(EntityUtils.toString(entity));
+			}
+
+
+
+		} catch (IOException ex) {
+		}
+
 		return true;
-		
+
 	}
-	
-	
+
+
 
 }

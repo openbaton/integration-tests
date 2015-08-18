@@ -9,6 +9,7 @@ import org.project.openbaton.sdk.api.exception.SDKException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Properties;
 public class VimInstanceCreate extends Tester<VimInstance> {
 
     private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
-    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/json_files/vim_instances/";
+    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test-jsons/vim_instances/";
     private static String fileName;
 
     /**
@@ -55,10 +56,15 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             }
         }
         else{
-            log.info("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+            log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
             body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
         }
-        String vimRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/vim.properties");
+        String vimRandom = null;
+        try {
+            vimRandom = Parser.randomize(body, "/etc/openbaton/integration-test-parser-properties/vim.properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //log.debug("vim-instance.json (old): " + body);
         //log.debug("vim-instance.json (random): " + vimRandom);
 

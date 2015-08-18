@@ -32,7 +32,7 @@ public class NetworkServiceRecordWait extends Waiter {
     protected Object doWork() throws IntegrationTestException {
         EventEndpoint eventEndpoint = new EventEndpoint();
         eventEndpoint.setEvent(getAction());
-        NetworkServiceRecord nsr = (NetworkServiceRecord) param;
+        NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
         eventEndpoint.setNetworkServiceId(nsr.getId());
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
         eventEndpoint.setName(name);

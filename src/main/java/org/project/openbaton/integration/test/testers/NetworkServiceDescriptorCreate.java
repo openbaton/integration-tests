@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor>{
     private static final String LOCAL_PATH_NAME = "/etc/json_file/network_service_descriptors/";
-    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/json_files/network_service_descriptors/";
+    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test-jsons/network_service_descriptors/";
     private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
     private static String fileName;
 
@@ -54,10 +54,15 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                 }
             }
             else{
-                log.info("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+                log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
                 body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
             }
-            String nsdRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/nsd.properties");
+            String nsdRandom = null;
+            try {
+                nsdRandom = Parser.randomize(body, "/etc/openbaton/integration-test-parser-properties/nsd.properties");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //log.debug("NetworkServiceDescriptor (old): " + body);
             //log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 

@@ -12,7 +12,7 @@ import java.util.Properties;
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
     public NetworkServiceRecordDelete(Properties properties) {
-        super(properties, NetworkServiceRecord.class, "", "/ns-records");
+        super(properties, NetworkServiceRecord.class,"", "/ns-records");
     }
 
     @Override
