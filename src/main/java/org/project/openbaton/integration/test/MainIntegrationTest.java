@@ -186,24 +186,28 @@ public class MainIntegrationTest {
 		if (f.isDirectory())
 		{
 			for (File file : f.listFiles()) {
-				startTime = System.currentTimeMillis();
-				if (runTestScenario(ini, properties, file)) {
-					stopTime = System.currentTimeMillis() - startTime;
-					log.info("Test: " + file.getName() + " finished correctly :) in " +
-							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+				if (file.getName().endsWith(".ini")){
+					startTime = System.currentTimeMillis();
+					if (runTestScenario(ini, properties, file)) {
+						stopTime = System.currentTimeMillis() - startTime;
+						log.info("Test: " + file.getName() + " finished correctly :) in " +
+								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+					}
+					else log.info("Test: " + file.getName() + " completed with errors :(");
 				}
-				else log.info("Test: " + file.getName() + " completed with errors :(");
 			}
 		}
 		else
 		{
-			startTime = System.currentTimeMillis();
-			if (runTestScenario(ini, properties, f)) {
-				stopTime=System.currentTimeMillis() - startTime;
-				log.info("Test: " + f.getName() + " finished correctly :) in " +
-						String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime),TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+			if (f.getName().endsWith(".ini")){
+				startTime = System.currentTimeMillis();
+				if (runTestScenario(ini, properties, f)) {
+					stopTime=System.currentTimeMillis() - startTime;
+					log.info("Test: " + f.getName() + " finished correctly :) in " +
+							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime),TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+				}
+				else log.info("Test: " + f.getName() + " completed with errors :(");
 			}
-			else log.info("Test: " + f.getName() + " completed with errors :(");
 		}
 		System.exit(0);
 	}
