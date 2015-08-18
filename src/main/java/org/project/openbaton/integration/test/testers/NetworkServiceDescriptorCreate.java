@@ -62,7 +62,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
             log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
             NetworkServiceDescriptor networkServiceDescriptor = mapper.fromJson(nsdRandom, aClass);
-            log.debug("NetworkServiceDescriptor requires is: " + networkServiceDescriptor);
+            log.trace("Sending NetworkServiceDescriptor: " + networkServiceDescriptor);
             return networkServiceDescriptor;
         }
     }
