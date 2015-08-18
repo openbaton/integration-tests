@@ -42,8 +42,7 @@ public class MainIntegrationTest {
 	private static String dbUsr;
 	private static String dbPsw;
 	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";
-	private static int maxIntegrationTestTime=0;
-	private static int maxConcurrentSuccessors;
+	private static int maxIntegrationTestTime = 0;
 
 
 	private static Properties loadProperties() throws IOException {
@@ -70,11 +69,10 @@ public class MainIntegrationTest {
 			rs = st.executeQuery("select * from vnfm_manager_endpoint");
 
 			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
-			if(val==false){
+			if (val == false) {
 				log.debug("vnfm endpoint not present yet");
 				return false;
-			}else
-			{
+			} else {
 				return true;
 			}
 
@@ -109,7 +107,7 @@ public class MainIntegrationTest {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (i > 50){
+			if (i > 50) {
 				return false;
 			}
 
@@ -117,7 +115,7 @@ public class MainIntegrationTest {
 		return true;
 	}
 
-	private static boolean isVnfmReady(){
+	private static boolean isVnfmReady() {
 		int i = 0;
 		while (!vnfmReady()) {
 			i++;
@@ -126,7 +124,7 @@ public class MainIntegrationTest {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (i > 50){
+			if (i > 50) {
 				return false;
 			}
 
@@ -178,8 +176,8 @@ public class MainIntegrationTest {
 		IntegrationTestManager itm = new IntegrationTestManager() {
 			@Override
 			protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
-				if(subTask instanceof VimInstanceCreate)
-					configureVimInstanceCreate(subTask,currentSection);
+				if (subTask instanceof VimInstanceCreate)
+					configureVimInstanceCreate(subTask, currentSection);
 				else if (subTask instanceof NetworkServiceDescriptorCreate)
 					configureNetworkServiceDescriptorCreate(subTask, currentSection);
 				else if (subTask instanceof NetworkServiceDescriptorDelete)
@@ -195,47 +193,44 @@ public class MainIntegrationTest {
 			}
 		};
 		itm.setLogger(log);
-		long startTime,stopTime;
-		if (f.isDirectory())
-		{
+		long startTime, stopTime;
+		if (f.isDirectory()) {
 			for (File file : f.listFiles()) {
-				startTime = System.currentTimeMillis();
-				if (itm.runTestScenario(properties, file)) {
-					stopTime = System.currentTimeMillis() - startTime;
-					log.info("Test: " + file.getName() + " finished correctly :) in " +
-							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+				if (f.getName().endsWith(".ini")) {
+					startTime = System.currentTimeMillis();
+					if (itm.runTestScenario(properties, file)) {
+						stopTime = System.currentTimeMillis() - startTime;
+						log.info("Test: " + file.getName() + " finished correctly :) in " +
+								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+					} else log.info("Test: " + file.getName() + " completed with errors :(");
 				}
-				else log.info("Test: " + file.getName() + " completed with errors :(");
 			}
-		}
-		else
-		{
-			startTime = System.currentTimeMillis();
-			if (itm.runTestScenario( properties, f)) {
-				stopTime=System.currentTimeMillis() - startTime;
-				log.info("Test: " + f.getName() + " finished correctly :) in " +
-						String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime),TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+		} else {
+			if (f.getName().endsWith(".ini")) {
+				startTime = System.currentTimeMillis();
+				if (itm.runTestScenario(properties, f)) {
+					stopTime = System.currentTimeMillis() - startTime;
+					log.info("Test: " + f.getName() + " finished correctly :) in " +
+							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
+				} else log.info("Test: " + f.getName() + " completed with errors :(");
 			}
-			else log.info("Test: " + f.getName() + " completed with errors :(");
 		}
 		System.exit(0);
 	}
 
-
 	private static File loadFileIni(String[] args) throws FileNotFoundException {
 		File f;
-		if(args.length>1) {
+		if (args.length > 1) {
 			f = new File(args[1]);
 			if (f != null && f.exists()) {
 				return f;
 			}
 		}
 		log.info("the name file passed is incorrect");
-		f=new File(CONF_FILE_PATH);
-		if(f.exists())
+		f = new File(CONF_FILE_PATH);
+		if (f.exists())
 			return f;
-		if(!f.exists())
-		{
+		if (!f.exists()) {
 			log.info("the name file " + CONF_FILE_PATH + " is incorrect");
 			return new File(MainIntegrationTest.class.getResource("/integration-test-scenarios").getPath());
 		}
@@ -255,7 +250,7 @@ public class MainIntegrationTest {
 		w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
 
 		String action = currentSection.get("action");
-		if(action==null){
+		if (action == null) {
 			log.error("action for NetworkServiceRecordWait not setted");
 			exit(3);
 		}
@@ -279,6 +274,7 @@ public class MainIntegrationTest {
 		VimInstanceCreate w = (VimInstanceCreate) instance;
 		w.setFileName(currentSection.get("name-file"));
 	}
+
 	private static void exit(int i) {
 		System.exit(i);
 	}

@@ -15,7 +15,7 @@
  */
 
 rootProject.projectDir = file('.')
-rootProject.name = 'integration-test'
+rootProject.name = 'integration-tests'
 
 include 'sdk'
 include 'catalogue'

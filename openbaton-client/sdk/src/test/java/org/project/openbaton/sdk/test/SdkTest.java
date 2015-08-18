@@ -5,12 +5,15 @@ import com.google.gson.GsonBuilder;
 
 import org.junit.Test;
 import org.project.openbaton.catalogue.mano.common.DeploymentFlavour;
+import org.project.openbaton.catalogue.mano.common.Security;
 import org.project.openbaton.catalogue.mano.common.VNFDependency;
 import org.project.openbaton.catalogue.mano.common.VNFRecordDependency;
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.project.openbaton.catalogue.mano.descriptor.PhysicalNetworkFunctionDescriptor;
 import org.project.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.project.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
+import org.project.openbaton.catalogue.mano.record.PhysicalNetworkFunctionRecord;
 import org.project.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.project.openbaton.catalogue.nfvo.NFVImage;
 import org.project.openbaton.catalogue.nfvo.Network;
@@ -53,32 +56,108 @@ public class SdkTest {
         log.debug("Sending: " + networkServiceDescriptor);
         NetworkServiceDescriptor res2 = requestor.getNetworkServiceDescriptorAgent().create(networkServiceDescriptor);
         log.debug("DESCRIPTOR: "+res2);
+        
+        
+//SECURITY//
+        
+//        Security  security = new Security();
+//        Security res = requestor.getNetworkServiceDescriptorAgent().createSecurity(res2.getId(),security); 
+//        Security  security2 = new Security();
+//        Security res3 = requestor.getNetworkServiceDescriptorAgent().updateSecurity(res2.getId(),res.getId(),security2);
+//        
+//        log.debug("Received: " + res3.toString());
+        
+        
+//PHYSICALNETWORKFUNCTIONDESCRIPTOR//
+        
+//        PhysicalNetworkFunctionDescriptor origin = new  PhysicalNetworkFunctionDescriptor();
+//        PhysicalNetworkFunctionDescriptor source = requestor.getNetworkServiceDescriptorAgent().createPhysicalNetworkFunctionDescriptor(res2.getId(),origin);
+//        
+//        PhysicalNetworkFunctionDescriptor response = requestor.getNetworkServiceDescriptorAgent().getPhysicalNetworkFunctionDescriptor(res2.getId(),source.getId());
+//        log.debug("Received: " + response.toString());
+        
+      
+//VNFDependency//
+        
+//        VNFDependency  vnfDependency = new VNFDependency();
+//        VNFDependency res = requestor.getNetworkServiceDescriptorAgent().createVNFDependency(res2.getId(),vnfDependency);
+//        VNFDependency  vnfDependency2 = new VNFDependency();
+//        VNFDependency res3 = requestor.getNetworkServiceDescriptorAgent().updateVNFD(res2.getId(),res.getId(),vnfDependency2);
+//        log.debug("Received update: " + res3.toString());
 
-        NetworkServiceRecord networkServiceRecord = requestor.getNetworkServiceRecordAgent().create(res2.getId());
-        log.debug("RECORD: "+networkServiceRecord);
+        
+//VIRTUAL_NETWORK_FUNCTION_DESCRIPTOR
 
-        VirtualNetworkFunctionRecord[] response = requestor.getNetworkServiceRecordAgent().getVirtualNetworkFunctionRecords(networkServiceRecord.getId());
+          //CREATE//
+//        VirtualNetworkFunctionDescriptor virtualNetworkFunctionDescriptor = createVNFDescriptor();         
+//        VirtualNetworkFunctionDescriptor res = requestor.getNetworkServiceDescriptorAgent().createVNFD(res2.getId(), virtualNetworkFunctionDescriptor);
+//        log.debug("POST_VNFDescriptor: " + res.toString());
+          
+          //UPDATE//
+//        VirtualNetworkFunctionDescriptor res = requestor.getNetworkServiceDescriptorAgent().updateVNFD(res2.getId(), res2.getVnfd().iterator().next().getId(),response);
+//        log.debug("UPDATE_VNFDescriptor: " + res.toString());
+
+        
+//NETWORK_SERVICE_RECORD
+        
+//       NetworkServiceRecord networkServiceRecord = requestor.getNetworkServiceRecordAgent().create(res2.getId());
+//        log.debug("RECORD: "+networkServiceRecord);
 //
-        for (VirtualNetworkFunctionRecord virtualNetworkFunctionRecord : response)
-            log.debug("Received: " + virtualNetworkFunctionRecord.toString());
+//        VirtualNetworkFunctionRecord[] response = requestor.getNetworkServiceRecordAgent().getVirtualNetworkFunctionRecords(networkServiceRecord.getId());
+//
+//        for (VirtualNetworkFunctionRecord virtualNetworkFunctionRecord : response)
+//            log.debug("Received: " + virtualNetworkFunctionRecord.toString());
         
 //       requestor.getNetworkServiceRecordAgent().deleteVirtualNetworkFunctionRecord(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId());
 
-        //-CREATE VNFR//
-//       VirtualNetworkFunctionRecord virtualNetworkFunctionRecord = new VirtualNetworkFunctionRecord();
-//       VirtualNetworkFunctionRecord response = requestor.getNetworkServiceRecordAgent().createVNFR(networkServiceRecord.getId(), virtualNetworkFunctionRecord);
-//        log.debug("Received: " + response.toString());
         
-        //-UPDATE VNFR//
-        //VirtualNetworkFunctionRecord response = requestor.getNetworkServiceRecordAgent().getVirtualNetworkFunctionRecord(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId());
-        //requestor.getNetworkServiceRecordAgent().updateVNFR(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId(), response);
- 
-        //requestor.getNetworkServiceRecordAgent().deleteVNFDependency(networkServiceRecord.getId(), networkServiceRecord.getVnf_dependency().iterator().next().getId());
-//        VNFRecordDependency vnfDependency = createVNFDependency();
+//VIRTUAL_NETWORK_FUNCTION_RECORD
+        
+          //-CREATE VNFR//
+//        VirtualNetworkFunctionRecord virtualNetworkFunctionRecord = new VirtualNetworkFunctionRecord();
+//        VirtualNetworkFunctionRecord response = requestor.getNetworkServiceRecordAgent().createVNFR(networkServiceRecord.getId(), virtualNetworkFunctionRecord);
+//        log.debug("Received: " + response.toString());
 //        
+//        //-UPDATE VNFR//
+//        VirtualNetworkFunctionRecord update = new VirtualNetworkFunctionRecord();
+//        requestor.getNetworkServiceRecordAgent().updateVNFR(networkServiceRecord.getId(), networkServiceRecord.getVnfr().iterator().next().getId(), update);
+ 
+        
+//VIRTUAL_NETWORK_RECORD_DEPENDENCY
+        
+        
+          //requestor.getNetworkServiceRecordAgent().deleteVNFDependency(networkServiceRecord.getId(), networkServiceRecord.getVnf_dependency().iterator().next().getId());
+//        VNFRecordDependency vnfDependency = createVNFDependency();
 //        
 //        VNFRecordDependency res = requestor.getNetworkServiceRecordAgent().postVNFDependency(networkServiceRecord.getId(), vnfDependency);
 //        log.debug("POST_VNFD: " + res.toString());
+        
+//         VNFRecordDependency res = requestor.getNetworkServiceRecordAgent().updateVNFDependency(networkServiceRecord.getId(), networkServiceRecord.getVnf_dependency().iterator().next().getId(), vnfDependency);
+//         log.debug("UPDAPTE_VNFD: " + res.toString());
+        
+           
+        
+        
+    }
+    
+    private VirtualNetworkFunctionDescriptor createVNFDescriptor(){
+    	
+    	VirtualNetworkFunctionDescriptor virtualNetworkFunctionDescriptor = new VirtualNetworkFunctionDescriptor();
+    	virtualNetworkFunctionDescriptor.setName("fokusland");
+    	virtualNetworkFunctionDescriptor.setVendor("fokus");
+    	
+    	return virtualNetworkFunctionDescriptor;
+    }
+    
+    private PhysicalNetworkFunctionRecord createPNFR()
+    { 
+    	PhysicalNetworkFunctionRecord physicalNetworkFunctionRecord = new PhysicalNetworkFunctionRecord();
+    	
+    	physicalNetworkFunctionRecord.setDescription("Warp 2000");
+    	physicalNetworkFunctionRecord.setVendor("fokus");
+    	
+    	
+    	return physicalNetworkFunctionRecord;
     }
     
     private VNFRecordDependency createVNFDependency(){
