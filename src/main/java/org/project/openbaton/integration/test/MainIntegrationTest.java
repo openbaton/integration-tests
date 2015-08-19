@@ -196,7 +196,7 @@ public class MainIntegrationTest {
 		long startTime, stopTime;
 		if (f.isDirectory()) {
 			for (File file : f.listFiles()) {
-				if (f.getName().endsWith(".ini")) {
+				if (file.getName().endsWith(".ini")) {
 					startTime = System.currentTimeMillis();
 					if (itm.runTestScenario(properties, file)) {
 						stopTime = System.currentTimeMillis() - startTime;
