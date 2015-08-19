@@ -54,7 +54,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                 }
             }
             else{
-                log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+                log.warn("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME + fileName);
                 body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
             }
             String nsdRandom = null;
