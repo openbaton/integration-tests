@@ -83,10 +83,10 @@ IntegrationTestManager itm = new IntegrationTestManager() {
 	@Override
 	protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
 			if(subTask instanceof Task3){
-			  Task3 t3 = (Task3) instance;
+			  Task3 t3 = (Task3) subTask;
 			  // set a parameter specificated in the ini file in the section [it/task1-1/task2-1/task3-1]
 			  // If "specific-parameter" is not present in the ini file, "5" will be the default
-			  t3.setSpecificParameter(Integer.parseInt(currentSection.get("specific-parameter", "5")));
+			  t3.setSpecificParameter(Double.parseDouble(currentSection.get("specific-parameter", "5")));
 			}
 	}};
 boolean result = itm.runTestScenario(properties, file);

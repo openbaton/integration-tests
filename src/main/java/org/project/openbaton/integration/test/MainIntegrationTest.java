@@ -42,8 +42,6 @@ public class MainIntegrationTest {
 	private static String dbUsr;
 	private static String dbPsw;
 	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";
-	private static int maxIntegrationTestTime = 0;
-
 
 	private static Properties loadProperties() throws IOException {
 		Properties properties = Utils.getProperties();
@@ -69,7 +67,7 @@ public class MainIntegrationTest {
 			rs = st.executeQuery("select * from vnfm_manager_endpoint");
 
 			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
-			if (val == false) {
+			if (!val) {
 				log.debug("vnfm endpoint not present yet");
 				return false;
 			} else {
@@ -173,7 +171,7 @@ public class MainIntegrationTest {
 
 
 		File f = loadFileIni(args);
-		IntegrationTestManager itm = new IntegrationTestManager() {
+		IntegrationTestManager itm = new IntegrationTestManager("org.project.openbaton.integration.test.testers") {
 			@Override
 			protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
 				if (subTask instanceof VimInstanceCreate)
@@ -196,7 +194,7 @@ public class MainIntegrationTest {
 		long startTime, stopTime;
 		if (f.isDirectory()) {
 			for (File file : f.listFiles()) {
-				if (f.getName().endsWith(".ini")) {
+				if (file.getName().endsWith(".ini")) {
 					startTime = System.currentTimeMillis();
 					if (itm.runTestScenario(properties, file)) {
 						stopTime = System.currentTimeMillis() - startTime;
@@ -222,7 +220,7 @@ public class MainIntegrationTest {
 		File f;
 		if (args.length > 1) {
 			f = new File(args[1]);
-			if (f != null && f.exists()) {
+			if (f.exists()) {
 				return f;
 			}
 		}

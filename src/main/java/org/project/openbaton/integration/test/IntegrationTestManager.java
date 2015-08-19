@@ -18,8 +18,11 @@ public abstract class IntegrationTestManager {
     private int maxIntegrationTestTime;
     private int maxConcurrentSuccessors;
     private Logger log=null;
+    private String classPath;
 
-
+    public IntegrationTestManager(String classPath){
+        this.classPath=classPath;
+    }
     public boolean runTestScenario(Properties properties, File file) throws IOException {
         Ini ini=new Ini();
         ini.load(new FileReader(file));
@@ -40,7 +43,7 @@ public abstract class IntegrationTestManager {
         String nameClass = currentChild.get("class-name");
         SubTask instance=null;
         try {
-            String classNamePath = "org.project.openbaton.integration.test.testers." + nameClass;
+            String classNamePath = classPath +"."+ nameClass;
             Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(classNamePath);
             instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
         } catch (ClassNotFoundException e) {
@@ -54,7 +57,6 @@ public abstract class IntegrationTestManager {
         } catch (InvocationTargetException e) {
             log("Problem during class loading: " + e.getMessage(),"error");
         }
-        log("Class is:" + instance.getClass().getName(), "debug");
         return instance;
     }
 
@@ -70,7 +72,7 @@ public abstract class IntegrationTestManager {
         instance.setMaxConcurrentSuccessors(maxConcurrentSuccessors);
 
         for (String subChild : currentChild.childrenNames()) {
-            log("SubChild is:" + subChild, "debug");
+            //log("SubChild is:" + subChild, "debug");
             int numInstances = Integer.parseInt(currentChild.getChild(subChild).get("num_instances", "1"));
             if(!successorRemover.equals("false") && successorRemover.equals(subChild))
             {
