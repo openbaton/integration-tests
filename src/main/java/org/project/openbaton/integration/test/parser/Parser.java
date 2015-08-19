@@ -4,6 +4,8 @@ import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,13 +31,11 @@ public class Parser {
      * A new json file with some changed parameters accordingly to the Parser configuration file
      *
      */
-    public synchronized static String randomize(String json, String path){
+    public synchronized static String randomize(String json, String path) throws IOException {
+        if(json == null || path==null)
+            throw new NullPointerException("json or path is null!");
         properties=new Properties();
-        try {
-            properties.load(Parser.class.getResourceAsStream(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        properties.load(new FileInputStream(new File(path)));
         namesAlreadyReplicated=new HashMap<>();
         JsonElement jsonRoot = mapper.fromJson(json, JsonElement.class);
         return mapper.toJson(parse(jsonRoot));

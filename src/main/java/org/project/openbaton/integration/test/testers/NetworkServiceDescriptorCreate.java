@@ -57,13 +57,16 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                 log.warn("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME + fileName);
                 body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
             }
-            String nsdRandom = Parser.randomize(body,"/etc/json_file/parser_configuration_properties/nsd.properties");
-            log.debug("NetworkServiceDescriptor (old): " + body);
-            log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
+            String nsdRandom = null;
+            try {
+                nsdRandom = Parser.randomize(body, "/etc/openbaton/integration-test-parser-properties/nsd.properties");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //log.debug("NetworkServiceDescriptor (old): " + body);
+            //log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
-            NetworkServiceDescriptor networkServiceDescriptor = mapper.fromJson(nsdRandom, aClass);
-            log.trace("Sending NetworkServiceDescriptor: " + networkServiceDescriptor);
-            return networkServiceDescriptor;
+            return mapper.fromJson(nsdRandom, aClass);
         }
     }
     public void setFileName(String fileName){
