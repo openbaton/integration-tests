@@ -63,8 +63,8 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //log.debug("NetworkServiceDescriptor (old): " + body);
-            //log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
+            log.debug("NetworkServiceDescriptor (old): " + body.trim());
+            log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
 
             return mapper.fromJson(nsdRandom, aClass);
         }

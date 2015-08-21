@@ -56,6 +56,11 @@ apply from: 'openbaton-client/openbaton-libs/gradle/gradle/one.jar.application.j
 repositories {
 	mavenCentral()
 }
+
+configurations.all {
+	exclude group: 'org.slf4j', module: 'slf4j-simple'
+}
+
 dependencies {
 
 	compile project(':sdk')

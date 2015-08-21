@@ -73,7 +73,7 @@ public abstract class RestRequest {
      * @throws SDKException
      */
     public String requestPost(final String id) throws SDKException {
-        HttpResponse<JsonNode> jsonResponse = null;
+        HttpResponse<String> jsonResponse = null;
         try {
 
             //log.debug("baseUrl: " + baseUrl);
@@ -88,16 +88,16 @@ public abstract class RestRequest {
                         .header("accept", "application/json")
                         .header("Content-Type", "application/json")
                         .header("Authorization", bearerToken.replaceAll("\"", ""))
-                        .asJson();
+                        .asString();
             else
                 jsonResponse = Unirest.post(this.baseUrl + id)
                         .header("accept", "application/json")
                         .header("Content-Type", "application/json")
-                        .asJson();
+                        .asString();
 //            check response status
             checkStatus(jsonResponse, HttpURLConnection.HTTP_CREATED);
             // return the response of the request
-            String result = jsonResponse.getBody().toString();
+            String result = jsonResponse.getBody();
             //log.debug("received: " + result);
 
             return result;
@@ -433,7 +433,7 @@ public abstract class RestRequest {
      * @param jsonResponse the http json response
      * @param httpStatus   the (desired) http status of the repsonse
      */
-    private void checkStatus(HttpResponse<JsonNode> jsonResponse, final int httpStatus) throws SDKException {
+    private void checkStatus(HttpResponse jsonResponse, final int httpStatus) throws SDKException {
         if (jsonResponse.getStatus() != httpStatus) {
             log.debug("Status expected: " + httpStatus + " obtained: " + jsonResponse.getStatus());
             throw new SDKException("Received wrong API HTTPStatus");
