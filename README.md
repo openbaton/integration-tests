@@ -9,7 +9,9 @@ class implements Callable<Object> you can return an object at the end of the met
 You can describe the tree/graph of the tasks through the ini file.
 
 ### Simple example
+
 We have four tasks to execute in the following order:
+
 ![operations flow](flowExample.png)
 
 We will create the classes:
@@ -79,7 +81,7 @@ In the main you can use the class IntegrationTestManager to start the scenario:
 // File f = loadFileIni("file.ini");
 // Properties properties = loadProperties();
 
-IntegrationTestManager itm = new IntegrationTestManager() {
+IntegrationTestManager itm = new IntegrationTestManager("basepath of the tasks") {
 	@Override
 	protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
 			if(subTask instanceof Task3){
@@ -170,6 +172,7 @@ timeout = 500
 action = RELEASE_RESOURCES_FINISH
 ```
 You will obtain the following flow of operations:
+
 ![operations flow](flow.png)
 
 The tasks that create entities from json file (i.e. VimInstanceCreate, NetworkServiceDescriptorCreate) use a parser. The static
