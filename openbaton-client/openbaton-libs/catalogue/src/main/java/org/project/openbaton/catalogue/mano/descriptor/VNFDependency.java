@@ -1,4 +1,4 @@
-package org.project.openbaton.catalogue.mano.common;
+package org.project.openbaton.catalogue.mano.descriptor;
 
 /**
  * Created by lto on 05/02/15.
@@ -6,11 +6,11 @@ package org.project.openbaton.catalogue.mano.common;
  * Based on ETSI GS NFV-MAN 001 V1.1.1 (2014-12)
  */
 
-import org.project.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.project.openbaton.catalogue.util.IdGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Describe dependencies between VNF. Defined in terms of
@@ -28,11 +28,14 @@ public class VNFDependency implements Serializable {
 	@Version
 	private int version = 0;
 	
-	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToOne(cascade = {CascadeType.REFRESH/*, CascadeType.MERGE*/}, fetch = FetchType.EAGER)
     private VirtualNetworkFunctionDescriptor source;
 
-	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@OneToOne(cascade = {CascadeType.REFRESH/*, CascadeType.MERGE*/}, fetch = FetchType.EAGER)
     private VirtualNetworkFunctionDescriptor target;
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<String> parameters;
 
     public VNFDependency() {
     }
@@ -46,6 +49,13 @@ public class VNFDependency implements Serializable {
         this.source = source;
     }
 
+	public Set<String> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(Set<String> parameters) {
+		this.parameters = parameters;
+	}
     public VirtualNetworkFunctionDescriptor getTarget() {
         return target;
     }
