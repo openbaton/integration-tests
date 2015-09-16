@@ -12,9 +12,9 @@ import java.util.Set;
 @Entity
 public class Network implements Serializable {
     @Id
-    private String id = IdGenerator.createUUID();;
+    private String id;
     @Version
-    private static int version = 0;
+    private int version = 0;
     private String name;
     private String extId;
     private Boolean external = false;
@@ -37,6 +37,11 @@ public class Network implements Serializable {
                 '}';
     }
 
+    @PrePersist
+    public void ensureId(){
+        id=IdGenerator.createUUID();
+    }
+
     public String getId() {
         return id;
     }
@@ -45,12 +50,12 @@ public class Network implements Serializable {
         this.id = id;
     }
 
-    public static int getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public static void setVersion(int version) {
-        Network.version = version;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getName() {

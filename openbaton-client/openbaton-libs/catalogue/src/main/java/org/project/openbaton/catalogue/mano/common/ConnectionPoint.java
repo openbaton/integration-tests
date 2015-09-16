@@ -17,13 +17,9 @@ public class ConnectionPoint implements Serializable{
 
     /*ID of the Connection Point.*/
 	@Id
-    protected String id = IdGenerator.createUUID();
+    protected String id;
 	@Version
 	protected int version = 0;
-
-    protected String name;
-
-    protected String extId;
 
     /**
      *
@@ -37,6 +33,10 @@ public class ConnectionPoint implements Serializable{
     public ConnectionPoint() {
     }
 
+    @PrePersist
+    public void ensureId(){
+        id=IdGenerator.createUUID();
+    }
     public String getType() {
 
         return type;
@@ -54,30 +54,12 @@ public class ConnectionPoint implements Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getExtId() {
-        return extId;
-    }
-
-    public void setExtId(String extId) {
-        this.extId = extId;
-    }
-
     @Override
     public String toString() {
         return "ConnectionPoint{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
                 ", version='" + version +
                 ", type='" + type + '\'' +
-                ", extId='" + extId + '\'' +
                 '}';
     }
 

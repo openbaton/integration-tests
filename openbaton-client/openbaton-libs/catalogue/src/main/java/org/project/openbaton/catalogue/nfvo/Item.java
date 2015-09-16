@@ -4,6 +4,7 @@ import org.project.openbaton.catalogue.util.IdGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Version;
 
 /**
@@ -12,7 +13,7 @@ import javax.persistence.Version;
 @Entity
 public class Item {
     @Id
-    private String id= IdGenerator.createUUID();
+    private String id;
     @Version
     private int version = 0;
 
@@ -20,7 +21,7 @@ public class Item {
 
     private String hostExtId;
 
-    private String vduId;
+    private String vnfcInstanceId;
     private String lastValue;
     private String value;
 
@@ -34,7 +35,9 @@ public class Item {
                 ", version=" + version +
                 ", metric='" + metric + '\'' +
                 ", hostExtId='" + hostExtId + '\'' +
-                ", vduId='" + vduId + '\'' +
+                ", vnfcInstanceId='" + vnfcInstanceId + '\'' +
+                ", value='" + value + '\'' +
+                ", lastvalue='" + lastValue + '\'' +
                 '}';
     }
 
@@ -42,6 +45,10 @@ public class Item {
         return id;
     }
 
+    @PrePersist
+    public void ensureId(){
+        id=IdGenerator.createUUID();
+    }
     public void setId(String id) {
         this.id = id;
     }
@@ -70,12 +77,12 @@ public class Item {
         this.hostExtId = hostExtId;
     }
 
-    public String getVduId() {
-        return vduId;
+    public String getVnfcInstanceId() {
+        return vnfcInstanceId;
     }
 
-    public void setVduId(String vduId) {
-        this.vduId = vduId;
+    public void setVnfcInstanceId(String vduId) {
+        this.vnfcInstanceId = vnfcInstanceId;
     }
 
     public void setLastValue(String lastValue) {
