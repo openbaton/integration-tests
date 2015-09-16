@@ -193,6 +193,8 @@ public class MainIntegrationTest {
 		itm.setLogger(log);
 		long startTime, stopTime;
 		if (f.isDirectory()) {
+			if(f.listFiles().length==0)
+				log.info("The directory " + f.getPath() + " is empty");
 			for (File file : f.listFiles()) {
 				if (file.getName().endsWith(".ini")) {
 					startTime = System.currentTimeMillis();

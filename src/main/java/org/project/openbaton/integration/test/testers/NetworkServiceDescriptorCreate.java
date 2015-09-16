@@ -37,7 +37,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
             throw sdkEx;
         }
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
-        //log.debug(" --- Creating nsd with id: " + nsd.getId());
+        log.debug(" --- Creating nsd with id: " + nsd.getId());
         return received;
     }
 

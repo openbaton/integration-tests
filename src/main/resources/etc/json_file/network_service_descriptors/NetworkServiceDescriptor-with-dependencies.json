@@ -1,12 +1,13 @@
 {
   "vendor":"fokus",
   "version":"0",
+  "name":"<::NSD-dependencies::>",
   "vnfd":[
 	{
 	  "vendor":"fokus",
 	  "version":"0.1",
 	  "name":"<::vnf-dummy-1::>",
-	  "type":"dummy",
+	  "type":"generic",
 	  "vdu":[
 		{
 		  "vm_image":[
@@ -69,7 +70,7 @@
 	  "vendor":"fokus",
 	  "version":"0.1",
 	  "name":"<::vnf-dummy-2::>",
-	  "type":"dummy",
+	  "type":"generic",
 	  "vdu":[
 		{
 		  "vm_image":[
@@ -98,17 +99,7 @@
 	  "connection_point":[
 	  ],
 	  "lifecycle_event":[
-		{
-		  "event":"ALLOCATE",
-		  "lifecycle_events":[
-			"allocation of vdu"
-		  ]
-		},{
-		  "event":"RELEASE",
-		  "lifecycle_events":[
-			"delete of vdu"
-		  ]
-		}
+
 	  ],
 	  "vdu_dependency":[
 	  ],

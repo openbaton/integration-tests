@@ -1,12 +1,14 @@
 {
 	"vendor":"fokus",
 	"version":"0.1-ALPHA",
+  	"name":"<::nsd-simple::>",
 	"vnfd":[
 		{
 			"vendor":"fokus",
 			"version":"0.1",
-			"name":"<::vnf-dummy::>",
-			"type":"dummy",
+			"name":"<::vnf-dummy-1::>",
+			"type":"server",
+		  	"endpoint":"generic",
 			"descriptor_version":"0.1-ALPHA",
 			"vdu":[
 				{
@@ -18,9 +20,7 @@
 					"virtual_network_bandwidth_resource":"1000000",
 					"lifecycle_event":[
 					],
-					"vimInstance":{
-						"name":"vim-instance"
-					},
+					"vimInstanceName":"vim-instance",
 					"vdu_constraint":"",
 					"high_availability":"ACTIVE_PASSIVE",
 					"scale_in_out":3,
@@ -52,8 +52,69 @@
 			}],
 			"auto_scale_policy":[
 			],
-			"manifest_file":""
-		}
+			"manifest_file":"",
+		  	"requires":[
+			  "ipDatabase"
+		 	 ],
+		 	 "provides":[
+
+		 	 ]
+		},
+	    {
+		"vendor":"fokus",
+		"version":"0.1",
+		"name":"<::vnf-dummy-2::>",
+		"type":"database",
+		"endpoint":"generic",
+		"vdu":[
+		  {
+			"vm_image":[
+			  "larsks/thttpd"
+			],
+			"computation_requirement":"",
+			"virtual_memory_resource_element":"1024",
+			"virtual_network_bandwidth_resource":"1000000",
+			"lifecycle_event":[
+			],
+			"vimInstanceName":"vim-instance",
+			"vdu_constraint":"",
+			"high_availability":"ACTIVE_PASSIVE",
+			"scale_in_out":3,
+			"vnfc":[
+			],
+			"monitoring_parameter":[
+			  "cpu_utilization"
+			]
+		  }
+		],
+		"virtual_link":[
+		],
+		"connection_point":[
+		],
+		"lifecycle_event":[
+		],
+		"vdu_dependency":[
+		],
+		"monitoring_parameter":[
+		  "cpu_utilization"
+		],
+		"deployment_flavour":[{
+		  "df_constraint":[
+			"constraint1",
+			"constraint2"
+		  ],
+		  "costituent_vdu":[],
+		  "flavour_key":"m1.small"
+		}],
+		"auto_scale_policy":[
+		],
+		"manifest_file":"",
+		"requires":[
+		],
+		"provides":[
+		  "ipDatabase"
+		]
+	  }
 	],
 	"vnffgd":[
 	],
@@ -62,6 +123,17 @@
 	"lifecycle_event":[
 	],
 	"vnf_dependency":[
+	  {
+		"source" : {
+		  "name": "<::vnf-dummy-2::>"
+		},
+		"target":{
+		  "name": "<::vnf-dummy-1::>"
+		},
+		"parameters":[
+		  "ipDatabase"
+		]
+	  }
 	],
 	"monitoring_parameter":[
 		"cpu_utilization"
