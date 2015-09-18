@@ -5,8 +5,8 @@ import com.google.gson.JsonElement;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.exceptions.SubscriptionException;
 import org.project.openbaton.integration.test.interfaces.WaiterInterface;
 import org.project.openbaton.sdk.NFVORequestor;
 import org.project.openbaton.sdk.api.exception.SDKException;
@@ -36,79 +36,48 @@ public class RestWaiter implements WaiterInterface {
         ee=null;
         unsubscriptionId=null;
     }
+
     @Override
-    public boolean subscribe(EventEndpoint eventEndpoint) {
-        if(launchServer())
-        {
-            if(eventEndpoint!=null)
-            {
-                String url = "http://localhost:" + server.getAddress().getPort() + "/"+name;
-                eventEndpoint.setEndpoint(url);
-                EventEndpoint response;
-                try
-                {
-                    response = this.requestor.getEventAgent().create(eventEndpoint);
-                } catch (SDKException e)
-                {
-                    log.error("Waiter ("+name+") problems during subscription");
-                    e.printStackTrace();
-                    return false;
-                }
-                if(response==null)
-                    throw new NullPointerException("Response is null");
-                unsubscriptionId=response.getId();
-            }
-            else throw new NullPointerException("EventEndpoint is null");
+    public void subscribe(EventEndpoint eventEndpoint) throws SDKException, SubscriptionException {
+        try {
+            launchServer();
+        } catch (IOException e) {
+           throw new SubscriptionException("Problems during the launch of the server",e);
         }
-        else return false;
-        ee=eventEndpoint;
-        return true;
+        if (eventEndpoint != null) {
+            String url = "http://localhost:" + server.getAddress().getPort() + "/" + name;
+            eventEndpoint.setEndpoint(url);
+            EventEndpoint response=null;
+            response = this.requestor.getEventAgent().create(eventEndpoint);
+            if (response == null)
+                throw new NullPointerException("Response is null");
+            unsubscriptionId = response.getId();
+        } else throw new NullPointerException("EventEndpoint is null");
+        ee = eventEndpoint;
     }
 
     @Override
-    public boolean unSubscribe() {
-        if(ee!=null)
-        {
-            try
-            {
-                this.requestor.getEventAgent().requestDelete(unsubscriptionId);
-            } catch (SDKException e)
-            {
-                log.error("Waiter (" + name + ") problems during unSubscription");
-                e.printStackTrace();
-                stopServer();
-                return false;
-            }
-        }
-        else
-        {
+    public void unSubscribe() throws SDKException {
+        if (ee == null)
             throw new NullPointerException("EventEndpoint is null");
-        }
+        this.requestor.getEventAgent().requestDelete(unsubscriptionId);
         stopServer();
-        return true;
     }
 
     private void stopServer() {
         server.stop(10);
     }
     @Override
-    public boolean waitForEvent(int timeOut) {
-        return myHandler.await(timeOut);
+    public void waitForEvent(int timeOut) throws InterruptedException {
+        myHandler.await(timeOut);
     }
 
-    private boolean launchServer(){
-        try {
-            server = HttpServer.create(new InetSocketAddress(0), 1);
-        } catch (IOException e) {
-            log.error("Waiter cannot launch the server");
-            e.printStackTrace();
-            return false;
-        }
+    private void launchServer() throws IOException {
+        server = HttpServer.create(new InetSocketAddress(0), 1);
         myHandler=new MyHandler();
         server.createContext("/" + name, myHandler);
         server.setExecutor(null);
         server.start();
-        return true;
     }
     class MyHandler implements HttpHandler {
 
@@ -163,15 +132,9 @@ public class RestWaiter implements WaiterInterface {
             }
             return responseStrBuilder.toString();
         }
-        public synchronized boolean await(int timeOut) {
-            try {
-                wait(timeOut * 1000);
-            } catch (InterruptedException e) {
-                log.error("Waiter ("+name+") was interrupted",e.getMessage());
-                e.printStackTrace();
-                return false;
-            }
-            return true;
+
+        public synchronized void await(int timeOut) throws InterruptedException {
+            wait(timeOut * 1000);
         }
         private synchronized void wakeUp() {
             notify();

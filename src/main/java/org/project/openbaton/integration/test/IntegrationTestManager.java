@@ -30,7 +30,7 @@ public abstract class IntegrationTestManager {
         try {
             rootSubTask.call();
         } catch (Exception e) {
-            e.printStackTrace();
+            log(e.getMessage(),"ERROR");
         }
         return rootSubTask.awaitTermination();
     }

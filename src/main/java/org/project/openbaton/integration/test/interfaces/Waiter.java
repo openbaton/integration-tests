@@ -2,6 +2,8 @@ package org.project.openbaton.integration.test.interfaces;
 
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.exceptions.SubscriptionException;
 import org.project.openbaton.integration.test.jms.JMSWaiter;
 import org.project.openbaton.integration.test.rest.RestWaiter;
 import org.project.openbaton.integration.test.utils.Tester;
@@ -24,36 +26,32 @@ public abstract class Waiter extends Tester {
      * @param basePath
      */
     private int timeout;
-
     private WaiterInterface waiter;
 
     public Waiter(Properties properties, Class aClass, String filePath, String basePath) {
         super(properties, aClass, filePath, basePath);
-        waiter=null;
     }
 
-    public boolean subscribe(EventEndpoint eventEndpoint) {
-        if(eventEndpoint!=null){
-            if(eventEndpoint.getType()==EndpointType.JMS)
-                waiter = new JMSWaiter();
-            else if(eventEndpoint.getType()==EndpointType.REST)
-                waiter = new RestWaiter(eventEndpoint.getName(),requestor,mapper,log);
-        }
-        else throw new NullPointerException("EventEndpoint is null");
-
-        return waiter.subscribe(eventEndpoint);
+    public void subscribe(EventEndpoint eventEndpoint) throws SubscriptionException, SDKException {
+        if (eventEndpoint == null)
+            throw new NullPointerException("EventEndpoint is null");
+        if (eventEndpoint.getType() == EndpointType.JMS)
+            waiter = new JMSWaiter();
+        else if (eventEndpoint.getType() == EndpointType.REST)
+            waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log);
+        waiter.subscribe(eventEndpoint);
     }
 
-    public boolean waitForEvent() {
+    public void waitForEvent() throws InterruptedException {
         if(waiter==null)
             throw new NullPointerException("Waiter is null (use subscribe before waitForEvent)");
-        return waiter.waitForEvent(getTimeout());
+        waiter.waitForEvent(getTimeout());
     }
 
-    public boolean unSubscribe() {
-        if(waiter==null)
+    public void unSubscribe() throws SDKException {
+        if (waiter == null)
             throw new NullPointerException("Waiter is null (use subscribe and waitForEvent before unSubscribe)");
-        return waiter.unSubscribe();
+        waiter.unSubscribe();
     }
 
     public int getTimeout() {

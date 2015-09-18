@@ -5,6 +5,7 @@ import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
 import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.exceptions.SubscriptionException;
 import org.project.openbaton.integration.test.interfaces.Waiter;
 import org.project.openbaton.sdk.api.exception.SDKException;
 
@@ -29,7 +30,7 @@ public class NetworkServiceRecordWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws IntegrationTestException {
+    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException {
         EventEndpoint eventEndpoint = new EventEndpoint();
         eventEndpoint.setEvent(getAction());
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
@@ -38,28 +39,21 @@ public class NetworkServiceRecordWait extends Waiter {
         eventEndpoint.setName(name);
         eventEndpoint.setType(EndpointType.REST);
 
-        if(subscribe(eventEndpoint))
-        {
-            log.debug(name + ": --- registration complete, start waiting for "+getAction().toString()+" of nsr with id:"+nsr.getId()+"....");
-            if(waitForEvent()){
-                if(unSubscribe())
-                {
-                    log.debug(name + ": --- unSubscription complete");
-                    return param;
-                }
-                else {
-                    log.error("Wait failed for event "+getAction() +" of nsr with id: "+nsr.getId());
-                    throw new IntegrationTestException("Waiter failed the unsubscription");
-                }
-            }else {
-                log.error("Wait failed for event "+getAction() +" of nsr with id: "+nsr.getId());
-                throw new IntegrationTestException("Waiter failed the wait");
-            }
+        try {
+            subscribe(eventEndpoint);
+            log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of nsr with id:" + nsr.getId() + "....");
+            waitForEvent();
+            log.debug(name + ": --- waiting complete for " + getAction().toString() + " of nsr with id:" + nsr.getId());
+            unSubscribe();
+
+        } catch (SubscriptionException e) {
+            log.error("Subscription failed for event " + getAction() + " nsr id: " + nsr.getId() + " nsr name: " + nsr.getName());
+            throw e;
+        } catch (InterruptedException | SDKException e) {
+            log.error("Wait failed for event " + getAction() + " nsr id: " + nsr.getId() + " nsr name: " + nsr.getName());
+            throw e;
         }
-        else {
-            log.error("Subscription failed to the eventPoint with action "+getAction() +" and nsr with id: "+nsr.getId());
-            throw new IntegrationTestException("Waiter failed the subscription");
-        }
+        return param;
     }
 
     public Action getAction() {

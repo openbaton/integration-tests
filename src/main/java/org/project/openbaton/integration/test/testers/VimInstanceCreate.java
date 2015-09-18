@@ -19,6 +19,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
     private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
     private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test-jsons/vim_instances/";
+    private static final String EXTERNAL_PATH_NAME_PARSER_VIM = "/etc/openbaton/integration-test-parser-properties/vim.properties";
     private static String fileName;
 
     /**
@@ -60,15 +61,21 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
         }
         String vimRandom = null;
-        try {
-            vimRandom = Parser.randomize(body, "/etc/openbaton/integration-test-parser-properties/vim.properties");
-        } catch (IOException e) {
-            e.printStackTrace();
+        File parserPropertiesFile = new File(EXTERNAL_PATH_NAME_PARSER_VIM);
+        if (parserPropertiesFile != null && parserPropertiesFile.exists()) {
+            try {
+                vimRandom = Parser.randomize(body, EXTERNAL_PATH_NAME_PARSER_VIM);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            log.debug("vim-instance.json (old): " + body);
+            log.debug("vim-instance.json (random): " + vimRandom);
+            return mapper.fromJson(vimRandom, aClass);
+        }else {
+            log.warn("Missing /etc/openbaton/integration-test-parser-properties/vim.properties file");
+            log.warn("If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
         }
-        //log.debug("vim-instance.json (old): " + body);
-        //log.debug("vim-instance.json (random): " + vimRandom);
-
-        return mapper.fromJson(vimRandom, aClass);
+        return mapper.fromJson(body, aClass);
     }
     public void setFileName(String fileName){
         this.fileName=fileName;

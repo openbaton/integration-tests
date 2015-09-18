@@ -4,7 +4,10 @@ import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.catalogue.nfvo.Action;
 import org.project.openbaton.catalogue.nfvo.EndpointType;
 import org.project.openbaton.catalogue.nfvo.EventEndpoint;
+import org.project.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.project.openbaton.integration.test.exceptions.SubscriptionException;
 import org.project.openbaton.integration.test.interfaces.Waiter;
+import org.project.openbaton.sdk.api.exception.SDKException;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -27,39 +30,32 @@ public class NetworkServiceDescriptorWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() {
+    protected Object doWork() throws SubscriptionException, SDKException, InterruptedException {
 
         /**Endpoint creation**/
         EventEndpoint eventEndpoint = new EventEndpoint();
         eventEndpoint.setEvent(Action.RELEASE_RESOURCES_FINISH);
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
-        //eventEndpoint.setNetworkServiceId(nsd.getId());
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
         eventEndpoint.setName(name);
         eventEndpoint.setType(EndpointType.REST);
         /*********************/
-
-
-        if(this.subscribe(eventEndpoint))
-        {
-            log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:"+nsd.getId());
-            int counter=0;
-            while(counter<nsrCreated){
-                if(this.waitForEvent())
-                    counter++;
-                else break;
-            }
-            if(this.unSubscribe())
-            {
-                log.debug(name + ": --- unSubscription complete it's time to delete the nsd with id :"+ nsd.getId());
-            }
+        try {
+            subscribe(eventEndpoint);
+            log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:" + nsd.getId());
+            waitForEvent();
+            this.unSubscribe();
+            log.debug(name + ": --- unSubscription complete it's time to delete the nsd with id :" + nsd.getId());
+        } catch (SubscriptionException e) {
+            log.error("Subscription failed for the event " + eventEndpoint.getEvent().toString() + " nsd id: " + nsd.getId() + " nsd name: " + nsd.getName());
+            throw e;
+        } catch (SDKException e) {
+            log.error("Wait failed for the event " + eventEndpoint.getEvent().toString() + " nsd id: " + nsd.getId() + " nsd name: " + nsd.getName());
+            throw e;
+        } catch (InterruptedException e) {
+            log.error("Wait failed for the event " + eventEndpoint.getEvent().toString() + " nsd id: " + nsd.getId() + " nsd name: " + nsd.getName());
+            throw e;
         }
-        else log.error("Subscription failed to the eventPoint with action "+eventEndpoint.getEvent().toString() +" and nsd with id: "+nsd.getId());
-        //log.debug(name + ": --- forward the param: " + param.toString());
         return nsd.getId();
-    }
-
-    public void setNSRCreated(int nSRCreated){
-        nsrCreated=nSRCreated;
     }
 }

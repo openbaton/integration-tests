@@ -6,8 +6,8 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.project.openbaton.catalogue.mano.common.DeploymentFlavour;
 import org.project.openbaton.catalogue.mano.common.Security;
-/*import org.project.openbaton.catalogue.mano.common.VNFDependency;
-import org.project.openbaton.catalogue.mano.common.VNFRecordDependency;*/
+import org.project.openbaton.catalogue.mano.common.VNFDependency;
+import org.project.openbaton.catalogue.mano.common.VNFRecordDependency;
 import org.project.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.project.openbaton.catalogue.mano.descriptor.PhysicalNetworkFunctionDescriptor;
 import org.project.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
@@ -160,7 +160,7 @@ public class SdkTest {
     	return physicalNetworkFunctionRecord;
     }
     
-    /*private VNFRecordDependency createVNFDependency(){
+    private VNFRecordDependency createVNFDependency(){
     	VirtualNetworkFunctionRecord source = new VirtualNetworkFunctionRecord();
     	source.setName("vnf-dummy-2");
     	
@@ -175,7 +175,7 @@ public class SdkTest {
     	
 		return vnfDependency;
     	
-    }*/
+    }
 
     private VimInstance createVimInstance() {
         VimInstance vimInstance = new VimInstance();

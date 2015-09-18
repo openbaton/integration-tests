@@ -1,0 +1,308 @@
+{
+  "vendor":"fokus",
+  "version":"0.1-ALPHA",
+  "name":"MongoDescriptor",
+  "vnfd":[
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"shard",
+      "type":"datastore",
+      "endpoint":"generic",
+      "descriptor_version":"0.1-ALPHA",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "computation_requirement":"",
+          "virtual_memory_resource_element":"1024",
+          "virtual_network_bandwidth_resource":"1000000",
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "vdu_constraint":"",
+          "high_availability":"ACTIVE_PASSIVE",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }
+          ],
+          "monitoring_parameter":[
+            "cpu_utilization"
+          ]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+        {
+          "event":"INSTANTIATE",
+          "lifecycle_events":
+          [
+            "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10",
+
+            "echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list",
+
+            "sudo apt-get update",
+
+            "sudo apt-get install -y mongodb-org",
+
+            "export LC_ALL=C",
+
+            "sudo mkdir -p /data/shard1",
+
+            "sudo chown -R ubuntu /data/",
+
+            "mongod --shardsvr --port 27018 --dbpath /data/shard1 --smallfiles"
+
+          ]
+        }
+      ],
+      "vdu_dependency":[
+      ],
+      "monitoring_parameter":[
+        "cpu_utilization"
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "auto_scale_policy":[
+      ],
+      "manifest_file":"",
+      "requires":[
+      ],
+      "provides":[
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"config",
+      "type":"config-server",
+      "endpoint":"generic",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "computation_requirement":"",
+          "virtual_memory_resource_element":"1024",
+          "virtual_network_bandwidth_resource":"1000000",
+          "lifecycle_event":[
+            {
+              "event":"INSTANTIATE",
+              "lifecycle_events":
+              [
+                "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10",
+                "echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list",
+                "sudo apt-get update",
+                "sudo apt-get install -y mongodb-org",
+                "sudo mkdir -p /data/configdb",
+                "sudo chown -R ubuntu /data",
+                "export LC_ALL=C",
+                "mongod --configsvr --smallfiles --dbpath /data/configdb --port 27019"
+              ]
+            }
+          ],
+          "vimInstanceName":"vim-instance",
+          "vdu_constraint":"",
+          "high_availability":"ACTIVE_PASSIVE",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }
+          ],
+          "monitoring_parameter":[
+            "cpu_utilization"
+          ]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "monitoring_parameter":[
+        "cpu_utilization"
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "auto_scale_policy":[
+      ],
+      "manifest_file":"",
+      "requires":[
+      ],
+      "provides":[
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"mongo-router",
+      "type":"router",
+      "endpoint":"generic",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "computation_requirement":"",
+          "virtual_memory_resource_element":"1024",
+          "virtual_network_bandwidth_resource":"1000000",
+          "lifecycle_event":[
+            {
+              "event":"INSTANTIATE",
+              "lifecycle_events":
+              [
+                "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10",
+                "echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list",
+                "sudo apt-get update",
+                "sudo apt-get install -y mongodb-org"
+              ]
+            },
+            {
+              "event":"CONFIGURE",
+              "lifecycle_events":
+              [
+                "export LC_ALL=C",
+                "screen -S router mongos --configdb #config-server:ip1 --smallfiles",
+                "mongo --eval 'sh.addShard(' #datastore:ip1 :27018')'",
+                "mongo --eval 'sh.shardCollection('test.newcollection', { '_id': 'hashed' } )'"
+              ]
+            }
+          ],
+          "vimInstanceName":"vim-instance",
+          "vdu_constraint":"",
+          "high_availability":"ACTIVE_PASSIVE",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }
+          ],
+          "monitoring_parameter":[
+            "cpu_utilization"
+          ]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "monitoring_parameter":[
+        "cpu_utilization"
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "auto_scale_policy":[
+      ],
+      "manifest_file":"",
+      "requires":[
+      ],
+      "provides":[
+
+      ]
+    }
+  ],
+  "vnffgd":[
+  ],
+  "vld":[
+    {
+          "name": "private"
+    }
+  ],
+  "lifecycle_event":[
+  ],
+  "vnf_dependency":[
+    {
+      "source" : {
+        "name": "config"
+      },
+      "target":{
+        "name": "mongo-router"
+      },
+      "parameters":[
+        "ip1"
+      ]
+    },{
+      "source" : {
+        "name": "shard"
+      },
+      "target":{
+        "name": "mongo-router"
+      },
+      "parameters":[
+        "ip1"
+      ]
+    }
+  ],
+  "monitoring_parameter":[
+    "cpu_utilization"
+  ],
+  "service_deployment_flavour":[
+    {
+
+    }
+  ],
+  "auto_scale_policy":[
+  ],
+  "connection_point":[
+  ],
+  "pnfd":[
+  ]
+}
+
+
