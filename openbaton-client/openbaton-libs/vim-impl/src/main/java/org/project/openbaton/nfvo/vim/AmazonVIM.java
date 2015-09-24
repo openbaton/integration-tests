@@ -50,7 +50,7 @@ public class AmazonVIM extends Vim {
         super("amazon",port);
     }
     @Override
-    public NFVImage add(VimInstance vimInstance, NFVImage image, InputStream inputStream) throws VimException {
+    public NFVImage add(VimInstance vimInstance, NFVImage image, byte[] imageFile) throws VimException {
         throw new UnsupportedOperationException();
     }
 
@@ -70,13 +70,13 @@ public class AmazonVIM extends Vim {
     }
 
     @Override
-    public void copy(VimInstance vimInstance, NFVImage image, InputStream inputStream) throws VimException {
+    public void copy(VimInstance vimInstance, NFVImage image, byte[] imageFile) throws VimException {
 
     }
 
     @Override
     @Async
-    public Future<String> allocate(VirtualDeploymentUnit vdu, VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFComponent vnfComponent) {
+    public Future<String> allocate(VirtualDeploymentUnit vdu, VirtualNetworkFunctionRecord virtualNetworkFunctionRecord, VNFComponent vnfComponent, String userdata, boolean floatingIp) {
         throw new UnsupportedOperationException();
     }
 
