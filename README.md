@@ -46,35 +46,99 @@ In a text editor, create a file named cli.properties file and add the following 
  $ openbaton.sh COMMAND help
 ```
 
+### Discover the version number for a client
+```sh
+ $ openbaton.sh -v
+```
+
 ### **Vim Instance Subcommands**
 * **create**
   * Create the object of type Vim Instance
+
+```sh
+ $ openbaton.sh VimInstance-create file.json
+```
+
 * **delete**
   * Delete the object of type Vim Instance passing the id
+
+```sh
+ $ openbaton.sh VimInstance-delete id-vim-instance
+```
+
 * **update**
   * Update the object of type Vim nstance passing the new object and the id of the old object
+
+```sh
+ $ openbaton.sh VimInstance-update file.json
+```
+
 * **findAll**
   * Find all the objects of type Vim Instance
+
+```sh
+ $ openbaton.sh VimInstance-findAll
+```
+
 * **findById**
   * Find the object of type Vim Instance through the id
+
+```sh
+ $ openbaton.sh VimInstance-findById id-vim-instance
+```
 
 ### **Network Service Descriptor Subcommands**
 * **create**
   * Create the object of type Network Service Descriptor
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-create file.json
+```
+
 * **delete**
   * Delete the object of type Network Service Descriptor passing the id
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-delete id-network-service-descriptor
+```
+
 * **update**
   * Update the object of type Network Service Descriptor passing the new object and the id of the old object
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-update file.json
+```
+
 * **findAll**
   * Find all the objects of type Network Service Descriptor
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-findAll
+```
+
 * **findById**
   * Find the object of type Network Service Descriptor through the id
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-findById id-network-service-descriptor
+```
+
 * **updatePNFD**                                            
   * Update the Physical Network FunctionDescriptor of a Network ServiceDescriptor with specific id
 * **getVNFDependencies**                                  
   * Get all the Virtual Network Function Descriptor Dependency of a Network Service Descriptor with specific id
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-getVNFDependencies id-network-service-descriptor
+```
+
 * **getVNFDependency**                                      
   * Get the VirtualNetwork Function Descriptor dependency with specific id of a Network Service Descriptor with specific id
+
+```sh
+ $ openbaton.sh NetworkServiceDescriptor-getVNFDependency id-network-service-descriptor id-vnfdependency
+```
+
 * **deleteVNFDependency**                                   
   * Delete the Virtual Network Function Descriptor dependency of a Network Service Descriptor with specific id
 * **getVirtualNetworkFunctionDescriptors**                  
@@ -109,14 +173,39 @@ In a text editor, create a file named cli.properties file and add the following 
 ### **Network Service Record Subcommands**
 * **create**
   * Create the object of type Network Service Record
+
+```sh
+ $ openbaton.sh NetworkServiceRecord-create file.json
+```
+
 * **delete**
   * Delete the object of type Network Service Record passing the id
+
+```sh
+ $ openbaton.sh NetworkServiceRecord-delete id-network-service-record
+```
+
 * **update**
   * Update the object of type Network Service Record passing the new object and the id of the old object
+
+```sh
+ $ openbaton.sh NetworkServiceRecord-update file.json
+```
+
 * **findAll**
   * Find all the objects of type Network Service Record
+
+```sh
+ $ openbaton.sh NetworkServiceRecord-findAll 
+```
+
 * **findById**
   * Find the object of type Network Service Record through the id
+
+```sh
+ $ openbaton.sh NetworkServiceRecord-findById id-network-service-record
+```
+
 * **updateVNFDependency**                                       
   * Update the Virtual Network Function Record Dependency of a Network Service Record with specific id
 * **getPhysicalNetworkFunctionRecords**                       
