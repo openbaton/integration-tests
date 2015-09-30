@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.junit.Test;
+import org.openbaton.sdk.api.exception.SDKException;
 import org.project.openbaton.catalogue.mano.common.DeploymentFlavour;
 import org.project.openbaton.catalogue.mano.common.Security;
 import org.project.openbaton.catalogue.mano.common.VNFDependency;
@@ -20,7 +21,6 @@ import org.project.openbaton.catalogue.nfvo.Network;
 import org.project.openbaton.catalogue.nfvo.Subnet;
 import org.project.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

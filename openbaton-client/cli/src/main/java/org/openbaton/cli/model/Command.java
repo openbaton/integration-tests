@@ -1,4 +1,4 @@
-package org.project.openbaton.cli.model;
+package org.openbaton.cli.model;
 
 import java.lang.reflect.Method;
 

@@ -1,4 +1,4 @@
-package org.project.openbaton.cli;
+package org.openbaton.cli;
 
 import com.google.gson.Gson;
 import jline.console.ConsoleReader;
@@ -6,7 +6,7 @@ import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.FileNameCompleter;
 import jline.console.completer.StringsCompleter;
-import org.project.openbaton.cli.model.Command;
+import org.openbaton.cli.model.Command;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.annotations.Help;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
