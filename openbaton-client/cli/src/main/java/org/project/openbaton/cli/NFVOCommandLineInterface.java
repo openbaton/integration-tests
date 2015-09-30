@@ -7,9 +7,9 @@ import jline.console.completer.Completer;
 import jline.console.completer.FileNameCompleter;
 import jline.console.completer.StringsCompleter;
 import org.project.openbaton.cli.model.Command;
-import org.project.openbaton.sdk.NFVORequestor;
-import org.project.openbaton.sdk.api.annotations.Help;
-import org.project.openbaton.sdk.api.util.AbstractRestAgent;
+import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.annotations.Help;
+import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
