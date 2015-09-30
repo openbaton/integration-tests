@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 include 'catalogue'
 include 'vnfm-sdk'
 include 'vnfm-sdk-jms'
+
+//project(':catalogue').projectDir = file('../../catalogue')
+//project(':vnfm-sdk').projectDir = file('../../vnfm-sdk')
+//project(':vnfm-sdk-jms').projectDir = file('../../vnfm-sdk-jms')
