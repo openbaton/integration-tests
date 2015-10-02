@@ -13,6 +13,10 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by mob on 31.07.15.
@@ -23,6 +27,8 @@ public class RestWaiter implements WaiterInterface {
     private MyHandler myHandler;
     private String name;
     private Logger log;
+    private final Lock lock = new ReentrantLock();
+    private final Condition eventOccurred  = lock.newCondition();
     private NFVORequestor requestor=null;
     private Gson mapper;
     private EventEndpoint ee;
@@ -68,8 +74,8 @@ public class RestWaiter implements WaiterInterface {
         server.stop(10);
     }
     @Override
-    public void waitForEvent(int timeOut) throws InterruptedException {
-        myHandler.await(timeOut);
+    public boolean waitForEvent(int timeOut) throws InterruptedException {
+        return myHandler.await(timeOut);
     }
 
     private void launchServer() throws IOException {
@@ -80,7 +86,6 @@ public class RestWaiter implements WaiterInterface {
         server.start();
     }
     class MyHandler implements HttpHandler {
-
         @Override
         public void handle(HttpExchange t) throws IOException {
             InputStream is = t.getRequestBody();
@@ -132,12 +137,24 @@ public class RestWaiter implements WaiterInterface {
             }
             return responseStrBuilder.toString();
         }
-
-        public synchronized void await(int timeOut) throws InterruptedException {
-            wait(timeOut * 1000);
+        //false if the waiting time detectably elapsed before return from the method, else true
+        public boolean await(int timeOut) throws InterruptedException {
+            boolean result;
+            lock.lock();
+            try {
+               return eventOccurred.await(timeOut, TimeUnit.SECONDS);
+            } finally {
+                lock.unlock();
+            }
         }
-        private synchronized void wakeUp() {
-            notify();
+        private void wakeUp() {
+            lock.lock();
+            try {
+               eventOccurred.signal();
+            } finally {
+                lock.unlock();
+            }
+
         }
     }
 }

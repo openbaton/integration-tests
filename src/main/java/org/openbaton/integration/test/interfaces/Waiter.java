@@ -10,6 +10,9 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
 import java.util.Properties;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by mob on 31.07.15.
@@ -50,10 +53,10 @@ public abstract class Waiter extends Tester {
         eventEndpoint.setType(type);
         return eventEndpoint;
     }
-    public void waitForEvent() throws InterruptedException {
+    public boolean waitForEvent() throws InterruptedException {
         if(waiter==null)
             throw new NullPointerException("Waiter is null (use subscribe before waitForEvent)");
-        waiter.waitForEvent(getTimeout());
+        return waiter.waitForEvent(getTimeout());
     }
 
     public void unSubscribe() throws SDKException {
@@ -69,6 +72,7 @@ public abstract class Waiter extends Tester {
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
+
     public Action getAction() {
         return action;
     }

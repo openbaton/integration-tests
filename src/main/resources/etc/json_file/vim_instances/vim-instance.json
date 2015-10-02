@@ -10,7 +10,7 @@
     "test_security_group2",
     "test_security_group3"
   ],
-  "type":"openstack",
+  "type":"test",
   "location":{
     "name":"Berlin",
     "latitude":"52.525876",

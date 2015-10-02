@@ -40,9 +40,10 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
 
         try {
             subscribe(eventEndpoint);
-            log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId + "....");
-            waitForEvent();
-            log.debug(name + ": --- waiting complete for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
+            log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of vnfr with name:" + getVnfrName() + " and id:" + vnfrId + "....");
+            if(waitForEvent())
+                log.debug(name + ": --- waiting complete for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
+            else log.debug(name + ": --- timeout elapsed for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
             unSubscribe();
 
         } catch (SubscriptionException e) {

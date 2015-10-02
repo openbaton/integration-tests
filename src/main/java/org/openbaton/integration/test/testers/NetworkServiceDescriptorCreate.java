@@ -34,7 +34,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
         try {
             received = create();
         }catch(SDKException sdkEx){
-            log.error("Exception during the instantiation of NetworkServiceDescription from vim with name: "+vimInstance.getName()+" and id: "+vimInstance.getId());
+            log.error("Exception during the on-boarding of NetworkServiceDescription from vim with name: "+vimInstance.getName()+" and id: "+vimInstance.getId());
             throw sdkEx;
         }
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;

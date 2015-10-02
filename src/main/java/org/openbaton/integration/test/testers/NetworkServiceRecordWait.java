@@ -40,8 +40,9 @@ public class NetworkServiceRecordWait extends Waiter {
         try {
             subscribe(eventEndpoint);
             log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of nsr with id:" + nsr.getId() + "....");
-            waitForEvent();
-            log.debug(name + ": --- waiting complete for " + getAction().toString() + " of nsr with id:" + nsr.getId());
+            if(waitForEvent())
+                log.debug(name + ": --- waiting complete for " + getAction().toString() + " of nsr with id:" + nsr.getId());
+            else log.debug(name + ": --- timeout elapsed for " + getAction().toString() + " of nsr with id:" + nsr.getId());
             unSubscribe();
 
         } catch (SubscriptionException e) {
