@@ -42,7 +42,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 		try {
 			networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
 		} catch (SDKException sdkEx) {
-			log.error("Exception during the instantiation of NetworkServiceRecord from nsd of id: "+nsd.getId(),sdkEx);
+			log.error("Exception during the instantiation of NetworkServiceRecord from nsd of id: "+nsd.getId());
 			throw sdkEx;
 		}
 		log.debug(" --- Creating nsr with id: " + networkServiceRecord.getId()+" from nsd with id: "+ nsd.getId());
