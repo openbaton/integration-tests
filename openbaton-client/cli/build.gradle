@@ -6,7 +6,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.project.openbaton.cli.NFVOCommandLineInterface'
+        attributes 'Main-Class': 'NFVOCommandLineInterface'
     }
 }
 
@@ -14,7 +14,7 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'NFVOCommandLineInterface',
                 'Implementation-Version': version,
-                'Main-Class': 'org.project.openbaton.cli.NFVOCommandLineInterface'
+                'Main-Class': 'NFVOCommandLineInterface'
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

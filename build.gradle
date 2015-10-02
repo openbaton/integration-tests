@@ -47,7 +47,7 @@ project.ext {
 	/**
 	 * gradle Related Vars
 	 */
-	mainClass = theMainClass = 'org.project.openbaton.integration.test.MainIntegrationTest'
+	mainClass = theMainClass = 'org.openbaton.integration.test.MainIntegrationTest'
 	//------------------------------------------------//
 }
 apply from: 'openbaton-client/openbaton-libs/gradle/gradle/application.java.gradle'
