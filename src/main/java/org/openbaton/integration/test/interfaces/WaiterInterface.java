@@ -11,5 +11,5 @@ import org.openbaton.sdk.api.exception.SDKException;
 public interface WaiterInterface {
     void subscribe(EventEndpoint endpoint) throws SubscriptionException, SDKException;
     void unSubscribe() throws SDKException;
-    void waitForEvent(int timeOut) throws InterruptedException;
+    boolean waitForEvent(int timeOut) throws InterruptedException;
 }

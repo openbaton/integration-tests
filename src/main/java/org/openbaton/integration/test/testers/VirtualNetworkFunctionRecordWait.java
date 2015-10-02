@@ -1,6 +1,5 @@
-package org.project.openbaton.integration.test.testers;
+package org.openbaton.integration.test.testers;
 
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.project.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.project.openbaton.catalogue.nfvo.EndpointType;

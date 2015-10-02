@@ -22,7 +22,7 @@ public class JMSWaiter implements WaiterInterface {
     }
 
     @Override
-    public void waitForEvent(int timeOut) throws InterruptedException {
-
+    public boolean waitForEvent(int timeOut) throws InterruptedException {
+        return false;
     }
 }
