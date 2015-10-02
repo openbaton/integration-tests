@@ -40,7 +40,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
         try {
             result= create();
         } catch (SDKException sdkEx) {
-            log.error("Exception during the instantiation of VimInstance", sdkEx);
+            log.error("Exception during the instantiation of VimInstance");
             throw sdkEx;
         }
         return result;
