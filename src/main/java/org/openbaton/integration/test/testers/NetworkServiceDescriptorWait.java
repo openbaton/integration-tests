@@ -32,14 +32,11 @@ public class NetworkServiceDescriptorWait extends Waiter {
     @Override
     protected Object doWork() throws SubscriptionException, SDKException, InterruptedException {
 
-        /**Endpoint creation**/
-        EventEndpoint eventEndpoint = new EventEndpoint();
+        EventEndpoint eventEndpoint = createEventEndpoint(name,EndpointType.REST);
         eventEndpoint.setEvent(Action.RELEASE_RESOURCES_FINISH);
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
-        eventEndpoint.setName(name);
-        eventEndpoint.setType(EndpointType.REST);
-        /*********************/
+
         try {
             subscribe(eventEndpoint);
             log.debug(name + ": --- Registration complete, start waiting for deleting the nsd with id:" + nsd.getId());

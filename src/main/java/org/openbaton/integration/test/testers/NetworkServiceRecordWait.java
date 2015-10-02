@@ -17,8 +17,7 @@ import java.util.Properties;
  */
 public class NetworkServiceRecordWait extends Waiter {
 
-    private static final String name="NetworkServiceRecordWait";
-    private Action action;
+    private String name = NetworkServiceRecordWait.class.getSimpleName();
 
     public NetworkServiceRecordWait(Properties properties) {
         super(properties, NetworkServiceRecordWait.class, "", "");
@@ -31,13 +30,12 @@ public class NetworkServiceRecordWait extends Waiter {
 
     @Override
     protected Object doWork() throws SDKException, SubscriptionException, InterruptedException {
-        EventEndpoint eventEndpoint = new EventEndpoint();
-        eventEndpoint.setEvent(getAction());
+
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
+
+        EventEndpoint eventEndpoint = createEventEndpoint(name,EndpointType.REST);
         eventEndpoint.setNetworkServiceId(nsr.getId());
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
-        eventEndpoint.setName(name);
-        eventEndpoint.setType(EndpointType.REST);
 
         try {
             subscribe(eventEndpoint);
@@ -54,13 +52,5 @@ public class NetworkServiceRecordWait extends Waiter {
             throw e;
         }
         return param;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action a) {
-        action=a;
     }
 }

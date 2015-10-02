@@ -188,6 +188,8 @@ public class MainIntegrationTest {
 					configureNetworkServiceRecordCreate(subTask, currentSection);
 				else if (subTask instanceof NetworkServiceRecordWait)
 					configureNetworkServiceRecordWait(subTask, currentSection);
+				else if (subTask instanceof VirtualNetworkFunctionRecordWait)
+					configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
 			}
 		};
 		itm.setLogger(log);
@@ -218,6 +220,8 @@ public class MainIntegrationTest {
 		System.exit(0);
 	}
 
+
+
 	private static File loadFileIni(String[] args) throws FileNotFoundException {
 		File f;
 		if (args.length > 1) {
@@ -243,6 +247,23 @@ public class MainIntegrationTest {
 
 	private static void configureNetworkServiceDescriptorDelete(SubTask instance, Profile.Section currentSection) {
 		//cast and get specific properties
+	}
+	private static void configureVirtualNetworkFunctionRecordWait(SubTask subTask, Profile.Section currentSection) {
+		VirtualNetworkFunctionRecordWait w = (VirtualNetworkFunctionRecordWait) subTask;
+		w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+		String action = currentSection.get("action");
+		String vnfName= currentSection.get("vnf-name");
+		if (action == null || action.isEmpty()) {
+			log.error("action for VirtualNetworkFunctionRecordWait not setted");
+			exit(3);
+		}
+		if (vnfName == null || vnfName.isEmpty()) {
+			log.error("vnf-name property not setted not setted");
+			exit(3);
+		}
+		w.setAction(Action.valueOf(action));
+		w.setVnfrName(vnfName);
 	}
 
 	private static void configureNetworkServiceRecordWait(SubTask instance, Profile.Section currentSection) {

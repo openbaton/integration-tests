@@ -64,7 +64,7 @@ public abstract class IntegrationTestManager {
 
         SubTask instance = loadInstance(properties, currentChild);
         if(instance==null)
-            throw new NullPointerException();
+            throw new NullPointerException("Instance is null");
         //If there are specific properties for a type of a tester in the configuration file (.ini)
         configureSubTask(instance, currentChild);
         String successorRemover = getSuccessorRemover(currentChild);

@@ -1,8 +1,8 @@
 package org.openbaton.integration.test.interfaces;
 
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
-import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.jms.JMSWaiter;
 import org.openbaton.integration.test.rest.RestWaiter;
@@ -27,6 +27,7 @@ public abstract class Waiter extends Tester {
      */
     private int timeout;
     private WaiterInterface waiter;
+    private Action action;
 
     public Waiter(Properties properties, Class aClass, String filePath, String basePath) {
         super(properties, aClass, filePath, basePath);
@@ -42,6 +43,13 @@ public abstract class Waiter extends Tester {
         waiter.subscribe(eventEndpoint);
     }
 
+    protected EventEndpoint createEventEndpoint(String name, EndpointType type){
+        EventEndpoint eventEndpoint = new EventEndpoint();
+        eventEndpoint.setEvent(getAction());
+        eventEndpoint.setName(name);
+        eventEndpoint.setType(type);
+        return eventEndpoint;
+    }
     public void waitForEvent() throws InterruptedException {
         if(waiter==null)
             throw new NullPointerException("Waiter is null (use subscribe before waitForEvent)");
@@ -60,5 +68,12 @@ public abstract class Waiter extends Tester {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action a) {
+        action=a;
     }
 }
