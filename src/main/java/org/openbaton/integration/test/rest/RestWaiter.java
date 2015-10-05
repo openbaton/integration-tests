@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.WaiterInterface;
@@ -33,6 +34,8 @@ public class RestWaiter implements WaiterInterface {
     private Gson mapper;
     private EventEndpoint ee;
     private String unsubscriptionId;
+    private Action action;
+    private String payload;
 
     public RestWaiter(String waiterName,NFVORequestor nfvoRequestor,Gson gsonMapper,Logger logger) {
         name=waiterName;
@@ -78,6 +81,20 @@ public class RestWaiter implements WaiterInterface {
         return myHandler.await(timeOut);
     }
 
+    @Override
+    public Action getAction() {
+        if(action==null)
+            throw new NullPointerException("Action is null. This method must be invoked after waitForEvent");
+        return action;
+    }
+
+    @Override
+    public String getPayload() {
+        if(payload==null)
+            throw new NullPointerException("Payload is null. This method must be invoked after waitForEvent");
+        return payload;
+    }
+
     private void launchServer() throws IOException {
         server = HttpServer.create(new InetSocketAddress(0), 1);
         myHandler=new MyHandler();
@@ -104,8 +121,9 @@ public class RestWaiter implements WaiterInterface {
             JsonElement jsonElement = mapper.fromJson(message, JsonElement.class);
 
             String actionReceived= jsonElement.getAsJsonObject().get("action").getAsString();
-            log.debug("Action received: " + actionReceived);
-            String payload= jsonElement.getAsJsonObject().get("payload").getAsString();
+            //log.debug("Action received: " + actionReceived);
+            action=Action.valueOf(actionReceived);
+            payload= jsonElement.getAsJsonObject().get("payload").getAsString();
             //log.debug("Payload received: "+payload);
             if(actionReceived.equals(ee.getEvent().toString()))
                 return true;

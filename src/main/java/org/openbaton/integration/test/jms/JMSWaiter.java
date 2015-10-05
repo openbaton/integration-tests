@@ -1,5 +1,6 @@
 package org.openbaton.integration.test.jms;
 
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
@@ -24,5 +25,15 @@ public class JMSWaiter implements WaiterInterface {
     @Override
     public boolean waitForEvent(int timeOut) throws InterruptedException {
         return false;
+    }
+
+    @Override
+    public Action getAction() {
+        return null;
+    }
+
+    @Override
+    public String getPayload() {
+        return null;
     }
 }

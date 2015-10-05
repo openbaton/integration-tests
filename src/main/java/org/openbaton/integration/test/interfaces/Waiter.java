@@ -65,6 +65,9 @@ public abstract class Waiter extends Tester {
         waiter.unSubscribe();
     }
 
+    public String getPayload(){
+        return waiter.getPayload();
+    }
     public int getTimeout() {
         return timeout;
     }

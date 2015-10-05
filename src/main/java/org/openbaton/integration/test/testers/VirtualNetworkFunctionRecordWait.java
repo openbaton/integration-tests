@@ -1,12 +1,12 @@
 package org.openbaton.integration.test.testers;
 
-import org.project.openbaton.catalogue.mano.record.NetworkServiceRecord;
-import org.project.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
-import org.project.openbaton.catalogue.nfvo.EndpointType;
-import org.project.openbaton.catalogue.nfvo.EventEndpoint;
-import org.project.openbaton.integration.test.exceptions.SubscriptionException;
-import org.project.openbaton.integration.test.interfaces.Waiter;
-import org.project.openbaton.sdk.api.exception.SDKException;
+import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
+import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
+import org.openbaton.catalogue.nfvo.EndpointType;
+import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.SubscriptionException;
+import org.openbaton.integration.test.interfaces.Waiter;
+import org.openbaton.sdk.api.exception.SDKException;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -52,7 +52,10 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
             log.error("Wait failed for event " + getAction() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
             throw e;
         }
-        return param;
+        //I can choose what to return:
+        //-nsr
+        //-vnfr received and available invoking getPayload()
+        return nsr;
     }
 
     public void setVnfrName(String name){
@@ -68,9 +71,12 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
             throw new NullPointerException("NetworkServiceRecord is null");
         if(vnfrName==null || vnfrName.isEmpty())
             throw new NullPointerException("vnfrName is null or empty");
-        for(VirtualNetworkFunctionRecord vnfr : networkServiceRecord.getVnfr())
-            if(vnfr.getName().equalsIgnoreCase(vnfrName))
+        log.debug(""+networkServiceRecord);
+        for(VirtualNetworkFunctionRecord vnfr : networkServiceRecord.getVnfr()) {
+            log.debug("VNFR name found: " + vnfr.getName());
+            if (vnfr.getName().equalsIgnoreCase(vnfrName))
                 return vnfr.getId();
+        }
         throw new NullPointerException("No vnfr found for name: "+vnfrName);
     }
 }

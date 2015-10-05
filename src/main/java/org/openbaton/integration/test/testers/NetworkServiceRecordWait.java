@@ -52,6 +52,7 @@ public class NetworkServiceRecordWait extends Waiter {
             log.error("Wait failed for event " + getAction() + " nsr id: " + nsr.getId() + " nsr name: " + nsr.getName());
             throw e;
         }
-        return param;
+        nsr=mapper.fromJson(getPayload(), NetworkServiceRecord.class);
+        return nsr;
     }
 }
