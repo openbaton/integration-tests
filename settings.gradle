@@ -17,9 +17,3 @@
 rootProject.projectDir = file('.')
 rootProject.name = 'integration-tests'
 
-include 'sdk'
-include 'catalogue'
-
-
-project(':catalogue').projectDir = file('openbaton-client/openbaton-libs/catalogue')
-project(':sdk').projectDir = file('openbaton-client/sdk')
