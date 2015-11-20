@@ -38,7 +38,7 @@
                         {
                             "connection_point":[
                                 {
-                                    "virtual_link_reference":"mgmt"
+                                    "virtual_link_reference":"private"
                                 }
                             ]
                         }
@@ -48,7 +48,7 @@
             ],
             "virtual_link":[
                 {
-                    "name":"mgmt"
+                    "name":"private"
                 }
             ],
             "deployment_flavour":[
@@ -58,12 +58,80 @@
             ],
             "type":"server",
             "endpoint":"generic"
+        },
+        {
+            "name":"iperf-client",
+            "vendor":"fokus",
+            "version":"0.1",
+            "type":"client",
+            "lifecycle_event":[
+                {
+                    "event":"INSTANTIATE",
+                    "lifecycle_events":[
+                        "sudo apt-get update && sudo apt-get install -y iperf && sudo apt-get install -y screen"
+                    ]
+                },
+                {
+                    "event":"START",
+                    "lifecycle_events":[
+                        "screen -d -m -S client iperf -c $server_private -t 300"
+                    ]
+                }
+            ],
+            "configurations":{
+                "name":"client-configuration",
+                "configurationParameters":[
+
+                ]
+            },
+            "vdu":[
+                {
+                    "vm_image":[
+                        "ubuntu-14.04-server-cloudimg-amd64-disk1"
+                    ],
+                    "scale_in_out":1,
+                    "vnfc":[
+                        {
+                            "connection_point":[
+                                {
+                                    "virtual_link_reference":"private"
+                                }
+                            ]
+                        }
+                    ],
+                    "vimInstanceName":"vim-instance"
+                }
+            ],
+            "virtual_link":[
+                {
+                    "name":"private"
+                }
+            ],
+            "deployment_flavour":[
+                {
+                    "flavour_key":"m1.small"
+                }
+            ],
+            "type":"client",
+            "endpoint":"generic"
         }
     ],
     "vld":[
         {
-            "name":"mgmt"
+            "name":"private"
         }
     ],
-    "vnf_dependency":[]
+    "vnf_dependency":[
+        {
+            "source":{
+                "name":"iperf-server"
+            },
+            "target":{
+                "name":"iperf-client"
+            },
+            "parameters":[
+                "private"
+            ]
+        }
+    ]
 }

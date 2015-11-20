@@ -1,0 +1,963 @@
+{
+  "vendor":"fokus",
+  "version":"0",
+  "name":"NSD-dependencies",
+  "vnfd":[
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-1",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "source",
+        "param1",
+        "param2"
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-2",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-3",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-4",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-5",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-6",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-7",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":1,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2",
+        "param3"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-8",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2",
+        "param3",
+        "param4"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-9",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2",
+        "param3",
+        "param4"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-10",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":6,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-11",
+      "type":"dummy",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "lifecycle_event":[
+          ],
+          "vimInstanceName":"vim-instance",
+          "scale_in_out":1,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"test"
+                }
+              ]
+            }]
+        }
+      ],
+      "virtual_link":[
+        {
+          "name":"test"
+        }
+      ],
+      "connection_point":[
+      ],
+      "lifecycle_event":[
+      ],
+      "vdu_dependency":[
+      ],
+      "deployment_flavour":[{
+        "df_constraint":[
+          "constraint1",
+          "constraint2"
+        ],
+        "costituent_vdu":[],
+        "flavour_key":"m1.small"
+      }],
+      "requires":[
+        "nfvo:ip-en5",
+        "dummy:ip"
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+      ]
+    }
+  ],
+  "vld":[
+    {
+      "name":"test"
+    }
+  ],
+  "vnf_dependency":[
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-3"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-3"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      }
+    },{
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-5"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      },
+      "parameters":[
+        "param1", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param2", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      },
+      "parameters":[
+        "param3", "param4"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-9"
+      },
+      "target":{
+        "name": "vnf-dummy-5"
+      },
+      "parameters":[
+        "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2", "param3", "param4"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-2"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-7"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-2"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-3"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    }
+  ]
+}
+
+

@@ -60,6 +60,7 @@ public class MainIntegrationTest {
 		Statement st = null;
 		ResultSet rs = null;
 return true;
+//commented this because it does just work if you use mysql
 //		try {
 //			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
 //
@@ -203,8 +204,8 @@ return true;
 					if (itm.runTestScenario(properties, file)) {
 						stopTime = System.currentTimeMillis() - startTime;
 						log.info("Test: " + file.getName() + " finished correctly :) in " +
-								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
-					} else log.info("Test: " + file.getName() + " completed with errors :(");
+								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
+					} else log.info("Test: " + file.getName() + " completed with errors :(\n");
 				}
 			}
 		} else {
@@ -213,8 +214,8 @@ return true;
 				if (itm.runTestScenario(properties, f)) {
 					stopTime = System.currentTimeMillis() - startTime;
 					log.info("Test: " + f.getName() + " finished correctly :) in " +
-							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
-				} else log.info("Test: " + f.getName() + " completed with errors :(");
+							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
+				} else log.info("Test: " + f.getName() + " completed with errors :(\n");
 			}
 		}
 		System.exit(0);

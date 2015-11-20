@@ -22,7 +22,7 @@ public class VimInstanceDelete extends Tester<VimInstance> {
      * @param basePath
      */
     public VimInstanceDelete(Properties properties) {
-        super(properties, VimInstance.class, "", "");
+        super(properties, VimInstance.class, "", "/datacenters");
     }
 
     @Override

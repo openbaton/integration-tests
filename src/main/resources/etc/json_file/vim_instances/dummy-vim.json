@@ -1,0 +1,18 @@
+{
+  "name":"vim-instance",
+  "authUrl":"http://url-here/v2.0",
+  "tenant":"demo",
+  "username":"test",
+  "password":"test",
+  "keyPair":"test",
+  "securityGroups": [
+    "default"
+  ],
+  "type":"test",
+  "location":{
+    "name":"Berlin",
+    "latitude":"52.525876",
+    "longitude":"13.314400"
+  }
+}
+
