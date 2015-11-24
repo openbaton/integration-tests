@@ -12,13 +12,8 @@
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "sudo apt-get update && sudo apt-get install -y iperf && sudo apt-get install -y screen"
-                    ]
-                },
-                {
-                    "event":"START",
-                    "lifecycle_events":[
-                        "screen -d -m -S server iperf -s"
+                        "install.sh",
+                        "install-srv.sh"
                     ]
                 }
             ],
@@ -57,7 +52,10 @@
                 }
             ],
             "type":"server",
-            "endpoint":"generic"
+            "endpoint":"generic",
+            "vnfPackage":{
+                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+            }
         },
         {
             "name":"iperf-client",
@@ -68,13 +66,13 @@
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "sudo apt-get update && sudo apt-get install -y iperf && sudo apt-get install -y screen"
+                        "install.sh"
                     ]
                 },
                 {
                     "event":"START",
                     "lifecycle_events":[
-                        "screen -d -m -S client iperf -c $server_private -t 300"
+                        "server_configure.sh"
                     ]
                 }
             ],
@@ -113,7 +111,10 @@
                 }
             ],
             "type":"client",
-            "endpoint":"generic"
+            "endpoint":"generic",
+            "vnfPackage":{
+                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+            }
         }
     ],
     "vld":[
