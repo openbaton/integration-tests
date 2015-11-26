@@ -157,7 +157,6 @@ public class RestWaiter implements WaiterInterface {
         }
         //false if the waiting time detectably elapsed before return from the method, else true
         public boolean await(int timeOut) throws InterruptedException {
-            boolean result;
             lock.lock();
             try {
                return eventOccurred.await(timeOut, TimeUnit.SECONDS);
