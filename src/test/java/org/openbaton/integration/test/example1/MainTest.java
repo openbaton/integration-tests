@@ -18,7 +18,7 @@ public class MainTest {
     public static void main(String[] args) {
         Properties properties=new Properties();
         File file= new File(MainTest.class.getResource("/file.ini").getPath());
-        IntegrationTestManager itm = new IntegrationTestManager("org.project.openbaton.integration.test.example1.Tasks") {
+        IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.example1.Tasks") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
                 if(subTask instanceof Task3){

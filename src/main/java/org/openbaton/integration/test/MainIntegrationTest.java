@@ -41,7 +41,7 @@ public class MainIntegrationTest {
 	private static String dbUri;
 	private static String dbUsr;
 	private static String dbPsw;
-	private final static String CONF_FILE_PATH = "/etc/openbaton/integration-test-scenarios";
+	private final static String CONF_FILE_PATH = "/resources/integration-test-scenarios/";
 
 	private static Properties loadProperties() throws IOException {
 		Properties properties = Utils.getProperties();
@@ -59,41 +59,42 @@ public class MainIntegrationTest {
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-
-		try {
-			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
-
-			st = con.createStatement();
-			rs = st.executeQuery("select * from vnfm_manager_endpoint");
-
-			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
-			if (!val) {
-				log.debug("vnfm endpoint not present yet");
-				return false;
-			} else {
-				return true;
-			}
-
-		} catch (SQLException ex) {
-			log.debug("error db");
-			ex.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (st != null) {
-					st.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-
-			} catch (SQLException ex) {
-				log.debug("error db");
-			}
-		}
-		return false;
+return true;
+//commented this because it does just work if you use mysql
+//		try {
+//			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
+//
+//			st = con.createStatement();
+//			rs = st.executeQuery("select * from vnfm_manager_endpoint");
+//
+//			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
+//			if (!val) {
+//				log.debug("vnfm endpoint not present yet");
+//				return false;
+//			} else {
+//				return true;
+//			}
+//
+//		} catch (SQLException ex) {
+//			log.debug("error db");
+//			ex.printStackTrace();
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					rs.close();
+//				}
+//				if (st != null) {
+//					st.close();
+//				}
+//				if (con != null) {
+//					con.close();
+//				}
+//
+//			} catch (SQLException ex) {
+//				log.debug("error db");
+//			}
+//		}
+//		return false;
 	}
 
 	private static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
@@ -203,8 +204,8 @@ public class MainIntegrationTest {
 					if (itm.runTestScenario(properties, file)) {
 						stopTime = System.currentTimeMillis() - startTime;
 						log.info("Test: " + file.getName() + " finished correctly :) in " +
-								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
-					} else log.info("Test: " + file.getName() + " completed with errors :(");
+								String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
+					} else log.info("Test: " + file.getName() + " completed with errors :(\n");
 				}
 			}
 		} else {
@@ -213,8 +214,8 @@ public class MainIntegrationTest {
 				if (itm.runTestScenario(properties, f)) {
 					stopTime = System.currentTimeMillis() - startTime;
 					log.info("Test: " + f.getName() + " finished correctly :) in " +
-							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))));
-				} else log.info("Test: " + f.getName() + " completed with errors :(");
+							String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
+				} else log.info("Test: " + f.getName() + " completed with errors :(\n");
 			}
 		}
 		System.exit(0);

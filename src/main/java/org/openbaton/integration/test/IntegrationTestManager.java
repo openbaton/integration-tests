@@ -24,6 +24,7 @@ public abstract class IntegrationTestManager {
         this.classPath=classPath;
     }
     public boolean runTestScenario(Properties properties, File file) throws IOException {
+        log.info("---------- Starting Test: " + file.getName() + " ----------");
         Ini ini=new Ini();
         ini.load(new FileReader(file));
         SubTask rootSubTask = loadTesters(properties, ini.get("it"));

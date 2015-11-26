@@ -3,7 +3,7 @@ nfvo-port = 8080
 nfvo-usr =
 nfvo-pwd =
 
-db-uri = jdbc:mysql://localhost:3306/openbaton
+db-uri = jdbc:hsqldb:file:/tmp/openbaton/openbaton.hsdb
 db-usr = root
 db-psw = ******
 num-successor = 10
