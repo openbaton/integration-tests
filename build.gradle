@@ -16,7 +16,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '0.3-SNAPSHOT'
+version = '0.4-SNAPSHOT'
 
 
 project.ext {
@@ -62,9 +62,6 @@ configurations.all {
 
 dependencies {
 
-//	compile project(':sdk')
-//	compile project(':catalogue')
-
 	compile 'ch.qos.logback:logback-classic:1.1.3'
 	compile 'mysql:mysql-connector-java:5.1.36'
 	compile 'org.ini4j:ini4j:0.5.4'
@@ -73,5 +70,6 @@ dependencies {
 
 	compile 'commons-io:commons-io:2.4'
 }
+
 mainClassName = theMainClass
 

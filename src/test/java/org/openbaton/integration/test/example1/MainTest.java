@@ -28,6 +28,7 @@ public class MainTest {
                     t3.setSpecificParameter(Double.parseDouble(currentSection.get("specific-parameter", "5")));
                 }
             }};
+
         long startTime = System.currentTimeMillis();
         boolean result=false;
         try {
