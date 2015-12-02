@@ -23,16 +23,15 @@ public abstract class IntegrationTestManager {
     public IntegrationTestManager(String classPath){
         this.classPath=classPath;
     }
-
     public boolean runTestScenario(Properties properties, File file) throws IOException {
-
+        log.info("---------- Starting Test: " + file.getName() + " ----------");
         Ini ini=new Ini();
         ini.load(new FileReader(file));
         SubTask rootSubTask = loadTesters(properties, ini.get("it"));
         try {
             rootSubTask.call();
         } catch (Exception e) {
-            log(e.getMessage(),"error");
+            log(e.getMessage(),"ERROR");
         }
         return rootSubTask.awaitTermination();
     }

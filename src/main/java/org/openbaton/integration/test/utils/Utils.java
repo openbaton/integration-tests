@@ -16,7 +16,7 @@ import java.util.Properties;
 //TODO create singleton
 public class Utils {
 
-	private static final String PROPERTIES_FILE = "/integration-test.properties.default";
+	private static final String PROPERTIES_FILE = "/integration-test.properties";
 	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static Properties getProperties() throws IOException {

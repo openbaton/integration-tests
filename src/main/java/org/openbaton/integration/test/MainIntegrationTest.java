@@ -55,47 +55,6 @@ public class MainIntegrationTest {
 		return properties;
 	}
 
-	public static boolean vnfmReady() {
-		Connection con = null;
-		Statement st = null;
-		ResultSet rs = null;
-return true;
-//commented this because it does just work if you use mysql
-//		try {
-//			con = DriverManager.getConnection(dbUri, dbUsr, dbPsw);
-//
-//			st = con.createStatement();
-//			rs = st.executeQuery("select * from vnfm_manager_endpoint");
-//
-//			boolean val = rs.next(); //next() returns false if there are no-rows retrieved
-//			if (!val) {
-//				log.debug("vnfm endpoint not present yet");
-//				return false;
-//			} else {
-//				return true;
-//			}
-//
-//		} catch (SQLException ex) {
-//			log.debug("error db");
-//			ex.printStackTrace();
-//		} finally {
-//			try {
-//				if (rs != null) {
-//					rs.close();
-//				}
-//				if (st != null) {
-//					st.close();
-//				}
-//				if (con != null) {
-//					con.close();
-//				}
-//
-//			} catch (SQLException ex) {
-//				log.debug("error db");
-//			}
-//		}
-//		return false;
-	}
 
 	private static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
 		int i = 0;
@@ -114,22 +73,6 @@ return true;
 		return true;
 	}
 
-	private static boolean isVnfmReady() {
-		int i = 0;
-		while (!vnfmReady()) {
-			i++;
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			if (i > 50) {
-				return false;
-			}
-
-		}
-		return true;
-	}
 
 	// TODO move to test
 	public static void main(String[] args) throws IOException {
@@ -153,16 +96,6 @@ return true;
 
 		log.info("Nfvo is started");
 
-		/******************************
-		 * Running VNFM				  *
-		 ******************************/
-
-		if (!isVnfmReady()) {
-			log.error("After 150 sec the Vnfm is not started yet. Is there an error?");
-			exit(2); // 2 stands for the error in running vnfm TODO define error codes (doing)
-		}
-
-		log.info("Vnfm is started correctly");
 
 		/******************************
 		 * Now create the VIM		  *
@@ -191,6 +124,10 @@ return true;
 					configureNetworkServiceRecordWait(subTask, currentSection);
 				else if (subTask instanceof VirtualNetworkFunctionRecordWait)
 					configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
+				else if (subTask instanceof PackageUpload)
+					configurePackageUpload(subTask, currentSection);
+				else if (subTask instanceof PackageDelete)
+					configurePackageDelete(subTask, currentSection);
 			}
 		};
 		itm.setLogger(log);
@@ -292,9 +229,20 @@ return true;
 		w.setFileName(currentSection.get("name-file"));
 	}
 
+
 	private static void configureVimInstanceCreate(SubTask instance, Profile.Section currentSection) {
 		VimInstanceCreate w = (VimInstanceCreate) instance;
 		w.setFileName(currentSection.get("name-file"));
+	}
+
+	private static void configurePackageUpload(SubTask instance, Profile.Section currentSection) {
+		PackageUpload p = (PackageUpload) instance;
+		p.setPackageName(currentSection.get("package-name"));
+	}
+
+	private static void configurePackageDelete(SubTask instance, Profile.Section currentSection) {
+		PackageDelete p = (PackageDelete) instance;
+		p.setPackageName(currentSection.get("package-name"));
 	}
 
 	private static void exit(int i) {

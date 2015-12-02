@@ -100,6 +100,11 @@ boolean result = itm.runTestScenario(properties, file);
 
 * The related project [OpenBatonNFVO](https://gitlab.fokus.fraunhofer.de/neutrino-dev/nfvo) must be installed, please see [the README](https://gitlab.fokus.fraunhofer.de/neutrino-dev/nfvo/blob/master/README.md) file
 
+Also if you run the integration tests, make sure that the NFVO and VNFM you want to use are already running. 
+You have to modify the file /opt/openbaton/integration-tests/src/main/resources/integration-test.properties to your 
+specific needs. You have to indicate parameters for the NFVO you want to test, the IP of the machine the 
+integration test is running on and information about the used database. 
+
 ### Description
 
 The Integration Test project is used to test the correctness of the operations carried out by NFVO and VNFM.
@@ -119,11 +124,23 @@ To create a realistic scenario the above operations must follow an order. Exampl
   - nsd delete (all)
 - vim delete
 
+Alternatively you can also deploy the nsd from previously stored VNFPackages:
+- vim create
+  - vnf-package upload
+    - nsd create (one or more)
+      - nsr create (one or more)
+      - waiting for the end of creation/s
+      - nsr delete (all)
+      - waiting for the end of deletion/s
+    - nsd delete (all)
+  - vnf-package delete
+- vim delete
+
 As you can see the flow of operations is a graph that begin with the vim creation and ends with the vim deletion.
 To create your own test, you must specify the flow of operations in the configuration file (.ini).
 
 
-In the ini file you can specify your own flow of operations as a graph.
+In the ini file you can specify your own flow of operations as a graph. These ini files have to be in the directory /src/main/resources/integration-test-scenarios.
 Example of ini file:
 ```
 [it]
@@ -175,11 +192,94 @@ You will obtain the following flow of operations:
 
 ![operations flow](flow.png)
 
-The tasks that create entities from json file (i.e. VimInstanceCreate, NetworkServiceDescriptorCreate) use a parser. The static
+First the vim instance is created. by [it/vim-c-1]. You have to provide the name of the json file to use. It should be stored in 
+/etc/openbaton/integration-test/vim-instances/ on your local machine or in /resources/etc/json_file/vim_instances/ in the integration test project. 
+The files in the former directory have a higher priority than the ones in the latter directory. 
+After that the integration test creates a network service descriptor in the task [it/vim-c-1/nsd-c-1]. 
+And not just that, it even creates two because the num_instances field is set to two. 
+The json file for the NSDs have to be in the directory /etc/openbaton/integration-test/network-service-descriptors/ or in 
+/resources/etc/json_file/network_service_descriptors. 
+As you can see this task has also a 'successor-remover'. 
+The task which is specified there, will be executed after all the other branches which emerge from [it/vim-c-1/nsd-c-1] 
+are finished. In this case it is the deletion of the NSD. 
+In the following tasks every created NSD will deploy two network service records in [it/vim-c-1/nsd-c-1/nsr-c-1]. 
+Then the task [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1] waits for the occurrence of the event INSTANTIATE_FINISH which comes after 
+the successful deployment of the NSRs. Afterward the NSRs are deleted by [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/nsr-d-1] and 
+another waiter is defined to wait for the deletion. 
+The last step of this example is the deletion of the NSD [it/vim-c-1/nsd-c-1/nsd-d-1]. As mentioned before, this is the successor-remover 
+of the NSD creation task. It is not possible to define a task in a branch after a successor remover. 
+Furthermore it is also possible to execute two tasks simultaneously. Therefore just define tasks in the following way: 
+One is [it/task1/task2] and the second is [it/task1/task3]. This would execute task2 and task3 at the same time. 
+
+The tasks that create entities from json files (i.e. VimInstanceCreate, NetworkServiceDescriptorCreate) use a parser. The static
 parser class Parser is described below.
 
+### Using VNFPackages
+Here is an example on how to use VNFPackages in your tests. 
+
+```
+[it]
+;set the maximum time (in seconds) of the Integration test. e.g. 10 min = 600 seconds
+max-integration-test-time = 800
+;set the maximum number of concurrent successors (max number of active child threads)
+max-concurrent-successors = 10
+
+;vimInstance-create
+[it/vim-c-1]
+class-name = VimInstanceCreate
+name-file = vim.json
+successor-remover = vim-d-1
+
+[it/vim-c-1/vim-d-1]
+class-name = VimInstanceDelete
+
+;package-create
+[it/vim-c-1/vnfp-c-1]
+class-name = PackageUpload
+package-name = iperf-server-package.tar
+
+;nsd-create
+[it/vim-c-1/vnfp-c-1/nsd-c-1]
+class-name = NetworkServiceDescriptorCreateFromPackage
+name-file = NetworkServiceDescriptor.json
+
+;nsd-delete
+[it/vim-c-1/vnfp-c-1/nsd-c-1/nsd-d-1]
+class-name = NetworkServiceDescriptorDelete
+
+;package-delete
+[it/vim-c-1/vnfp-c-1/nsd-c-1/nsd-d-1/vnfp-d-1]
+class-name = PackageDelete
+package-name = iperf-server-package
+```
+
+This example begins by storing a vim instance. Then the package iperf-server-package.tar is stored. 
+The packages have to be in the directory /etc/openbaton/integration-test/vnf-packages/ or in 
+/resources/etc/vnf_packages. The former has a higher priority than the latter. 
+Afterwards a NSD is created from the VNFDs in the package and right after that deleted. Be aware that you 
+have to use the class NetworkServiceDescriptorCreateFromPackage to store a NSD from a package. 
+Then also the package will be deleted. You have to provide the name of the package you want to delete. 
+At the end the vim instance is deleted. 
+
+If you create a NSD from a VNFPackage, the VNFD field of the NSD file would look something like this: 
+
+```
+"vnfd":[
+{
+      "id":""
+},
+{
+      "id":""
+}
+
+   ],
+```
+
+The integration test will automatically insert some IDs of VNFDs that were previously stored by a VNFPackage. 
+
+
 ### Parser
-The class Parser looks for a configuration file with this sintax:
+The class Parser looks for a configuration file with this syntax:
 
 old_value = new_value
 

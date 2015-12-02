@@ -18,8 +18,8 @@ import java.util.Properties;
 public class VimInstanceCreate extends Tester<VimInstance> {
 
     private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
-    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test-jsons/vim_instances/";
-    private static final String EXTERNAL_PATH_NAME_PARSER_VIM = "/etc/openbaton/integration-test-parser-properties/vim.properties";
+    private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test/vim-instances/";
+    private static final String EXTERNAL_PATH_NAME_PARSER_VIM = "/etc/openbaton/integration-test/parser-properties/vim.properties";
     private static String fileName;
 
     /**

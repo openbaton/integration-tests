@@ -11,7 +11,6 @@ import java.util.Properties;
 
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
-	private static final String FILE_NAME = "/etc/json_file/network_service_descriptors/NetworkServiceDescriptor-with-dependencies-without-allacation.json";
 	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
 
 	/**
@@ -25,7 +24,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	 * @param basePath
 	 */
 	public NetworkServiceRecordCreate(Properties properties) {
-		super(properties, NetworkServiceRecord.class, FILE_NAME, "/ns-records");
+		super(properties, NetworkServiceRecord.class, "", "/ns-records");
 	}
 
 	@Override
