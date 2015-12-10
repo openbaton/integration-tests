@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.sql.*;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -124,6 +123,8 @@ public class MainIntegrationTest {
 					configureNetworkServiceRecordWait(subTask, currentSection);
 				else if (subTask instanceof VirtualNetworkFunctionRecordWait)
 					configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
+				else if (subTask instanceof GenericServiceTester)
+					configureGenericServiceTester(subTask, currentSection);
 				else if (subTask instanceof PackageUpload)
 					configurePackageUpload(subTask, currentSection);
 				else if (subTask instanceof PackageDelete)
@@ -233,6 +234,27 @@ public class MainIntegrationTest {
 	private static void configureVimInstanceCreate(SubTask instance, Profile.Section currentSection) {
 		VimInstanceCreate w = (VimInstanceCreate) instance;
 		w.setFileName(currentSection.get("name-file"));
+	}
+
+	private static void configureGenericServiceTester(SubTask subTask, Profile.Section currentSection) {
+		GenericServiceTester t = (GenericServiceTester) subTask;
+		Boolean stop=false;
+		String vnfrType = currentSection.get("vnf-type");
+		if (vnfrType != null)
+			t.setVnfrType(currentSection.get("vnf-type"));
+
+		String netName = currentSection.get("net-name");
+		if (netName != null)
+			t.setVirtualLink(netName);
+
+		for(int i=1; !stop; i++) {
+			String scriptName = currentSection.get("script-" + i);
+			if (scriptName == null || scriptName.isEmpty()) {
+				stop = true;
+				continue;
+			}
+			t.addScript(scriptName);
+		}
 	}
 
 	private static void configurePackageUpload(SubTask instance, Profile.Section currentSection) {

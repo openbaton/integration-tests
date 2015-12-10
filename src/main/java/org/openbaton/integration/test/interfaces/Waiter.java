@@ -31,9 +31,11 @@ public abstract class Waiter extends Tester {
     private int timeout;
     private WaiterInterface waiter;
     private Action action;
+    private String localIp;
 
     public Waiter(Properties properties, Class aClass, String filePath, String basePath) {
         super(properties, aClass, filePath, basePath);
+        localIp=properties.getProperty("local-ip");
     }
 
     public void subscribe(EventEndpoint eventEndpoint) throws SubscriptionException, SDKException {
@@ -42,7 +44,7 @@ public abstract class Waiter extends Tester {
         if (eventEndpoint.getType() == EndpointType.JMS)
             waiter = new JMSWaiter();
         else if (eventEndpoint.getType() == EndpointType.REST)
-            waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log);
+            waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log, localIp);
         waiter.subscribe(eventEndpoint);
     }
 

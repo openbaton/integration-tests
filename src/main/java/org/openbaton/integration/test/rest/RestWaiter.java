@@ -36,14 +36,16 @@ public class RestWaiter implements WaiterInterface {
     private String unsubscriptionId;
     private Action action;
     private String payload;
+    private String localIp;
 
-    public RestWaiter(String waiterName,NFVORequestor nfvoRequestor,Gson gsonMapper,Logger logger) {
+    public RestWaiter(String waiterName,NFVORequestor nfvoRequestor,Gson gsonMapper,Logger logger, String localIp) {
         name=waiterName;
         requestor=nfvoRequestor;
         mapper=gsonMapper;
         log=logger;
         ee=null;
         unsubscriptionId=null;
+        this.localIp=localIp;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class RestWaiter implements WaiterInterface {
            throw new SubscriptionException("Problems during the launch of the server",e);
         }
         if (eventEndpoint != null) {
-            String url = "http://localhost:" + server.getAddress().getPort() + "/" + name;
+            String url = "http://" + localIp + ":" + server.getAddress().getPort() + "/" + name;
             eventEndpoint.setEndpoint(url);
             EventEndpoint response=null;
             response = this.requestor.getEventAgent().create(eventEndpoint);
