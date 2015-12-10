@@ -9,6 +9,7 @@ import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.WaiterInterface;
+import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
@@ -36,16 +37,14 @@ public class RestWaiter implements WaiterInterface {
     private String unsubscriptionId;
     private Action action;
     private String payload;
-    private String localIp;
 
-    public RestWaiter(String waiterName,NFVORequestor nfvoRequestor,Gson gsonMapper,Logger logger, String localIp) {
+    public RestWaiter(String waiterName,NFVORequestor nfvoRequestor,Gson gsonMapper,Logger logger) {
         name=waiterName;
         requestor=nfvoRequestor;
         mapper=gsonMapper;
         log=logger;
         ee=null;
         unsubscriptionId=null;
-        this.localIp=localIp;
     }
 
     @Override
@@ -56,6 +55,15 @@ public class RestWaiter implements WaiterInterface {
            throw new SubscriptionException("Problems during the launch of the server",e);
         }
         if (eventEndpoint != null) {
+            String localIp = "";
+            try {
+                localIp = Utils.getProperties().getProperty("local-ip");
+                if (localIp.equals(""))
+                    throw new SubscriptionException("local-ip is empty. Please set it in the properties.");
+            } catch (Exception e) {
+                log.error("Problem getting the local-ip from the properties file.");
+                throw new SubscriptionException(e.getMessage());
+            }
             String url = "http://" + localIp + ":" + server.getAddress().getPort() + "/" + name;
             eventEndpoint.setEndpoint(url);
             EventEndpoint response=null;

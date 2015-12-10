@@ -108,7 +108,7 @@ integration test is running on and information about the used database.
 ### Description
 
 The Integration Test project is used to test the correctness of the operations carried out by NFVO and VNFM.
-The main operations to be tested are the creation and deletion of entities.
+The main operations to be tested are the creation and deletion of entities and the actual network service.
 The entities are:
 * network service description (nsd)
 * network service record (nsr)
@@ -136,7 +136,7 @@ Alternatively you can also deploy the nsd from previously stored VNFPackages:
   - vnf-package delete
 - vim delete
 
-As you can see the flow of operations is a graph that begin with the vim creation and ends with the vim deletion.
+As you can see the flow of operations is a graph that begins with the vim creation and ends with the vim deletion.
 To create your own test, you must specify the flow of operations in the configuration file (.ini).
 
 
@@ -316,6 +316,173 @@ The string newJson will be:
 "username":"adminxkz"
 }
 ```
+
+### Testing the service itself
+
+Now we will show how to test, if the network service is actually running.
+Therefore you can tell the integration test to ssh the instantiated virtual machines and execute commands.
+Those commands have to be written in scripts which can be placed in two locations.
+Either in **/etc/openbaton/integration-test/scripts/** or in **/integration-tests/src/main/resources/etc/scripts/** in the
+project itself. The former directory is checked first for a script name. If it does not exist there the latter location is used.
+But where do I specify the Virtual Machines on which the scripts shall be executed?? Well, also in the .ini file.
+Use the *GenericServiceTester*.
+
+Let's take look at an example. You specified in your .ini file a scenario with an iperf-server and an iperf-client.
+Iperf is a tool to measure the throughput of a network. So in our setup the iperf-server will listen on the default iperf port for the
+iperf-client to send him some testing data.
+To check if iperf is running on the two virtual machines, we will create two new tasks in the .ini file.
+The first one is:
+```
+
+[it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-1]
+class-name = GenericServiceTester
+vnf-type = server
+script-1 = iperf-running.sh
+```
+
+The class name specifies, that we want to use the GenericServiceTester to test our service.
+The vnf-type is used to say on which virtual network functions the scripts should be executed and is equal to the one you wrote into the network service descriptor.
+In our example the integration test would execute them on a virtual machine, which runs the iperfserver VNF which has the type 'server'.
+And finally you have to specify the script name. script-1 will be the first script executed in that task.
+If you want to execute more than that, just add script-2, script-3 and so on.
+The same thing is done for the iperfclient:
+```
+
+[it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-2]
+class-name = GenericServiceTester
+vnf-type = client
+script-1 = iperf-running.sh
+```
+
+Here is the script used to see if iperf is running:
+```
+
+#!/bin/bash
+
+iperf_count=`exec ps -aux | grep -v grep | grep iperf | wc -l`
+if [ $iperf_count -lt 1 ]
+then
+  exit 1
+else
+  exit 0
+fi
+
+```
+
+As you can see the script exits with status 0 on success and otherwise on 1 like usual. Every script you write for the integration test should
+exit on a value not 0 if they fail. The integration test will just pass if all the scripts exit on 0.
+
+So, now we know that iperf is running on the server and on the client virtual machine. But are the client and server really communicating at the moment?
+To test that we will add another script to the client and server task, that checks if there is an outgoing or incoming connection related to iperf and exits successfully 
+if one exists. Here's the script:
+```
+
+#!/bin/bash
+
+# this will return the ip of the remote partner of the communication, here the iperf-server
+outgoing=`sudo netstat -npt | grep iperf | awk '{print $5}' | sed 's/:.*//'` 
+
+# check if the communication partner is really the iperf-server
+if [ $outgoing == ${server_ip} ]
+then
+  exit 0
+else
+  exit 1
+fi
+```
+
+(You may wonder where '${server_ip}' comes from. It is a variable provided by the integration test as explained later. 
+We use sudo for the netstat command, because the iperf command was started by the root user.)
+
+We add it to the clients task in the .ini file:
+```
+
+[it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-1]
+class-name = GenericServiceTester
+vnf-type = client
+script-1 = iperf-running.sh
+script-2 = iperf-clt-connection.sh
+```
+
+To the servers task we add following script:
+```
+
+#!/bin/bash
+
+
+incoming=`sudo netstat -npt | grep iperf | wc -l`
+
+if [ $incoming -eq 0 ] 
+then
+  exit 1
+else
+  exit 0
+fi
+```
+
+Here we just count if there are incoming connections to the server. 
+
+```
+
+[it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-2]
+class-name = GenericServiceTester
+vnf-type = server
+script-1 = iperf-running.sh
+script-2 = iperf-srv-connection.sh
+```
+
+After the iperf-running.sh script, the iperf-srv-connection.sh script will be executed on the server virtual machines 
+and on the client one's the script iperf-clt-conection.sh.
+
+And that's it for the .ini file. After those tasks you can add the usual delete nsr/nsd etc. tasks or even more GenericServiceTester tasks.
+
+
+Now imagine, that you did not specify one virtual network function component in the client's nsd, but five. And you want to test them all.
+Do you have to create five tasks for that?? No, if you define the task for the client as shown above, the integration test will execute
+the scripts on every virtual machine, that was deployed by the vnfd with the type *client*.
+
+And if you have some virtual network function components connected to two different networks but just want to test the ones connected
+to one of them, you can add a *net-name* field to the task and just the ones connected to it will be involved.
+Example:
+```
+
+[it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-2]
+class-name = GenericServiceTester
+vnf-type = client
+net-name = private
+script-1 = iperf-running.sh
+script-2 = iperf-clt-connection.sh
+```
+
+Now we come back to the '${server_ip}' variable in the iperf-clt-connection script. As mentioned earlier this variable is provided 
+by the integration test. It stores the ip of the server. If you wanted to access the IPs of the clients, you could use ${client_ip}. 
+The problem is, that we could for example also have two or more instances of clients. Which ip is chosen? 
+Actually the script, which contains this variable will be executed twice or more on the virtual machine until every possible substitution was handled. 
+You have access to the IPs, floating IPs and configurations. 
+You can access ips by writing ${vnfrtype_ip} or ${vnfrtype_network_ip} (don't forget the braces). The 'vnfrtype' in our example would be 'server' or 'client'. 
+The 'network' is the virtual_link you specified in the VNFD for the VNF Component and will only retrieve the VNFC ips which are connected to this network. 
+If you have more than one VNFC Instance which is deployed, so for example you have two iperf-servers 
+deployed from one VNFD, then there would be two possibilities to substitute ${server_ip}. If you want to execute a script on the virtual machine of the 
+iperf-client which contains this variable the integration test will do the following. Execute the script containing the 
+variable with first the ip of one server. And then executing the same script, but now replacing the variable with the other ip. 
+That way you just have to write one script and all the VNF Components of the VNF will be tested. 
+You can access the floating ips of VNFCs by writing ${vnfrtype_fip} or ${vnfrtype_network_fip}. 
+Of course, this will only work if there is a floating ip for that virtual machine. 
+The configurations are accessible by typing ${vnfrtype_configurationkey}. 
+For all the variables it is essential, that you enclose them with braces otherwise they won't work. 
+
+
+IMPORTANT Information to use the GenericServiceTester:
+
+For the integration test to be able to ssh to the virtual machines on openstack, you have to provide a .pem file of a key-pair you are using on openstack.
+Download this file, name it *integration-test.pem* and put it into the directory **/etc/openbaton/integration-test/**.
+Furthermore it has to have the correct permissions so you probably have to execute *chmod 400 integration-test.pem*.
+And don't forget to make the scripts executable.
+Do not use '-' in types of VNFDs or configuration names as you cannot use them in bash scripts it will not work for the integration test scripts. 
+
+
+
+
 ### Development
 
 * Want to contribute? Great!

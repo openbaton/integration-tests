@@ -13,6 +13,8 @@ import org.openbaton.integration.test.utils.VNFCRepresentation;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -51,6 +53,14 @@ public class GenericServiceTester extends Tester {
         List<String> floatingIps = new LinkedList<>();
 
         File pemFile = new File(EXTERNAL_PATH_NAME_PEM);
+//        if (pemFile == null || !pemFile.exists()) {
+//            URL pemUrl = ClassLoader.getSystemResource(LOCAL_PATH_NAME_PEM);
+//            if (pemUrl == null) {
+//                log.error("No .pem file found");
+//                throw new Exception("No .pem file found");
+//            }
+//            pemFile = new File(pemUrl.getPath());
+//        }
         Runtime r = Runtime.getRuntime();
 
         if (virtualLink.equals("")) {
