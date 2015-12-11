@@ -53,14 +53,6 @@ public class GenericServiceTester extends Tester {
         List<String> floatingIps = new LinkedList<>();
 
         File pemFile = new File(EXTERNAL_PATH_NAME_PEM);
-//        if (pemFile == null || !pemFile.exists()) {
-//            URL pemUrl = ClassLoader.getSystemResource(LOCAL_PATH_NAME_PEM);
-//            if (pemUrl == null) {
-//                log.error("No .pem file found");
-//                throw new Exception("No .pem file found");
-//            }
-//            pemFile = new File(pemUrl.getPath());
-//        }
         Runtime r = Runtime.getRuntime();
 
         if (virtualLink.equals("")) {
