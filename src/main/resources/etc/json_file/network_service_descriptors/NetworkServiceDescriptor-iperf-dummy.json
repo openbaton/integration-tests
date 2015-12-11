@@ -12,13 +12,13 @@
         {
           "event":"INSTANTIATE",
           "lifecycle_events":[
-
+            "sudo apt-get update && sudo apt-get install -y iperf && sudo apt-get install -y screen"
           ]
         },
         {
           "event":"START",
           "lifecycle_events":[
-
+            "screen -d -m -S server iperf -s"
           ]
         }
       ],
@@ -68,13 +68,13 @@
         {
           "event":"INSTANTIATE",
           "lifecycle_events":[
-
+            "sudo apt-get update && sudo apt-get install -y iperf && sudo apt-get install -y screen"
           ]
         },
         {
           "event":"START",
           "lifecycle_events":[
-
+            "screen -d -m -S client iperf -c $server_private -t 300"
           ]
         }
       ],

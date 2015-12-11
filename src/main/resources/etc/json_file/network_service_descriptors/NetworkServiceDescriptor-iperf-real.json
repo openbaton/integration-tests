@@ -4,7 +4,7 @@
     "version":"0.1-ALPHA",
     "vnfd":[
         {
-            "name":"iperf-server",
+            "name":"iperfserver",
             "vendor":"fokus",
             "version":"0.1",
             "type":"server",
@@ -19,8 +19,14 @@
             ],
             "configurations":{
                 "name":"server-configuration",
-                "configurationParameters":[
-
+                "configurationParameters":[{  
+                  "confKey":"conf3",
+                  "value":"3"
+               },
+	       {  
+                  "confKey":"conf4",
+                  "value":"4"
+               }
                 ]
             },
             "vdu":[
@@ -28,11 +34,12 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":1,
+                    "scale_in_out":2,
                     "vnfc":[
                         {
                             "connection_point":[
                                 {
+                                    "floatingIp":"192.168.145.59",
                                     "virtual_link_reference":"private"
                                 }
                             ]
@@ -58,7 +65,7 @@
             }
         },
         {
-            "name":"iperf-client",
+            "name":"iperfclient",
             "vendor":"fokus",
             "version":"0.1",
             "type":"client",
@@ -70,7 +77,7 @@
                     ]
                 },
                 {
-                    "event":"START",
+                    "event":"CONFIGURE",
                     "lifecycle_events":[
                         "server_configure.sh"
                     ]
@@ -78,20 +85,33 @@
             ],
             "configurations":{
                 "name":"client-configuration",
-                "configurationParameters":[
-
-                ]
+                "configurationParameters":[{  
+                  "confKey":"conf1",
+                  "value":"1"
+               },
+	       {  
+                  "confKey":"conf2",
+                  "value":"2"
+               }]
             },
             "vdu":[
                 {
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":1,
+                    "scale_in_out":2,
                     "vnfc":[
                         {
                             "connection_point":[
                                 {
+                                    "floatingIp":"192.168.145.56",
+                                    "virtual_link_reference":"private"
+                                }
+                            ]
+                        }, {
+                            "connection_point":[
+                                {
+                                    "floatingIp":"192.168.145.66",
                                     "virtual_link_reference":"private"
                                 }
                             ]
@@ -125,10 +145,10 @@
     "vnf_dependency":[
         {
             "source":{
-                "name":"iperf-server"
+                "name":"iperfserver"
             },
             "target":{
-                "name":"iperf-client"
+                "name":"iperfclient"
             },
             "parameters":[
                 "private"
