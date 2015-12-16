@@ -4,9 +4,14 @@ import org.ini4j.Profile;
 import org.openbaton.integration.test.example1.Tasks.Task3;
 import org.openbaton.integration.test.IntegrationTestManager;
 import org.openbaton.integration.test.utils.SubTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -16,8 +21,10 @@ import java.util.concurrent.TimeUnit;
 public class MainTest {
 
     public static void main(String[] args) {
+        Logger log = LoggerFactory.getLogger(MainTest.class);
         Properties properties=new Properties();
         File file= new File(MainTest.class.getResource("/file.ini").getPath());
+        URL url = MainTest.class.getResource("/file.ini");
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.example1.Tasks") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
@@ -28,10 +35,12 @@ public class MainTest {
                     t3.setSpecificParameter(Double.parseDouble(currentSection.get("specific-parameter", "5")));
                 }
             }};
+        itm.setLogger(log);
         long startTime = System.currentTimeMillis();
         boolean result=false;
         try {
-            result = itm.runTestScenario(properties, file);
+            System.out.println(url);
+            result = itm.runTestScenario(properties, url, "file.ini");
         } catch (IOException e) {
             e.printStackTrace();
         }

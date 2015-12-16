@@ -10,9 +10,7 @@ import org.openbaton.catalogue.nfvo.ConfigurationParameter;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -242,10 +240,28 @@ public class GenericServiceTester extends Tester {
         if (!f.exists()) {
             log.info("The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
             log.info("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
-            f = new File(GenericServiceTester.class.getResource(LOCAL_PATH_NAME_SCRIPTS + scriptName).getPath());
+            InputStream is = GenericServiceTester.class.getResourceAsStream(LOCAL_PATH_NAME_SCRIPTS + scriptName);
+            File t = null;
+            try {
+                t = new File("/tmp/" + scriptName);
+                OutputStream os = new FileOutputStream(t);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead=is.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+                is.close();
+                os.flush();
+                os.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            f = t;
         }
         if (!f.exists())
-            log.info(scriptName + " does not exist.");
+            log.warn(scriptName + " does not exist.");
         else
             scripts.add(f);
     }

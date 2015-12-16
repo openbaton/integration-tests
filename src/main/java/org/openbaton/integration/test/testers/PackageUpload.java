@@ -3,6 +3,7 @@ package org.openbaton.integration.test.testers;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
@@ -18,7 +19,6 @@ import java.util.Properties;
  */
 public class PackageUpload extends Tester<VNFPackage> {
     private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test/vnf-packages/";
-    private static final String LOCAL_PATH_NAME = "/etc/vnf_packages";
     private String packageName = "";
     private String nfvoUrl = "";
 
@@ -36,18 +36,21 @@ public class PackageUpload extends Tester<VNFPackage> {
     @Override
     protected Object doWork() throws Exception {
 
-
-        String body=null;
         File f = new File(EXTERNAL_PATH_NAME+packageName);
         if (f == null || !f.exists()) {
-            log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+packageName);
-            f = new File(LOCAL_PATH_NAME+packageName);
+            log.error("No package: "+f.getName()+" found!");
+            throw new Exception("No package: "+f.getName()+" found!");
         }
 
-        HttpResponse<JsonNode> jsonResponse = Unirest.post(nfvoUrl)
-                .header("accept", "application/json")
-                .field("file", f)
-                .asJson();
+        try {
+            Unirest.post(nfvoUrl)
+                    .header("accept", "application/json")
+                    .field("file", f)
+                    .asJson();
+        } catch (UnirestException e) {
+            log.error("Could not store VNFPackage "+packageName);
+            throw e;
+        }
         log.info("Successfully stored VNFPackage "+packageName);
         return param;
     }

@@ -3,12 +3,16 @@ package org.openbaton.integration.test.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
+
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  * Created by lto on 24/06/15.
@@ -84,6 +88,26 @@ public class Utils {
 			return false;
 		}
 	}
+
+
+    public static List<URL> getFilesAsURL(String location) {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = {};
+        try {
+            resources = resolver.getResources(location);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        List<URL> urls = new LinkedList<>();
+        for (Resource resource : resources) {
+            try {
+                urls.add(resource.getURL());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return urls;
+    }
 
 //	public static void executeDeleteCall(String nfvoIp, String nfvoPort, String path) throws URISyntaxException, IOException {
 //		CloseableHttpClient httpClient = HttpClientBuilder.create().build();

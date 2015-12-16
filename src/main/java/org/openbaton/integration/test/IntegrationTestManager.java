@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -23,10 +25,10 @@ public abstract class IntegrationTestManager {
     public IntegrationTestManager(String classPath){
         this.classPath=classPath;
     }
-    public boolean runTestScenario(Properties properties, File file) throws IOException {
-        log.info("---------- Starting Test: " + file.getName() + " ----------");
+    public boolean runTestScenario(Properties properties, URL iniUrl, String testName) throws IOException {
+        log.info("---------- Starting Test: " + testName + " ----------");
         Ini ini=new Ini();
-        ini.load(new FileReader(file));
+        ini.load(iniUrl);
         SubTask rootSubTask = loadTesters(properties, ini.get("it"));
         try {
             rootSubTask.call();
