@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openbaton.integration.test.exceptions;
 
-rootProject.projectDir = file('.')
-rootProject.name = 'integration-tests'
+/**
+ * Created by mob on 18.09.15.
+ */
+public class SubscriptionException extends IntegrationTestException {
+    public SubscriptionException() {
+        super();
+    }
 
+    public SubscriptionException(String message) {
+        super(message);
+    }
+
+    public SubscriptionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

@@ -13,7 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openbaton.integration.test.example1.Tasks;
 
-rootProject.projectDir = file('.')
-rootProject.name = 'integration-tests'
+import org.openbaton.integration.test.utils.SubTask;
 
+import java.util.Properties;
+
+/**
+ * Created by mob on 18.08.15.
+ */
+public class Task4 extends SubTask{
+
+    private Properties properties;
+
+    public Task4(Properties properties){
+        this.properties=properties;
+    }
+
+    @Override
+    protected Object doWork() throws Exception {
+        int i = (int) getParam();
+        i++;
+        Thread.sleep(1000);
+        System.out.println("Task4 id:"+Thread.currentThread().getId()+", counter is: "+i);
+        return i;
+    }
+}

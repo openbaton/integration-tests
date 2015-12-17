@@ -1,9 +1,25 @@
+/*
+ * Copyright (c) 2015 Fraunhofer FOKUS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 buildscript {
 	repositories {
 		mavenCentral()
 	}
 	dependencies {
 		classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE")
 	}
 }
 
@@ -15,19 +31,21 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'spring-boot'
 
-version = '0.3-SNAPSHOT'
+release {
+    versionPropertyFile = 'gradle.properties'
+    versionProperties = []
+}
 
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/command.line.helper.gradle'
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/git.helpers.gradle'
 
 project.ext {
 	//------------------------------------------------//
 	/**
 	 * Spring Related Variables
 	 */
-	springVersion = '4.1.7.RELEASE'
-	springBootVersion = '1.2.5.RELEASE'
+	springVersion = '4.2.0.RELEASE'
+	springBootVersion = '1.2.6.RELEASE'
 	//------------------------------------------------//
 	//------------------------------------------------//
 	/**
@@ -36,40 +54,38 @@ project.ext {
 	applicationVersion = "0.6-alpha"
 	applicationVersionDebian = "1";
 
-	applicationRelease = isApplicationRelease()
-	applicationDate = new Date()
-	applicationRevision = getRevision()
-
-	applicationVersionSnapshot = (!applicationRelease) ? "+SNAPSHOT.${asUTC(applicationDate, 'yyMMddHHmm')}.git${applicationRevision}" : ""
-	applicationVersionFull = "${applicationVersion}${applicationVersionSnapshot}"
 	//------------------------------------------------//
 	//------------------------------------------------//
 	/**
 	 * gradle Related Vars
 	 */
-	mainClass = theMainClass = 'org.project.openbaton.integration.test.MainIntegrationTest'
+	mainClass = theMainClass = 'org.openbaton.integration.test.MainIntegrationTest'
 	//------------------------------------------------//
 }
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/application.java.gradle'
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/one.jar.application.java.gradle'
 
 repositories {
 	mavenCentral()
+	maven {
+		url "http://get.openbaton.org:8081/nexus/content/groups/public"
+	}
+}
+
+configurations.all {
+	exclude group: 'org.slf4j', module: 'slf4j-simple'
 }
 
 dependencies {
 
-	compile project(':sdk')
-	compile project(':catalogue')
-
-	compile 'org.slf4j:slf4j-api:1.7.12'
 	compile 'ch.qos.logback:logback-classic:1.1.3'
 	compile 'mysql:mysql-connector-java:5.1.36'
 	compile 'org.ini4j:ini4j:0.5.4'
+
+    compile 'org.springframework:spring-core:' + springVersion
+
+	compile 'org.openbaton:sdk:0.15-SNAPSHOT'
 
 	compile 'commons-io:commons-io:2.4'
 }
 
 mainClassName = theMainClass
 
-apply from: 'openbaton-client/openbaton-libs/gradle/gradle/git.release.gradle'

@@ -13,7 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openbaton.integration.test.exceptions;
 
-rootProject.projectDir = file('.')
-rootProject.name = 'integration-tests'
+/**
+ * Created by lto on 24/06/15.
+ */
+public class IntegrationTestException extends Exception{
 
+    public IntegrationTestException() {
+        super();
+    }
+
+    public IntegrationTestException(String message) {
+        super(message);
+    }
+
+    public IntegrationTestException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
