@@ -33,7 +33,10 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 
-version = '0.15-SNAPSHOT'
+release {
+    versionPropertyFile = 'gradle.properties'
+    versionProperties = []
+}
 
 
 project.ext {
