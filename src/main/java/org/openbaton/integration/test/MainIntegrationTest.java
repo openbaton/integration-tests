@@ -206,12 +206,16 @@ public class MainIntegrationTest {
         GenericServiceTester t = (GenericServiceTester) subTask;
         Boolean stop = false;
         String vnfrType = currentSection.get("vnf-type");
+        String user = currentSection.get("user-name");
         if (vnfrType != null)
             t.setVnfrType(currentSection.get("vnf-type"));
 
         String netName = currentSection.get("net-name");
         if (netName != null)
             t.setVirtualLink(netName);
+
+        if (user != null)
+            t.setUserName(user);
 
         for (int i = 1; !stop; i++) {
             String scriptName = currentSection.get("script-" + i);

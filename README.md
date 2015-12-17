@@ -421,11 +421,13 @@ The first one is:
 [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-1]
 class-name = GenericServiceTester
 vnf-type = server
+user-name = ubuntu
 script-1 = iperf-running.sh
 ```
 
-The class name specifies, that we want to use the GenericServiceTester to test our service.
+The class name specifies, that we want to use the GenericServiceTester to test our service. 
 The vnf-type is used to say on which virtual network functions the scripts should be executed and is equal to the one you wrote into the network service descriptor.
+The user-name field specifies the user name of the virtual machine. 
 In our example the integration test would execute them on a virtual machine, which runs the iperfserver VNF which has the type 'server'.
 And finally you have to specify the script name. script-1 will be the first script executed in that task.
 If you want to execute more than that, just add script-2, script-3 and so on.
@@ -435,6 +437,7 @@ The same thing is done for the iperfclient:
 [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-2]
 class-name = GenericServiceTester
 vnf-type = client
+user-name = ubuntu
 script-1 = iperf-running.sh
 ```
 
@@ -484,6 +487,7 @@ We add it to the clients task in the .ini file:
 [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-1]
 class-name = GenericServiceTester
 vnf-type = client
+user-name = ubuntu
 script-1 = iperf-running.sh
 script-2 = iperf-clt-connection.sh
 ```
@@ -511,6 +515,7 @@ Here we just count if there are incoming connections to the server.
 [it/vim-c-1/nsd-c-1/nsr-c-1/nsr-w-1/gst-2]
 class-name = GenericServiceTester
 vnf-type = server
+user-name = ubuntu
 script-1 = iperf-running.sh
 script-2 = iperf-srv-connection.sh
 ```
@@ -534,6 +539,7 @@ Example:
 class-name = GenericServiceTester
 vnf-type = client
 net-name = private
+user-name = ubuntu
 script-1 = iperf-running.sh
 script-2 = iperf-clt-connection.sh
 ```

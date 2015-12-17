@@ -48,6 +48,7 @@ public class GenericServiceTester extends Tester {
     private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
     private String vnfrType = "";
     private String virtualLink = "";
+    private String userName = "";
 
     public GenericServiceTester(Properties properties) {
         super(properties, GenericServiceTester.class, LOCAL_PATH_NAME_SCRIPTS, "");
@@ -116,7 +117,7 @@ public class GenericServiceTester extends Tester {
                         throw new Exception("Script " + script.getName() + " could not be sent.");
                     }
                     //execute script on VM
-                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" ubuntu@" +
+                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName +"@" +
                             floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + script.getName() + "\"");
 
                     Process execute = pb.start();
@@ -287,6 +288,10 @@ public class GenericServiceTester extends Tester {
 
     public void setVirtualLink(String virtualLink) {
         this.virtualLink = virtualLink;
+    }
+
+    public void setUserName(String name) {
+        this.userName = name;
     }
 
 }
