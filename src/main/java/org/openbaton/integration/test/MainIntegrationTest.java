@@ -39,9 +39,6 @@ public class MainIntegrationTest {
     private static String nfvoPort;
     private static String nfvoUsr;
     private static String nfvoPsw;
-    private static String dbUri;
-    private static String dbUsr;
-    private static String dbPsw;
     private final static String SCENARIO_PATH = "/integration-test-scenarios/";
 
     private static Properties loadProperties() throws IOException {
@@ -50,9 +47,6 @@ public class MainIntegrationTest {
         nfvoPort = properties.getProperty("nfvo-port");
         nfvoUsr = properties.getProperty("nfvo-usr");
         nfvoPsw = properties.getProperty("nfvo-psw");
-        dbUsr = properties.getProperty("db-usr");
-        dbPsw = properties.getProperty("db-psw");
-        dbUri = properties.getProperty("db-uri");
         return properties;
     }
 

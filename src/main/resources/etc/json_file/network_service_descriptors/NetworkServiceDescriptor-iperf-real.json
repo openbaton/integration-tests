@@ -12,7 +12,7 @@
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "install.sh",
+                        "test-install.sh",
                         "install-srv.sh"
                     ]
                 }
@@ -73,7 +73,7 @@
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "install.sh"
+                        "test-install.sh"
                     ]
                 },
                 {
