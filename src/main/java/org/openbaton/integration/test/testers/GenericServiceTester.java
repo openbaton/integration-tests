@@ -108,7 +108,7 @@ public class GenericServiceTester extends Tester {
 
                     //store script on VM
                     ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", "scp -o \"StrictHostKeyChecking no\"" + " -i " + pemFile.getPath() + " " + script.getPath() +
-                            " ubuntu@" + floatingIp + ":/home/ubuntu");
+                            " " + userName +"@" + floatingIp + ":/home/ubuntu");
 
                     Process copy = pb.start();
                     int exitStatus = copy.waitFor();
