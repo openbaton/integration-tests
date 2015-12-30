@@ -80,9 +80,9 @@ dependencies {
 	compile 'mysql:mysql-connector-java:5.1.36'
 	compile 'org.ini4j:ini4j:0.5.4'
 
-    compile 'org.springframework:spring-core:' + springVersion
+    	compile 'org.springframework:spring-core:' + springVersion
 
-	compile 'org.openbaton:sdk:0.15-SNAPSHOT'
+	compile 'org.openbaton:sdk:0.15'
 
 	compile 'commons-io:commons-io:2.4'
 }
