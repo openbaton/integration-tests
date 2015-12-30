@@ -47,6 +47,7 @@ public class GenericServiceTester extends Tester {
     private List<File> scripts = new LinkedList<File>();
     private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
     private String vnfrType = "";
+    private String vnfrName = "";
     private String virtualLink = "";
     private String userName = "";
 
@@ -72,25 +73,60 @@ public class GenericServiceTester extends Tester {
         if (virtualLink.equals("")) {
             if (vnfrVnfc.containsKey(vnfrType)) {
                 for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfrType)) {
-                    if (vnfc.getAllFips() != null)
-                        floatingIps.addAll(vnfc.getAllFips());
+                    if (vnfrName.equals("")) {
+                        if (vnfc.getAllFips() != null)
+                            floatingIps.addAll(vnfc.getAllFips());
+                    } else {
+                        if (vnfc.getVnfrNname().equals(vnfrName) && vnfc.getAllFips() != null)
+                            floatingIps.addAll(vnfc.getAllFips());
+                    }
                 }
             }
         } else {
             if (vnfrVnfc.containsKey(vnfrType)) {
                 for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfrType)) {
-                    if (vnfc.getFipsByNet(virtualLink) != null)
-                        floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
+                    if (vnfrName.equals("")) {
+                        if (vnfc.getFipsByNet(virtualLink) != null)
+                            floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
+                    } else {
+                        if (vnfc.getVnfrNname().equals(vnfrName) && vnfc.getFipsByNet(virtualLink) != null)
+                            floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
+                    }
                 }
             }
         }
 
 
         Iterator<String> floatingIpIt = floatingIps.iterator();
-        if (floatingIps.size() == 0 && !virtualLink.equals(""))
-            log.warn("Found no floating IPs for " + vnfrType + " with virtual_link: " + virtualLink + ".");
-        if (floatingIps.size() == 0 && virtualLink.equals(""))
-            log.warn("Found no floating IPs for " + vnfrType + ".");
+        if (vnfrName.equals("")) {
+            if (!virtualLink.equals("")) {
+                if (floatingIps.size() == 0) {
+                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with virtual_link: " + virtualLink + ".");
+                } else {
+                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with virtual_link " + virtualLink + ".");
+                }
+            } else {
+                if (floatingIps.size() == 0) {
+                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + ".");
+                } else {
+                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + ".");
+                }
+            }
+        } else {
+            if (!virtualLink.equals("")) {
+                if (floatingIps.size() == 0) {
+                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + " and with virtual_link: " + virtualLink + ".");
+                } else {
+                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + " with virtual_link " + virtualLink + ".");
+                }
+            } else {
+                if (floatingIps.size() == 0) {
+                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + ".");
+                } else {
+                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + ".");
+                }
+            }
+        }
 
         while (floatingIpIt.hasNext()) {
             String floatingIp = floatingIpIt.next();
@@ -160,6 +196,7 @@ public class GenericServiceTester extends Tester {
             for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
                 for (VNFCInstance vnfcInstance : vdu.getVnfc_instance()) {
                     VNFCRepresentation vnfcRepresentation = new VNFCRepresentation();
+                    vnfcRepresentation.setVnfrName(vnfr.getName());
                     vnfcRepresentation.setHostname(vnfcInstance.getHostname());
                     vnfcRepresentation.setConfiguration(confMap);
                     for (Ip ip : vnfcInstance.getIps()) {
@@ -284,6 +321,10 @@ public class GenericServiceTester extends Tester {
 
     public void setVnfrType(String vnfrType) {
         this.vnfrType = vnfrType;
+    }
+
+    public void setVnfrName(String vnfrName) {
+        this.vnfrName = vnfrName;
     }
 
     public void setVirtualLink(String virtualLink) {

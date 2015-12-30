@@ -206,9 +206,13 @@ public class MainIntegrationTest {
         GenericServiceTester t = (GenericServiceTester) subTask;
         Boolean stop = false;
         String vnfrType = currentSection.get("vnf-type");
+        String vnfrName = currentSection.get("vnf-name");
         String user = currentSection.get("user-name");
         if (vnfrType != null)
-            t.setVnfrType(currentSection.get("vnf-type"));
+            t.setVnfrType(vnfrType);
+
+        if (vnfrName != null)
+            t.setVnfrName(vnfrName);
 
         String netName = currentSection.get("net-name");
         if (netName != null)
