@@ -15,16 +15,22 @@
  */
 package org.openbaton.integration.test;
 
+import com.google.gson.*;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Profile;
-import org.openbaton.integration.test.testers.*;
-import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.catalogue.nfvo.Action;
+import org.openbaton.integration.test.testers.*;
 import org.openbaton.integration.test.utils.SubTask;
+import org.openbaton.integration.test.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +65,7 @@ public class MainIntegrationTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (i > 50) {
+            if (i > 40) {
                 return false;
             }
 
@@ -67,8 +73,55 @@ public class MainIntegrationTest {
         return true;
     }
 
+    private static boolean areVnfmsRegistered(String nfvoIp, String nfvoPort) {
+        int i = 0;
+        boolean generic = false;
+        boolean dummy = false;
+        while (!generic || !dummy) {
+            HttpResponse<String> r = null;
+            try {
+                r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers").asString();
+            } catch (UnirestException e) {
+                log.error("Could not reach NFVO. Is it really running and are the integration-test.properties correct?");
+                return false;
+            }
+            Gson mapper = new GsonBuilder().setPrettyPrinting().create();
+            JsonArray vnfmArray = null;
+            String body = null;
+            try {
+                body = r.getBody();
+            } catch (NullPointerException e) {
+                log.error("Something went wrong asking the NFVO for the registrated VNFMs.");
+                return false;
+            }
+            vnfmArray = mapper.fromJson(body, JsonArray.class);
+            Iterator<JsonElement> vnfmIt = vnfmArray.iterator();
+            while (vnfmIt.hasNext()) {
+                JsonElement type = vnfmIt.next().getAsJsonObject().get("type");
+                if (type.getAsString().equals("generic"))
+                    generic = true;
+                if (type.getAsString().equals("dummy"))
+                    dummy = true;
+            }
+            if (i >= 20) {
+                if (!generic)
+                    log.error("After 60 seconds the Generic VNFM is not yet registered to the NFVO. Is there an error?");
+                if (!dummy)
+                    log.error("After 60 seconds the Dummy VNFM is not yet registered to the NFVO. Is there an error?");
+                return false;
+            }
+            i++;
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) throws Exception {
 
         System.out.println(log.getClass());
         Properties properties = null;
@@ -83,12 +136,22 @@ public class MainIntegrationTest {
          ******************************/
 
         if (!isNfvoStarted(nfvoIp, nfvoPort)) {
-            log.error("After 150 sec the Nfvo is not started yet. Is there an error?");
-            System.exit(1); // 1 stands for the error in running nfvo
+            log.error("After 120 sec the Nfvo is not started yet. Is there an error?");
+            System.exit(1);
         }
 
         log.info("Nfvo is started");
 
+        /******************************
+         * Running VNFMs				  *
+         ******************************/
+
+        if (!areVnfmsRegistered(nfvoIp, nfvoPort)) {
+            log.error("The Generic or the Dummy VNFM are not registered yet.");
+            System.exit(1);
+        }
+
+        log.info("VNFMs are registered");
 
         /******************************
          * Now create the VIM		  *
