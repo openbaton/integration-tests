@@ -26,8 +26,6 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,9 +45,9 @@ public class GenericServiceTester extends Tester {
     private List<File> scripts = new LinkedList<File>();
     private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
     private String vnfrType = "";
-    private String vnfrName = "";
     private String virtualLink = "";
     private String userName = "";
+    private String vmScriptsPath = "";
 
     public GenericServiceTester(Properties properties) {
         super(properties, GenericServiceTester.class, LOCAL_PATH_NAME_SCRIPTS, "");
@@ -70,63 +68,44 @@ public class GenericServiceTester extends Tester {
         File pemFile = new File(EXTERNAL_PATH_NAME_PEM);
         Runtime r = Runtime.getRuntime();
 
+        for (String k : vnfrVnfc.keySet()) {
+            for (VNFCRepresentation v : vnfrVnfc.get(k)) {
+            }
+        }
+
         if (virtualLink.equals("")) {
             if (vnfrVnfc.containsKey(vnfrType)) {
                 for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfrType)) {
-                    if (vnfrName.equals("")) {
-                        if (vnfc.getAllFips() != null)
-                            floatingIps.addAll(vnfc.getAllFips());
-                    } else {
-                        if (vnfc.getVnfrNname().equals(vnfrName) && vnfc.getAllFips() != null)
-                            floatingIps.addAll(vnfc.getAllFips());
-                    }
+                    if (vnfc.getAllFips() != null)
+                        floatingIps.addAll(vnfc.getAllFips());
+
                 }
             }
         } else {
             if (vnfrVnfc.containsKey(vnfrType)) {
                 for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfrType)) {
-                    if (vnfrName.equals("")) {
-                        if (vnfc.getFipsByNet(virtualLink) != null)
-                            floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
-                    } else {
-                        if (vnfc.getVnfrNname().equals(vnfrName) && vnfc.getFipsByNet(virtualLink) != null)
-                            floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
-                    }
+                    if (vnfc.getFipsByNet(virtualLink) != null)
+                        floatingIps.addAll(vnfc.getFipsByNet(virtualLink));
                 }
             }
         }
 
 
         Iterator<String> floatingIpIt = floatingIps.iterator();
-        if (vnfrName.equals("")) {
-            if (!virtualLink.equals("")) {
-                if (floatingIps.size() == 0) {
-                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with virtual_link: " + virtualLink + ".");
-                } else {
-                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with virtual_link " + virtualLink + ".");
-                }
+        if (!virtualLink.equals("")) {
+            if (floatingIps.size() == 0) {
+                log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with virtual_link: " + virtualLink + ".");
             } else {
-                if (floatingIps.size() == 0) {
-                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + ".");
-                } else {
-                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + ".");
-                }
+                log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with virtual_link " + virtualLink + ".");
             }
         } else {
-            if (!virtualLink.equals("")) {
-                if (floatingIps.size() == 0) {
-                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + " and with virtual_link: " + virtualLink + ".");
-                } else {
-                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + " with virtual_link " + virtualLink + ".");
-                }
+            if (floatingIps.size() == 0) {
+                log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + ".");
             } else {
-                if (floatingIps.size() == 0) {
-                    log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + ".");
-                } else {
-                    log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with the vnf-name " + vnfrName + ".");
-                }
+                log.info("Start testing the virtual machines of vnf-type " + vnfrType + ".");
             }
         }
+
 
         while (floatingIpIt.hasNext()) {
             String floatingIp = floatingIpIt.next();
@@ -144,7 +123,7 @@ public class GenericServiceTester extends Tester {
 
                     //store script on VM
                     ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", "scp -o \"StrictHostKeyChecking no\"" + " -i " + pemFile.getPath() + " " + script.getPath() +
-                            " " + userName +"@" + floatingIp + ":/home/ubuntu");
+                            " " + userName + "@" + floatingIp + ":"+ vmScriptsPath);
 
                     Process copy = pb.start();
                     int exitStatus = copy.waitFor();
@@ -153,8 +132,8 @@ public class GenericServiceTester extends Tester {
                         throw new Exception("Script " + script.getName() + " could not be sent.");
                     }
                     //execute script on VM
-                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName +"@" +
-                            floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + script.getName() + "\"");
+                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName + "@" +
+                            floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + vmScriptsPath + "/" + script.getName() + "\"");
 
                     Process execute = pb.start();
                     exitStatus = execute.waitFor();
@@ -208,7 +187,12 @@ public class GenericServiceTester extends Tester {
                     representationList.add(vnfcRepresentation);
                 }
             }
-            vnfrVnfc.put(vnfr.getType(), representationList);
+            if (!vnfrVnfc.containsKey(vnfr.getType())) {
+                vnfrVnfc.put(vnfr.getType(), representationList);
+            } else {
+                List<VNFCRepresentation> l = vnfrVnfc.get(vnfr.getType());
+                l.addAll(representationList);
+            }
         }
     }
 
@@ -264,6 +248,7 @@ public class GenericServiceTester extends Tester {
                     variableValuesMap.put(vnfr + "_" + net + "_ip", ips);
                 }
             }
+
         }
 
         // create the prescripts
@@ -279,9 +264,9 @@ public class GenericServiceTester extends Tester {
                 } else {
                     value = variableValuesMap.get(varName).peek();
                 }
-                prescript += varName+"="+value+"; ";
+                prescript += varName + "=" + value + "; ";
             }
-            prescript+=configurationDeclarations;
+            prescript += configurationDeclarations;
             preScripts.add(prescript);
         }
         return preScripts;
@@ -300,7 +285,7 @@ public class GenericServiceTester extends Tester {
                 OutputStream os = new FileOutputStream(t);
                 byte[] buffer = new byte[1024];
                 int bytesRead;
-                while ((bytesRead=is.read(buffer)) != -1) {
+                while ((bytesRead = is.read(buffer)) != -1) {
                     os.write(buffer, 0, bytesRead);
                 }
                 is.close();
@@ -323,16 +308,16 @@ public class GenericServiceTester extends Tester {
         this.vnfrType = vnfrType;
     }
 
-    public void setVnfrName(String vnfrName) {
-        this.vnfrName = vnfrName;
-    }
-
     public void setVirtualLink(String virtualLink) {
         this.virtualLink = virtualLink;
     }
 
     public void setUserName(String name) {
         this.userName = name;
+    }
+
+    public void setVmScriptsPath(String vmScriptsPath) {
+        this.vmScriptsPath = vmScriptsPath;
     }
 
 }

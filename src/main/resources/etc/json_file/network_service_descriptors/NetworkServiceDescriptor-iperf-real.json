@@ -1,5 +1,5 @@
 {
-    "name":"pku_vnf_testing",
+    "name":"iperf-real-scenario",
     "vendor":"fokus",
     "version":"0.1-ALPHA",
     "vnfd":[
@@ -39,7 +39,7 @@
                         {
                             "connection_point":[
                                 {
-                                    "floatingIp":"192.168.145.59",
+                                    "floatingIp":"random",
                                     "virtual_link_reference":"private"
                                 }
                             ]
@@ -104,14 +104,14 @@
                         {
                             "connection_point":[
                                 {
-                                    "floatingIp":"192.168.145.56",
+                                    "floatingIp":"random",
                                     "virtual_link_reference":"private"
                                 }
                             ]
                         }, {
                             "connection_point":[
                                 {
-                                    "floatingIp":"192.168.145.66",
+                                    "floatingIp":"random",
                                     "virtual_link_reference":"private"
                                 }
                             ]

@@ -22,6 +22,10 @@ import java.util.*;
  */
 public class VNFCRepresentation {
 
+    public String toString() {
+        return "VNFC "+vnfrName+" fips "+getAllFips()+" ips "+getAllIps();
+    }
+
     private String hostname;
     private String vnfrName;
     private Map<String, String> configuration = new HashMap<>();

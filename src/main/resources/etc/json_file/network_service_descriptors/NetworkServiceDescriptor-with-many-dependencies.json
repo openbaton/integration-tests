@@ -1,7 +1,7 @@
 {
   "vendor":"fokus",
   "version":"0",
-  "name":"NSD-dependencies",
+  "name":"many-dependencies-scenario",
   "vnfd":[
     {
       "vendor":"fokus",
