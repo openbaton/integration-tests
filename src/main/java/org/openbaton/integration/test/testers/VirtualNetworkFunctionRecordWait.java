@@ -19,6 +19,7 @@ import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -32,7 +33,7 @@ import java.util.Properties;
 public class VirtualNetworkFunctionRecordWait extends Waiter {
 
     private String name = VirtualNetworkFunctionRecordWait.class.getSimpleName();
-    private String vnfrName;
+    private String vnfrType;
 
     public VirtualNetworkFunctionRecordWait(Properties properties) {
         super(properties, VirtualNetworkFunctionRecordWait.class, "", "");
@@ -44,27 +45,30 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException {
+    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException, IntegrationTestException {
 
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
         EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
-        String vnfrId=getVnfrIdFromNsr(nsr, getVnfrName());
+        String vnfrId=getVnfrIdFromNsr(nsr, getVnfrType());
         eventEndpoint.setVirtualNetworkFunctionId(vnfrId);
         //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
 
         try {
             subscribe(eventEndpoint);
-            log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of vnfr with name:" + getVnfrName() + " and id:" + vnfrId + "....");
+            log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of vnfr with type:" + getVnfrType() + " and id:" + vnfrId + "....");
             if(waitForEvent())
-                log.debug(name + ": --- waiting complete for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
-            else log.debug(name + ": --- timeout elapsed for " + getAction().toString() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
+                log.debug(name + ": --- waiting complete for " + getAction().toString() + " of vnfr with type:"+ getVnfrType()+" and id:" + vnfrId);
+            else {
+                log.error(name + ": --- timeout elapsed for " + getAction().toString() + " of vnfr with type:"+ getVnfrType()+" and id:" + vnfrId);
+                throw new IntegrationTestException("Timeout elapsed.");
+            }
             unSubscribe();
 
         } catch (SubscriptionException e) {
-            log.error("Subscription failed for event " + getAction() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
+            log.error("Subscription failed for event " + getAction() + " of vnfr with type:"+ getVnfrType()+" and id:" + vnfrId);
             throw e;
         } catch (InterruptedException | SDKException e) {
-            log.error("Wait failed for event " + getAction() + " of vnfr with name:"+getVnfrName()+" and id:" + vnfrId);
+            log.error("Wait failed for event " + getAction() + " of vnfr with type:"+ getVnfrType()+" and id:" + vnfrId);
             throw e;
         }
         //I can choose what to return:
@@ -73,25 +77,25 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
         return nsr;
     }
 
-    public void setVnfrName(String name){
-        vnfrName=name;
+    public void setVnfrType(String type){
+        vnfrType=type;
     }
 
-    public String getVnfrName(){
-        return vnfrName;
+    public String getVnfrType(){
+        return vnfrType;
     }
 
-    private String getVnfrIdFromNsr(NetworkServiceRecord networkServiceRecord, String vnfrName){
+    private String getVnfrIdFromNsr(NetworkServiceRecord networkServiceRecord, String vnfrType){
         if(networkServiceRecord==null)
             throw new NullPointerException("NetworkServiceRecord is null");
-        if(vnfrName==null || vnfrName.isEmpty())
-            throw new NullPointerException("vnfrName is null or empty");
+        if(vnfrType==null || vnfrType.isEmpty())
+            throw new NullPointerException("vnfrType is null or empty");
         log.debug(""+networkServiceRecord);
         for(VirtualNetworkFunctionRecord vnfr : networkServiceRecord.getVnfr()) {
-            log.debug("VNFR name found: " + vnfr.getName());
-            if (vnfr.getName().equalsIgnoreCase(vnfrName))
+            log.debug("VNFR type found: " + vnfr.getType());
+            if (vnfr.getType().equalsIgnoreCase(vnfrType))
                 return vnfr.getId();
         }
-        throw new NullPointerException("No vnfr found for name: "+vnfrName);
+        throw new NullPointerException("No vnfr found for type: "+vnfrType);
     }
 }

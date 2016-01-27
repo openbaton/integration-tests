@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
@@ -42,7 +43,7 @@ public class NetworkServiceRecordWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException {
+    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException, IntegrationTestException {
 
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
@@ -55,7 +56,10 @@ public class NetworkServiceRecordWait extends Waiter {
             log.debug(name + ": --- registration complete, start waiting for " + getAction().toString() + " of nsr with id:" + nsr.getId() + "....");
             if(waitForEvent())
                 log.debug(name + ": --- waiting complete for " + getAction().toString() + " of nsr with id:" + nsr.getId());
-            else log.debug(name + ": --- timeout elapsed for " + getAction().toString() + " of nsr with id:" + nsr.getId());
+            else {
+                log.error(name + ": --- timeout elapsed for " + getAction().toString() + " of nsr with id:" + nsr.getId());
+                throw new IntegrationTestException("Timeout elapsed.");
+            }
             unSubscribe();
 
         } catch (SubscriptionException e) {

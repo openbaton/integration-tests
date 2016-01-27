@@ -182,6 +182,12 @@ public class MainIntegrationTest {
                     configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
                 else if (subTask instanceof GenericServiceTester)
                     configureGenericServiceTester(subTask, currentSection);
+                else if (subTask instanceof ScaleOut)
+                    configureScaleOut(subTask, currentSection);
+                else if (subTask instanceof ScaleIn)
+                    configureScaleIn(subTask, currentSection);
+                else if (subTask instanceof ScalingTester)
+                    configureScalingTester(subTask, currentSection);
                 else if (subTask instanceof PackageUpload)
                     configurePackageUpload(subTask, currentSection);
                 else if (subTask instanceof PackageDelete)
@@ -221,17 +227,17 @@ public class MainIntegrationTest {
         w.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
 
         String action = currentSection.get("action");
-        String vnfName = currentSection.get("vnf-name");
+        String vnfType = currentSection.get("vnf-type");
         if (action == null || action.isEmpty()) {
-            log.error("action for VirtualNetworkFunctionRecordWait not setted");
+            log.error("action for VirtualNetworkFunctionRecordWait not set");
             exit(3);
         }
-        if (vnfName == null || vnfName.isEmpty()) {
-            log.error("vnf-name property not setted not setted");
+        if (vnfType == null || vnfType.isEmpty()) {
+            log.error("vnf-type property not set");
             exit(3);
         }
         w.setAction(Action.valueOf(action));
-        w.setVnfrName(vnfName);
+        w.setVnfrType(vnfType);
     }
 
     private static void configureNetworkServiceRecordWait(SubTask instance, Profile.Section currentSection) {
@@ -240,7 +246,7 @@ public class MainIntegrationTest {
 
         String action = currentSection.get("action");
         if (action == null) {
-            log.error("action for NetworkServiceRecordWait not setted");
+            log.error("action for NetworkServiceRecordWait not set");
             exit(3);
         }
         w.setAction(Action.valueOf(action));
@@ -292,6 +298,39 @@ public class MainIntegrationTest {
             }
             t.addScript(scriptName);
         }
+    }
+
+    private static void configureScaleOut(SubTask subTask, Profile.Section currentSection) {
+        ScaleOut t = (ScaleOut) subTask;
+        String vnfrType = currentSection.get("vnf-type");
+        String virtualLink = currentSection.get("virtual-link");
+        String floatingIp = currentSection.get("floating-ip");
+        if (vnfrType != null)
+            t.setVnfrType(vnfrType);
+
+        if (virtualLink != null)
+            t.setVirtualLink(virtualLink);
+
+        if (floatingIp != null)
+            t.setFloatingIp(floatingIp);
+    }
+
+    private static void configureScaleIn(SubTask subTask, Profile.Section currentSection) {
+        ScaleIn t = (ScaleIn) subTask;
+        String vnfrType = currentSection.get("vnf-type");
+        if (vnfrType != null)
+            t.setVnfrType(vnfrType);
+    }
+
+    private static void configureScalingTester(SubTask subTask, Profile.Section currentSection) {
+        ScalingTester t = (ScalingTester) subTask;
+        String vnfrType = currentSection.get("vnf-type");
+        String vnfcCount = currentSection.get("vnfc-count");
+        if (vnfrType != null)
+            t.setVnfrType(vnfrType);
+
+        if (vnfcCount != null)
+            t.setVnfcCount(vnfcCount);
     }
 
     private static void configurePackageUpload(SubTask instance, Profile.Section currentSection) {

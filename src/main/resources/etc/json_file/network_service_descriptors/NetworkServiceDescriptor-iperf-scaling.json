@@ -1,5 +1,5 @@
 {
-    "name":"iperf-real-scenario",
+    "name":"iperf-scenario-scaling",
     "vendor":"fokus",
     "version":"0.1-ALPHA",
     "vnfd":[
@@ -34,7 +34,7 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":1,
+                    "scale_in_out":4,
                     "vnfc":[
                         {
                             "connection_point":[
@@ -97,16 +97,9 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":2,
+                    "scale_in_out":4,
                     "vnfc":[
                         {
-                            "connection_point":[
-                                {
-                                    "floatingIp":"random",
-                                    "virtual_link_reference":"private"
-                                }
-                            ]
-                        }, {
                             "connection_point":[
                                 {
                                     "floatingIp":"random",

@@ -119,7 +119,7 @@ public class GenericServiceTester extends Tester {
                 Iterator<String> preScriptIt = preScripts.iterator();
                 while (preScriptIt.hasNext()) {
                     String preScript = preScriptIt.next();
-                    log.info("Executing script " + script.getName() + "\nwith environment: \n" + preScript + "\non the virtual machine with floating ip: " + floatingIp);
+                    log.info("Executing script " + script.getName() + " on the virtual machine with floating ip: " + floatingIp + "\nwith environment: \n" + preScript);
 
                     //store script on VM
                     ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", "scp -o \"StrictHostKeyChecking no\"" + " -i " + pemFile.getPath() + " " + script.getPath() +
@@ -220,8 +220,9 @@ public class GenericServiceTester extends Tester {
             // handle variables of type ${vnfrtype_ip}
             if (findInText(script, vnfr + "_ip")) {
                 LinkedList<String> ips = new LinkedList<>();
-                for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr))
+                for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr)) {
                     ips.addAll(vnfc.getAllIps());
+                }
                 variableValuesMap.put(vnfr + "_ip", ips);
             }
             // store all the network names occurring in that vnfr in a Set

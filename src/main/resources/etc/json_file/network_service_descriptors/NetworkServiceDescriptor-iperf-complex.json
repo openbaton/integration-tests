@@ -65,9 +65,7 @@
                 }
             ],
             "endpoint":"generic",
-            "vnfPackage":{
-                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
-            }
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }, {
             "name":"iperfpeer2",
             "vendor":"fokus",
@@ -129,9 +127,7 @@
                 }
             ],
             "endpoint":"generic",
-            "vnfPackage":{
-                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
-            }
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         },
         {
             "name":"iperfpeer3",
@@ -201,9 +197,7 @@
                 }
             ],
             "endpoint":"generic",
-            "vnfPackage":{
-                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
-            }
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }, {
             "name":"iperfpeer4",
             "vendor":"fokus",
@@ -267,9 +261,7 @@
                 }
             ],
             "endpoint":"generic",
-            "vnfPackage":{
-                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
-            }
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }, {
             "name":"iperfpeer5",
             "vendor":"fokus",
@@ -341,9 +333,7 @@
                 }
             ],
             "endpoint":"generic",
-            "vnfPackage":{
-                "scriptsLink":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
-            }
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }
     ],
     "vld":[
