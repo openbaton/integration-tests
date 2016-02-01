@@ -40,6 +40,10 @@ import java.util.Set;
 /**
  * Created by tbr on 11.01.16.
  */
+
+/**
+ * This class triggers one scale out on a specified VNFR.
+ */
 public class ScaleOut extends Tester {
 
     private String vnfrType = "";
@@ -58,7 +62,7 @@ public class ScaleOut extends Tester {
 
     @Override
     protected Object doWork() throws Exception {
-        log.info("~~ Start ScaleOut on VNFR type "+vnfrType+"~~");
+        log.info("Start ScaleOut on VNFR type "+vnfrType);
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
@@ -69,7 +73,6 @@ public class ScaleOut extends Tester {
                 "/ns-records",
                 "1");
 
-        // create VNFCInstance
         boolean found = false;
         for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
             if (vnfr.getType().equals(vnfrType)) {
@@ -81,7 +84,7 @@ public class ScaleOut extends Tester {
                 } catch (SDKException e) {
                     log.warn("Exception while triggering the scale out: "+e.getMessage());
                 }
-                log.info("SCALE_OUT finished for VNFR " + vnfr.getType());
+                log.debug("Triggered ScaleOut on VNFR type "+vnfrType);
             }
         }
         if (!found)

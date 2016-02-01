@@ -1,12 +1,12 @@
 #!/bin/bash
 
-count=`sudo netstat -ntp | grep iperf | awk '{print $5}' | grep -v 5001 | sed 's/:.*//' | wc -l`
-if [ $count -ne 1] 
+incoming=`sudo netstat -npt | grep iperf | awk '{print $5}' | grep -v 5001 | sed 's/:.*//'`
+
+count=`echo "$incoming" | wc -l`
+if [ $count -ne 1 ] 
 then
   exit 1
 fi
-
-incoming=`sudo netstat -npt | grep iperf | awk '{print $5}' | grep -v 5001 | sed 's/:.*//'`
 
 echo client_ip=${client_ip} incoming=$incoming >> i
 

@@ -120,7 +120,6 @@ public class MainIntegrationTest {
         return true;
     }
 
-
     public static void main(String[] args) throws Exception {
 
         System.out.println(log.getClass());

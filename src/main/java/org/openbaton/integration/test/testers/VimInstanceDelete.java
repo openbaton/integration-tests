@@ -32,9 +32,6 @@ public class VimInstanceDelete extends Tester<VimInstance> {
      *                   nfvo-pwd
      *                   nfvo-ip
      *                   nfvo-port
-     * @param aClass     : example VimInstance.class
-     * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
-     * @param basePath
      */
     public VimInstanceDelete(Properties properties) {
         super(properties, VimInstance.class, "", "/datacenters");
@@ -48,13 +45,14 @@ public class VimInstanceDelete extends Tester<VimInstance> {
     @Override
     protected Object doWork() throws SDKException {
         VimInstance vi = (VimInstance) param;
+        log.info("Delete vim instance "+vi.getName());
         try {
             delete(vi.getId());
         } catch (SDKException sdkEx) {
             log.error("Exception during deleting of VimInstance with id: "+vi.getId(), sdkEx);
             throw sdkEx;
         }
-        //log.debug(" --- VimInstanceDelete has deleted the vimInstance:"+vi.getId());
+        log.debug("--- VimInstanceDelete has deleted the vimInstance:"+vi.getName());
         return null;
     }
 }

@@ -23,6 +23,10 @@ import java.util.Set;
 /**
  * Created by tbr on 15.01.16.
  */
+
+/**
+ * This class triggers one scale in on a specified VNFR.
+ */
 public class ScaleIn extends Tester {
 
     private String vnfrType = "";
@@ -38,8 +42,7 @@ public class ScaleIn extends Tester {
 
     @Override
     protected Object doWork() throws Exception {
-        Thread.sleep(8000);
-        log.info("~~start ScaleIn on VNFR type " + vnfrType+"~~");
+        log.info("Start ScaleIn on VNFR type " + vnfrType);
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
@@ -65,6 +68,7 @@ public class ScaleIn extends Tester {
         if (!found)
             log.warn("did not find a VNFR of type " + vnfrType);
 
+        log.debug("--- Triggered ScaleIn on VNFR of type "+vnfrType);
         return param;
     }
 

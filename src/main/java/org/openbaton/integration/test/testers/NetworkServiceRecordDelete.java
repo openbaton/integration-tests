@@ -38,14 +38,14 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     @Override
     protected Object doWork() throws SDKException {
         NetworkServiceRecord nsr = (NetworkServiceRecord) param;
-        //log.debug(" --- Executing DELETE of " + nsr.getId());
+        log.info("Delete NSR "+nsr.getName()+" with id "+nsr.getId());
         try{
             delete(nsr.getId());
         } catch (SDKException sdkEx) {
             log.error("Exception during deleting of NetworkServiceRecord with id: "+nsr.getId(), sdkEx);
             throw sdkEx;
         }
-        // nsr.getDescriptor_reference() no longer needed
+        log.debug("--- deleted NSR "+nsr.getName()+" with id "+nsr.getId());
         return nsr;
     }
 }

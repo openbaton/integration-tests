@@ -27,6 +27,14 @@ import java.util.*;
 /**
  * Created by tbr on 30.11.15.
  */
+
+/**
+ * With the help of this class it is possible to upload a NSD based on a previously uploaded VNFPackage.
+ * If you want to do this task without the integration test, you would normally have to put the VNFD IDs into
+ * the VNFD part of the NSD's json file. But because the integration tests cannot know them in advance, you do not
+ * spcify the ID field in the NSD's json, but the type of the VNFR.
+ * Then this class will use a VNFD which is uploaded to Openbaton and has the same type.
+ */
 public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDescriptorCreate {
     private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
 
@@ -36,23 +44,16 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
 
     @Override
     protected NetworkServiceDescriptor prepareObject() {
-
         NetworkServiceDescriptor nsd = super.prepareObject();
         Set<VirtualNetworkFunctionDescriptor> vnfds = nsd.getVnfd();
-        Iterator<String> idIt = getVnfdIds().iterator();
         for (VirtualNetworkFunctionDescriptor vnfd : vnfds) {
-            if (idIt.hasNext()) {
-                if (vnfd.getId()==null || vnfd.getId().equals(""))
-                    vnfd.setId(idIt.next());
-            }
-            else {
-                log.error("Not enough VNFDs exist for the NSD.");
-            }
+            vnfd.setId(getVnfdIdByType(vnfd.getType()));
+            vnfd.setType(null);
         }
         return nsd;
     }
 
-    private List<String> getVnfdIds() {
+    private String getVnfdIdByType(String type) {
         AbstractRestAgent abstractRestAgent = requestor.abstractRestAgent(VirtualNetworkFunctionDescriptor.class, "/vnf-descriptors");
         List<VirtualNetworkFunctionDescriptor> obtained = null;
         try {
@@ -62,11 +63,15 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        List<String> ids = new LinkedList<>();
+        String id = "";
         for (VirtualNetworkFunctionDescriptor vnfd : obtained) {
-            ids.add(vnfd.getId());
+            if (vnfd.getType().equals(type)) {
+                id = vnfd.getId();
+                return id;
+            }
         }
-
-        return ids;
+        if (id.equals(""))
+            log.warn("Did not find a VNFD of type "+type+". Hence the NSD that you want to create from package will contain a VNFD with an empty ID and probably cause problems.");
+        return id;
     }
 }

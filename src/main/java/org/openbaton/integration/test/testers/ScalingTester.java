@@ -17,6 +17,14 @@ import java.util.Properties;
 /**
  * Created by tbr on 20.01.16.
  */
+
+/**
+ * This class tests if the expected number of VNFC-Instances of a VNFR exist and
+ * if the VNFR is in an active state.
+ * After a sclaing operation it passes the updated NSR to the next tester!
+ * Therefore it should always be executed after the VirtualNetworkFunctionRecordWait of a
+ * scaling operation finished.
+ */
 public class ScalingTester extends Tester {
 
     private String vnfrType = "";
@@ -33,7 +41,7 @@ public class ScalingTester extends Tester {
 
     @Override
     protected Object doWork() throws Exception {
-        log.info("~~~ Start ScalingTester ~~~");
+        log.info("Start ScalingTester");
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
@@ -44,7 +52,6 @@ public class ScalingTester extends Tester {
                 "/ns-records",
                 "1");
 
-        // create VNFCInstance
         boolean found = false;
         for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
             if (vnfr.getType().equals(vnfrType)) {

@@ -43,17 +43,17 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
     @Override
     protected Object doWork() throws SDKException {
-
+        log.info("Upload NSD "+fileName);
         Object received = null;
         VimInstance vimInstance= (VimInstance) param;
         try {
             received = create();
         }catch(SDKException sdkEx){
-            log.error("Exception during the on-boarding of NetworkServiceDescription from vim with name: "+vimInstance.getName()+" and id: "+vimInstance.getId());
+            log.error("Exception during the on-boarding of NetworkServiceDescriptor from vim with name: "+vimInstance.getName()+" and id: "+vimInstance.getId());
             throw sdkEx;
         }
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
-        log.debug(" --- Creating nsd with id: " + nsd.getId());
+        log.debug("Stored NSD with id: " + nsd.getId());
         return received;
     }
 
@@ -85,8 +85,8 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                 return mapper.fromJson(nsdRandom, aClass);
             }
             else {
-                log.warn("Missing /etc/openbaton/integration-test-parser-properties/nsd.properties file");
-                log.warn("If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
+                log.debug("Missing /etc/openbaton/integration-test-parser-properties/nsd.properties file");
+                log.debug("If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
             }
             return mapper.fromJson(body, aClass);
     }
