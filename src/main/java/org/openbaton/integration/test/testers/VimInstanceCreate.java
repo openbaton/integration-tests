@@ -74,7 +74,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             }
         }
         else{
-            log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+            log.debug("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
             body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
         }
         String vimRandom = null;

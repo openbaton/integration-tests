@@ -277,8 +277,8 @@ public class GenericServiceTester extends Tester {
     public void addScript(String scriptName) {
         File f = new File(EXTERNAL_PATH_NAME_SCRIPTS + scriptName);
         if (!f.exists()) {
-            log.info("The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
-            log.info("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
+            log.debug("The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
+            log.debug("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
             InputStream is = GenericServiceTester.class.getResourceAsStream(LOCAL_PATH_NAME_SCRIPTS + scriptName);
             File t = null;
             try {

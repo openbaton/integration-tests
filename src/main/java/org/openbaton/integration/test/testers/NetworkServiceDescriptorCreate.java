@@ -68,7 +68,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                     e.printStackTrace();
                 }
             } else {
-                log.warn("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME_NSD + fileName);
+                log.debug("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME_NSD + fileName);
                 body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME_NSD + fileName));
             }
             String nsdRandom = null;
