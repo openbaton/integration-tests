@@ -11,10 +11,10 @@ Five tests are run.
 4. scenario-complex-iperf
 5. scenario-scaling
 
-scenario-dummy-iperf uses the Dummy VNFM to simulate a VNFM and therefore tests the communication between NFVO and VNFM. 
+scenario-dummy-iperf uses the Dummy VNFM AMQP to simulate a VNFM and therefore tests the communication between NFVO and VNFM. 
 It does not actually deploy a network service. The fake network service is a simple iperf scenario with one server and one client. 
 
-scenario-many-dependencies also uses the Dummy VNFM but its fake network service is a little bit more complex in the sense that it has many VNFD with many dependencies between them. 
+scenario-many-dependencies also uses the Dummy VNFM AMQP but its fake network service is a little bit more complex in the sense that it has many VNFD with many dependencies between them. 
 
 The test scenario-real-iperf actually deploys a network service on openstack. 
 It consists of two VNFD and deploys one iperf server and two iperf clients. The clients contact the server. 
@@ -39,13 +39,15 @@ In the cases of the scenario-real-iperf, scenario-complex-iperf and scenario-sca
 
 ## Requirements
 
-1. A running NFVO
+1. A running NFVO with the test-plugin
 2. A running Generic VNFM
-3. A running Dummy VNFM
+3. A running Dummy VNFM AMQP
 
 ## Installation and configuration
 
-Clone the project to your machine. 
+If your NFVO does not yet contain the test-plugin (look for a jar named *test-plugin* in the directory *nfvo/plugins/vim-drivers*) you will have to get this first. Therefor clone the test-plugin project from https://github.com/openbaton/test-plugin to your machine, use a shell to navigate to the project's root directory and execute *./gradlew build*. You will find the test-plugin jar in the folder *build/libs/*. Copy it into the directory *nfvo/plugins/vim-drivers* of the NFVO. 
+
+Use git to clone the integration-test project to your machine. 
 In *integration-tests/src/main/resources* is a file named integration-test.properties. 
 Open it and set the property values according to your needs. 
 
@@ -57,9 +59,11 @@ Open it and set the property values according to your needs.
 | nfvo-pwd                                      | The password if a login is required for the NFVO |
 | local-ip					| The ip of the machine on which the integration test is running |
 
+Alternatively you can also create a directory */etc/openbaton/integration-test* on your machine and put a file named *integration-test.properties* in it. There you have to write and set the properties mentioned above. 
+
 After that you will also need a keypair for openstack. Create one and download the private key as a .pem file. 
 Rename it to integration-test.pem and provide it with the needed permissions by executing *chmod 400 integration-test.pem*.
-Create the directory */etc/openbaton/integration-test* on your machine and move the pem file into it. 
+If it does not exist already create the directory */etc/openbaton/integration-test* on your machine and move the pem file into it. 
 The next step is to create a vim file. 
 Here is an example where you just have to change some fields. 
 ```json
@@ -86,6 +90,7 @@ Name the vim file *real-vim.json* and add it to the folder *integration-tests/sr
 In the folder *integration-tests/src/main/resources/etc/json_file/network_service_descriptors* of the project you will find a file named NetworkServiceDescriptor-iperf-real.json and one named NetworkServiceDescriptor-complex-iperf.json. 
 We used the image ubuntu-14.04-server-cloudimg-amd64-disk1 for the virtual machines in openstack. 
 If you want to use another image, change every occurence of the above mentioned image in those two files to the name of the one you want to use and of course make sure it is available on openstack. 
+
 If you want to use another image, change every occurence of the above mentioned image to the name of the one you want to use and of course make sure it is available on openstack. 
 If you are using another image, you also have to configure the .ini files of the scenario-complex-iperf and scenario-real-iperf. 
 That is you have to look for the tasks of *GenericServiceTester* and change the value of vm-scripts-path to the path where you want to have the test scripts stored on your virtual machine and the value of user-name according to the user name used on the virtual machines deployed by the image. These were the steps to use another image. 
