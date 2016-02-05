@@ -40,6 +40,16 @@ public class Utils {
 	public static Properties getProperties() throws IOException {
 		Properties properties = new Properties();
 		properties.load(Utils.class.getResourceAsStream(PROPERTIES_FILE));
+        if (properties.getProperty("external-properties-file") != null) {
+            File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
+            if (externalPropertiesFile.exists()) {
+                log.debug("Loading properties from external-properties-file: " + properties.getProperty("external-properties-file"));
+                InputStream is = new FileInputStream(externalPropertiesFile);
+                properties.load(is);
+            } else {
+                log.debug("external-properties-file: " + properties.getProperty("external-properties-file") + " doesn't exist");
+            }
+        }
 		log.debug("Loaded properties: " + properties);
 		return properties;
 	}
