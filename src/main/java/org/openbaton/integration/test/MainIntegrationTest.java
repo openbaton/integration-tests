@@ -20,10 +20,21 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Profile;
+import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
+import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.catalogue.nfvo.Action;
+import org.openbaton.catalogue.nfvo.VNFPackage;
+import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.testers.*;
 import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.integration.test.utils.Utils;
+import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.exception.SDKException;
+import org.openbaton.sdk.api.rest.NetworkServiceDescriptorRestAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
+import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
+import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +57,22 @@ public class MainIntegrationTest {
     private static String nfvoPsw;
     private final static String SCENARIO_PATH = "/integration-test-scenarios/";
 
+    private static boolean clearAfterTest = false;
+
     private static Properties loadProperties() throws IOException {
         Properties properties = Utils.getProperties();
         nfvoIp = properties.getProperty("nfvo-ip");
         nfvoPort = properties.getProperty("nfvo-port");
         nfvoUsr = properties.getProperty("nfvo-usr");
         nfvoPsw = properties.getProperty("nfvo-psw");
+        String clear = properties.getProperty("clear-after-test");
+        if (clear != null) {
+            try {
+                clearAfterTest = Boolean.parseBoolean(clear);
+            } catch (Exception e) {
+                log.warn("The property field 'clear-after-test' is not 'true' or 'false' and will not be taken into account.");
+            }
+        }
         return properties;
     }
 
@@ -195,6 +216,7 @@ public class MainIntegrationTest {
         };
         itm.setLogger(log);
         long startTime, stopTime;
+        boolean allTestsPassed = true;
         for (URL url : iniFileURLs) {
             String[] splittedUrl = url.toString().split("/");
             String name = splittedUrl[splittedUrl.length - 1];
@@ -203,9 +225,42 @@ public class MainIntegrationTest {
                 stopTime = System.currentTimeMillis() - startTime;
                 log.info("Test: " + name + " finished correctly :) in " +
                         String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
-            } else log.info("Test: " + name + " completed with errors :(\n");
+            } else {
+                log.info("Test: " + name + " completed with errors :(\n");
+                allTestsPassed = false;
+            }
+            if (clearAfterTest)
+                clearOrchestrator();
+
         }
+        if (allTestsPassed)
+            log.info("All tests passed successfully.");
+        else log.info("Some tests failed.");
         System.exit(0);
+    }
+
+    private static void clearOrchestrator() {
+        try {
+            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPsw, nfvoIp, nfvoPort, "1");
+            NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
+            List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
+            for (NetworkServiceRecord nsr : nsrList)
+                nsrAgent.delete(nsr.getId());
+            NetworkServiceDescriptorRestAgent nsdAgent = requestor.getNetworkServiceDescriptorAgent();
+            List<NetworkServiceDescriptor> nsdList = nsdAgent.findAll();
+            for (NetworkServiceDescriptor nsd : nsdList)
+                nsdAgent.delete(nsd.getId());
+            AbstractRestAgent packageAgent = requestor.abstractRestAgent(VNFPackage.class, "/vnf-packages");
+            List<VNFPackage> packageList = packageAgent.findAll();
+            for (VNFPackage p : packageList)
+                packageAgent.delete(p.getId());
+            VimInstanceRestAgent vimAgent = requestor.getVimInstanceAgent();
+            List<VimInstance> vimList = vimAgent.findAll();
+            for (VimInstance vim : vimList)
+                vimAgent.delete(vim.getId());
+        } catch (Exception e) {
+            log.warn("Could not clear the NFVO.");
+        }
     }
 
 
