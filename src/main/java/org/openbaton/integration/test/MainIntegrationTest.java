@@ -15,14 +15,16 @@
  */
 package org.openbaton.integration.test;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
-import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.catalogue.nfvo.VimInstance;
@@ -30,7 +32,6 @@ import org.openbaton.integration.test.testers.*;
 import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceDescriptorRestAgent;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
 import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
@@ -233,10 +234,14 @@ public class MainIntegrationTest {
                 clearOrchestrator();
 
         }
-        if (allTestsPassed)
+        if (allTestsPassed) {
             log.info("All tests passed successfully.");
-        else log.info("Some tests failed.");
-        System.exit(0);
+            System.exit(0);
+        }
+        else {
+            log.info("Some tests failed.");
+            System.exit(99);
+        }
     }
 
     private static void clearOrchestrator() {
