@@ -180,7 +180,7 @@ public class MainIntegrationTest {
 
 
         List<URL> iniFileURLs = loadFileIni(properties);
-        System.out.println(iniFileURLs);
+        
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.testers") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
