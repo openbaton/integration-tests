@@ -50,14 +50,12 @@ import java.util.concurrent.TimeUnit;
 public class MainIntegrationTest {
 
 
+    private final static String SCENARIO_PATH = "/integration-test-scenarios/";
     private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
-
     private static String nfvoIp;
     private static String nfvoPort;
     private static String nfvoUsr;
     private static String nfvoPsw;
-    private final static String SCENARIO_PATH = "/integration-test-scenarios/";
-
     private static boolean clearAfterTest = false;
 
     private static Properties loadProperties() throws IOException {
@@ -181,7 +179,7 @@ public class MainIntegrationTest {
         log.debug("Properties: " + properties);
 
 
-        List<URL> iniFileURLs = loadFileIni();
+        List<URL> iniFileURLs = loadFileIni(properties);
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.testers") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
@@ -227,7 +225,7 @@ public class MainIntegrationTest {
                 log.info("Test: " + name + " finished correctly :) in " +
                         String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime), TimeUnit.MILLISECONDS.toSeconds(stopTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime))) + "\n");
             } else {
-                log.info("Test: " + name + " completed with errors :(\n");
+                log.error("Test: " + name + " completed with errors :(\n");
                 allTestsPassed = false;
             }
             if (clearAfterTest)
@@ -237,8 +235,7 @@ public class MainIntegrationTest {
         if (allTestsPassed) {
             log.info("All tests passed successfully.");
             System.exit(0);
-        }
-        else {
+        } else {
             log.info("Some tests failed.");
             System.exit(99);
         }
@@ -269,8 +266,8 @@ public class MainIntegrationTest {
     }
 
 
-    private static List<URL> loadFileIni() throws FileNotFoundException {
-        return Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");
+    private static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
+        return Utils.getFilesAsURL(properties.getProperty("integration-test-scenarios", SCENARIO_PATH) + "*.ini");
     }
 
     private static void configureNetworkServiceDescriptorWaiterWait(SubTask instance, Profile.Section currentSection) {
