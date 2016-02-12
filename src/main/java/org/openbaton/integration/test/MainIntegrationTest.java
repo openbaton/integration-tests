@@ -180,6 +180,7 @@ public class MainIntegrationTest {
 
 
         List<URL> iniFileURLs = loadFileIni(properties);
+        System.out.println(iniFileURLs);
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.testers") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
@@ -267,7 +268,11 @@ public class MainIntegrationTest {
 
 
     private static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
-        return Utils.getFilesAsURL(properties.getProperty("integration-test-scenarios", SCENARIO_PATH) + "*.ini");
+        List<URL> external = Utils.getFilesAsURL(properties.getProperty("integration-test-scenarios", SCENARIO_PATH) + "*.ini");
+        if (external.size() > 0)
+            return external;
+        //if there are no files on the machine, us the scenarios in the project's resource folder
+        return Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");
     }
 
     private static void configureNetworkServiceDescriptorWaiterWait(SubTask instance, Profile.Section currentSection) {
