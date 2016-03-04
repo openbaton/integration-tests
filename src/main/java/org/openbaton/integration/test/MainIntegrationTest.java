@@ -212,6 +212,10 @@ public class MainIntegrationTest {
                     configurePackageUpload(subTask, currentSection);
                 else if (subTask instanceof PackageDelete)
                     configurePackageDelete(subTask, currentSection);
+                else if (subTask instanceof VNFRStatusTester)
+                    configureVnfrStatusTester(subTask, currentSection);
+                else if (subTask instanceof Pause)
+                    configurePause(subTask, currentSection);
             }
         };
         itm.setLogger(log);
@@ -402,6 +406,28 @@ public class MainIntegrationTest {
     private static void configurePackageDelete(SubTask instance, Profile.Section currentSection) {
         PackageDelete p = (PackageDelete) instance;
         p.setPackageName(currentSection.get("package-name"));
+    }
+
+    private static void configureVnfrStatusTester(SubTask instance, Profile.Section currentSection) {
+        VNFRStatusTester t = (VNFRStatusTester) instance;
+        String status = currentSection.get("status");
+        if (status != null)
+            t.setStatus(status);
+
+        String vnfrType = currentSection.get("vnf-type");
+        if (vnfrType != null)
+            t.setVnfrType(vnfrType);
+    }
+
+    private static void configurePause(SubTask instance, Profile.Section currentSection) {
+        Pause p = (Pause) instance;
+        String d = currentSection.get("duration");
+        try {
+            int duration = Integer.parseInt(d);
+            p.setDuration(duration);
+        } catch (NumberFormatException e) {
+            log.warn("The duration field of Pause is not an integer so we cannot use it");
+        }
     }
 
     private static void exit(int i) {

@@ -45,7 +45,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
     }
 
     @Override
-    protected Object doWork() throws SDKException, SubscriptionException, InterruptedException, IntegrationTestException {
+    protected Object doWork() throws SDKException, InterruptedException, IntegrationTestException {
 
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
         EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
