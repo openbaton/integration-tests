@@ -42,9 +42,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
@@ -95,9 +93,8 @@ public class MainIntegrationTest {
 
     private static boolean areVnfmsRegistered(String nfvoIp, String nfvoPort) {
         int i = 0;
-        boolean generic = false;
-        boolean dummy = false;
-        while (!generic || !dummy) {
+        boolean registered = false;
+        while (!registered) {
             HttpResponse<String> r = null;
             try {
                 r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers").asString();
@@ -115,19 +112,11 @@ public class MainIntegrationTest {
                 return false;
             }
             vnfmArray = mapper.fromJson(body, JsonArray.class);
-            Iterator<JsonElement> vnfmIt = vnfmArray.iterator();
-            while (vnfmIt.hasNext()) {
-                JsonElement type = vnfmIt.next().getAsJsonObject().get("type");
-                if (type.getAsString().equals("generic"))
-                    generic = true;
-                if (type.getAsString().equals("dummy"))
-                    dummy = true;
-            }
+           if (vnfmArray.size() > 0)
+               registered = true;
             if (i >= 20) {
-                if (!generic)
-                    log.error("After 60 seconds the Generic VNFM is not yet registered to the NFVO. Is there an error?");
-                if (!dummy)
-                    log.error("After 60 seconds the Dummy VNFM is not yet registered to the NFVO. Is there an error?");
+                if (!registered)
+                    log.error("After 60 seconds no VNFM is registered yet to the NFVO. Is there an error?");
                 return false;
             }
             i++;
@@ -150,6 +139,8 @@ public class MainIntegrationTest {
             e.printStackTrace();
         }
 
+        List<String> clArgs = Arrays.asList(args);
+
         /******************************
          * Running NFVO				  *
          ******************************/
@@ -166,11 +157,11 @@ public class MainIntegrationTest {
          ******************************/
 
         if (!areVnfmsRegistered(nfvoIp, nfvoPort)) {
-            log.error("The Generic or the Dummy VNFM are not registered yet.");
+            log.error("TNo VNFM is registered yet.");
             System.exit(1);
         }
 
-        log.info("VNFMs are registered");
+        log.info("A VNFM is registered");
 
         /******************************
          * Now create the VIM		  *
@@ -180,6 +171,20 @@ public class MainIntegrationTest {
 
 
         List<URL> iniFileURLs = loadFileIni(properties);
+
+        // check if arguments are wrong
+        if (clArgs.size() > 0) {
+            List<String> fileNames = new LinkedList<>();
+            for (URL url : iniFileURLs) {
+                String[] splittedUrl = url.toString().split("/");
+                String name = splittedUrl[splittedUrl.length - 1];
+                fileNames.add(name);
+            }
+            for (String arg : clArgs) {
+                if (!fileNames.contains(arg))
+                    log.warn("The argument "+arg+" does not specify an existing test scenario.");
+            }
+        }
         
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.testers") {
             @Override
@@ -221,9 +226,13 @@ public class MainIntegrationTest {
         itm.setLogger(log);
         long startTime, stopTime;
         boolean allTestsPassed = true;
+        boolean executedTests = false; // shows that there was at least one test executed by the integration test
         for (URL url : iniFileURLs) {
             String[] splittedUrl = url.toString().split("/");
             String name = splittedUrl[splittedUrl.length - 1];
+            if (clArgs.size() > 0 && !clArgs.contains(name)) // if test names are passed through the command line, only these will be executed
+                continue;
+            executedTests = true;
             startTime = System.currentTimeMillis();
             if (itm.runTestScenario(properties, url, name)) {
                 stopTime = System.currentTimeMillis() - startTime;
@@ -236,6 +245,10 @@ public class MainIntegrationTest {
             if (clearAfterTest)
                 clearOrchestrator();
 
+        }
+        if (!executedTests) {
+            log.warn("No tests were executed.");
+            System.exit(1);
         }
         if (allTestsPassed) {
             log.info("All tests passed successfully.");
