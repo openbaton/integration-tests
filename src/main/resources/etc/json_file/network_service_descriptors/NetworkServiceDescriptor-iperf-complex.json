@@ -51,7 +51,7 @@
                             ]
                         }
                     ],
-                    "vimInstanceName":"vim-instance"
+                    "vimInstanceName":["vim-instance"]
                 }
             ],
             "virtual_link":[
@@ -113,7 +113,7 @@
                             ]
                         }
                     ],
-                    "vimInstanceName":"vim-instance"
+                    "vimInstanceName":["vim-instance"]
                 }
             ],
             "virtual_link":[
@@ -180,7 +180,7 @@
                             ]
                         }
                     ],
-                    "vimInstanceName":"vim-instance"
+                    "vimInstanceName":["vim-instance"]
                 }
             ],
             "virtual_link":[
@@ -247,7 +247,7 @@
                             ]
                         }
                     ],
-                    "vimInstanceName":"vim-instance"
+                    "vimInstanceName":["vim-instance"]
                 }
             ],
             "virtual_link":[
@@ -316,7 +316,7 @@
                             ]
                         }
                     ],
-                    "vimInstanceName":"vim-instance"
+                    "vimInstanceName":["vim-instance"]
                 }
             ],
             "virtual_link":[
