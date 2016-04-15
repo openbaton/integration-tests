@@ -24,6 +24,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.VNFPackage;
@@ -32,6 +33,7 @@ import org.openbaton.integration.test.testers.*;
 import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceDescriptorRestAgent;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
 import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
@@ -44,6 +46,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MainIntegrationTest {
 
@@ -112,8 +115,8 @@ public class MainIntegrationTest {
                 return false;
             }
             vnfmArray = mapper.fromJson(body, JsonArray.class);
-           if (vnfmArray.size() > 0)
-               registered = true;
+            if (vnfmArray.size() > 0)
+                registered = true;
             if (i >= 20) {
                 if (!registered)
                     log.error("After 60 seconds no VNFM is registered yet to the NFVO. Is there an error?");
@@ -128,6 +131,7 @@ public class MainIntegrationTest {
         }
         return true;
     }
+
 
     public static void main(String[] args) throws Exception {
 
@@ -182,10 +186,10 @@ public class MainIntegrationTest {
             }
             for (String arg : clArgs) {
                 if (!fileNames.contains(arg))
-                    log.warn("The argument "+arg+" does not specify an existing test scenario.");
+                    log.warn("The argument " + arg + " does not specify an existing test scenario.");
             }
         }
-        
+
         IntegrationTestManager itm = new IntegrationTestManager("org.openbaton.integration.test.testers") {
             @Override
             protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
@@ -259,27 +263,60 @@ public class MainIntegrationTest {
         }
     }
 
+    /**
+     * This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator.
+     */
     private static void clearOrchestrator() {
         try {
             NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPsw, nfvoIp, nfvoPort, "1");
             NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
             List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
-            for (NetworkServiceRecord nsr : nsrList)
-                nsrAgent.delete(nsr.getId());
+            for (NetworkServiceRecord nsr : nsrList) {
+                try {
+                    nsrAgent.delete(nsr.getId());
+                } catch (SDKException se) {
+                    log.error("Could not remove NSR " + nsr.getName() + " with ID " + nsr.getId());
+                }
+            }
+            Thread.sleep(1000);
             NetworkServiceDescriptorRestAgent nsdAgent = requestor.getNetworkServiceDescriptorAgent();
             List<NetworkServiceDescriptor> nsdList = nsdAgent.findAll();
-            for (NetworkServiceDescriptor nsd : nsdList)
-                nsdAgent.delete(nsd.getId());
+            for (NetworkServiceDescriptor nsd : nsdList) {
+                try {
+                    nsdAgent.delete(nsd.getId());
+                } catch (SDKException se) {
+                    log.error("Could not remove NSD " + nsd.getName() + " with ID " + nsd.getId());
+                }
+            }
+            Thread.sleep(1000);
+            AbstractRestAgent vnfdAgent = requestor.abstractRestAgent(VirtualNetworkFunctionDescriptor.class, "/vnf-descriptors");
+            List<VirtualNetworkFunctionDescriptor> vnfdList = vnfdAgent.findAll();
+            for (VirtualNetworkFunctionDescriptor vnfd : vnfdList) {
+                vnfdAgent.delete(vnfd.getId());
+            }
+            Thread.sleep(1000);
             AbstractRestAgent packageAgent = requestor.abstractRestAgent(VNFPackage.class, "/vnf-packages");
             List<VNFPackage> packageList = packageAgent.findAll();
-            for (VNFPackage p : packageList)
-                packageAgent.delete(p.getId());
+            for (VNFPackage p : packageList) {
+                try {
+                    packageAgent.delete(p.getId());
+                } catch (SDKException se) {
+                    log.error("Could not remove VNFPackage " + p.getName() + " with ID " + p.getId());
+                }
+            }
             VimInstanceRestAgent vimAgent = requestor.getVimInstanceAgent();
             List<VimInstance> vimList = vimAgent.findAll();
-            for (VimInstance vim : vimList)
-                vimAgent.delete(vim.getId());
+            for (VimInstance vim : vimList) {
+                try {
+                    vimAgent.delete(vim.getId());
+                } catch (SDKException se) {
+                    log.error("Could not remove VIM " + vim.getName() + " with ID " + vim.getId());
+                }
+            }
+        } catch (InterruptedException ie) {
+            log.error("Could not clear the NFVO due to an InterruptedException");
         } catch (Exception e) {
-            log.warn("Could not clear the NFVO.");
+            log.error("Could not clear the NFVO. \nException message is: " + e.getMessage());
         }
     }
 
