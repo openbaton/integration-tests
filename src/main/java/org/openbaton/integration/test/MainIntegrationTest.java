@@ -378,6 +378,7 @@ public class MainIntegrationTest {
     private static void configureNetworkServiceDescriptorCreate(SubTask instance, Profile.Section currentSection) {
         NetworkServiceDescriptorCreate w = (NetworkServiceDescriptorCreate) instance;
         w.setFileName(currentSection.get("name-file"));
+        w.setExpectedToFail(currentSection.get("expected-to-fail"));
     }
 
 
