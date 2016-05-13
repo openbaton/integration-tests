@@ -2,12 +2,15 @@
 
 function usage
 {
-    echo "./integration-tests.sh [[-n] [-i] [-g] | [-a]]"
+    echo "./integration-tests.sh [list] [help] [clean|compile|start|sc] [scenario_1.ini ... scenario_n.ini]"
     echo ""
-    echo "-i        update integration test"
-    echo "-n        update nfvo"
-    echo "-g        update generic vnfm"
-    echo "-a        update all"
+    echo "clean               clean the project build"
+    echo "compile             compile the integration-test project"
+    echo "help                prints this help; if passed as an argument all other arguments will be ignored"
+    echo "list                lists all available test scenarios; if passed as an argument clean, compile, start and sc arguments will be ignored"
+    echo "sc                  clean, compile and start in one command"
+    echo "scenario_n.ini      the tests to run if the start argument is passed; if no test is specified all available tests will run"
+    echo "start               start the integration tests"
 }
 
 function get_property
@@ -19,65 +22,80 @@ function get_property
     echo $PROP_VALUE
 }
 
-function update_integrations
+function output_available_scenarios
 {
-    pushd "/etc/openbaton/integration-tests"
-    git pull
-    ./generic-vnfm.sh clean compile start
-    popd
+  for f in `ls $SCENARIO_PATH`;
+  do
+    echo $f
+  done
 }
 
-function update_vnfm
-{
-    pushd "/etc/openbaton/generic-vnfm"
-    git pull
-    ./generic-vnfm.sh clean compile start
-    popd
-}
+EXTERNAL_PROPERTIES=`get_property ./src/main/resources/integration-test.properties "external-properties-file"`
 
-function update_nfvo
-{
-    pushd "/etc/openbaton/nfvo"
-    git pull
-    ./openbaton.sh clean compile start
-    popd
-}
-
-echo "Starting integration tests"
-
-SCENARIO_PATH=`get_property ./src/main/resources/integration-test.properties "integration-test-scenarios"`
-
-if [[ $SCENARIO_PATH == '' ]]; then
-  echo "SCENARIO_PATH is unset";
-  SCENARIO_PATH="/opt/github/openbaton/integration-tests/src/main/resources/integration-test-scenarios/*.ini"
+if [ -f $EXTERNAL_PROPERTIES ]; then
+  SCENARIO_PATH=`get_property $EXTERNAL_PROPERTIES "integration-test-scenarios"`
 else
-  echo "SCENARIO_PATH is set to '$SCENARIO_PATH'";
-  SCENARIO_PATH="$SCENARIO_PATH*.ini"
+  SCENARIO_PATH=`get_property ./src/main/resources/integration-test.properties "integration-test-scenarios"`
 fi
 
-echo "Executing scenarios:"
-for f in `ls $SCENARIO_PATH`;
-do
-    echo " " $f
-done
-
-while getopts habcf: opt
-do
-    case "$opt" in
-    (a) echo "Updating all"
-        update_nfvo
-        update_vnfm
-        update_integrations;;
-    (n) echo "Updating nfvo"
-        update_nfvo;;
-    (i) echo "Updating integration tests"
-        update_integrations;;
-    (g) echo "Updating generic vnfm"
-        update_vnfm;;
-    esac
-done
+if [ -z $SCENARIO_PATH ] || [ ! -d $SCENARIO_PATH ]; then
+  SCENARIO_PATH='./src/main/resources/integration-test-scenarios/'
+fi
 
 VERSION=`get_property ./gradle.properties "version"`
 
-echo $VERSION
-java -jar ./build/libs/integration-tests-$VERSION.jar
+cleann=false
+compile=false
+start=false
+print_help=false
+list=false
+
+args=("$@")
+
+for i in `seq 0 ${#args}`; do
+  case "${args[$i]}" in
+    clean) 
+      cleann=true
+      args[$i]="";;
+    compile) 
+      compile=true
+      args[$i]="";;
+    start) 
+      start=true
+      args[$i]="";;
+    sc) 
+      cleann=true
+      compile=true
+      start=true
+      args[$i]="";;
+    list) 
+      list=true;;
+    help)
+      print_help=true;;
+  esac 
+done
+
+if [ $print_help == true ]; then
+  usage
+  exit 0
+fi
+
+if [ $list == true ]; then
+  output_available_scenarios
+fi
+
+if [ $cleann == true ]; then
+  ./gradlew clean
+fi
+
+if [ $compile == true ]; then
+  ./gradlew build -x test
+fi
+
+if [ $start == true ]; then
+  java -jar ./build/libs/integration-tests-$VERSION.jar ${args[*]}
+fi
+
+if [ $print_help == false -a $list == false -a $cleann == false -a $compile == false -a $start == false ]; then
+  usage
+fi
