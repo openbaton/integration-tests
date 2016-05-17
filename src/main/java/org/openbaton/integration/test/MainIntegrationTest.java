@@ -161,7 +161,7 @@ public class MainIntegrationTest {
          ******************************/
 
         if (!areVnfmsRegistered(nfvoIp, nfvoPort)) {
-            log.error("TNo VNFM is registered yet.");
+            log.error("No VNFM is registered yet.");
             System.exit(1);
         }
 

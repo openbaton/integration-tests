@@ -51,7 +51,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
         EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
         String vnfrId=getVnfrIdFromNsr(nsr, getVnfrType());
         eventEndpoint.setVirtualNetworkFunctionId(vnfrId);
-        //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
+        //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
 
         try {
             subscribe(eventEndpoint);
