@@ -51,6 +51,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
     @Override
     protected Object doWork() throws SDKException {
+        log.info("Upload vim instance "+fileName);
         Object result;
         try {
             result= create();
@@ -58,6 +59,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             log.error("Exception during the instantiation of VimInstance");
             throw sdkEx;
         }
+        log.debug("--- upload of vim instance "+fileName+" successful");
         return result;
     }
     @Override
@@ -72,7 +74,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             }
         }
         else{
-            log.warn("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
+            log.debug("No file: "+f.getName()+" found, we will use "+LOCAL_PATH_NAME+fileName);
             body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME+fileName));
         }
         String vimRandom = null;
@@ -87,8 +89,8 @@ public class VimInstanceCreate extends Tester<VimInstance> {
             log.debug("vim-instance.json (random): " + vimRandom);
             return mapper.fromJson(vimRandom, aClass);
         }else {
-            log.warn("Missing /etc/openbaton/integration-test-parser-properties/vim.properties file");
-            log.warn("If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
+            log.debug("Missing /etc/openbaton/integration-test-parser-properties/vim.properties file");
+            log.debug("If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
         }
         return mapper.fromJson(body, aClass);
     }

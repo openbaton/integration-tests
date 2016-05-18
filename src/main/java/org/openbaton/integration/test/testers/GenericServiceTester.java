@@ -26,8 +26,6 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,6 +47,7 @@ public class GenericServiceTester extends Tester {
     private String vnfrType = "";
     private String virtualLink = "";
     private String userName = "";
+    private String vmScriptsPath = "";
 
     public GenericServiceTester(Properties properties) {
         super(properties, GenericServiceTester.class, LOCAL_PATH_NAME_SCRIPTS, "");
@@ -69,11 +68,17 @@ public class GenericServiceTester extends Tester {
         File pemFile = new File(EXTERNAL_PATH_NAME_PEM);
         Runtime r = Runtime.getRuntime();
 
+        for (String k : vnfrVnfc.keySet()) {
+            for (VNFCRepresentation v : vnfrVnfc.get(k)) {
+            }
+        }
+
         if (virtualLink.equals("")) {
             if (vnfrVnfc.containsKey(vnfrType)) {
                 for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfrType)) {
                     if (vnfc.getAllFips() != null)
                         floatingIps.addAll(vnfc.getAllFips());
+
                 }
             }
         } else {
@@ -87,10 +92,20 @@ public class GenericServiceTester extends Tester {
 
 
         Iterator<String> floatingIpIt = floatingIps.iterator();
-        if (floatingIps.size() == 0 && !virtualLink.equals(""))
-            log.warn("Found no floating IPs for " + vnfrType + " with virtual_link: " + virtualLink + ".");
-        if (floatingIps.size() == 0 && virtualLink.equals(""))
-            log.warn("Found no floating IPs for " + vnfrType + ".");
+        if (!virtualLink.equals("")) {
+            if (floatingIps.size() == 0) {
+                log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + " with virtual_link: " + virtualLink + ".");
+            } else {
+                log.info("Start testing the virtual machines of vnf-type " + vnfrType + " with virtual_link " + virtualLink + ".");
+            }
+        } else {
+            if (floatingIps.size() == 0) {
+                log.warn("Found no floating IPs for virtual machines of vnf-type " + vnfrType + ".");
+            } else {
+                log.info("Start testing the virtual machines of vnf-type " + vnfrType + ".");
+            }
+        }
+
 
         while (floatingIpIt.hasNext()) {
             String floatingIp = floatingIpIt.next();
@@ -104,11 +119,11 @@ public class GenericServiceTester extends Tester {
                 Iterator<String> preScriptIt = preScripts.iterator();
                 while (preScriptIt.hasNext()) {
                     String preScript = preScriptIt.next();
-                    log.info("Executing script " + script.getName() + "\nwith environment: \n" + preScript + "\non the virtual machine with floating ip: " + floatingIp);
+                    log.info("Executing script " + script.getName() + " on the virtual machine with floating ip: " + floatingIp + "\nwith environment: \n" + preScript);
 
                     //store script on VM
                     ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", "scp -o \"StrictHostKeyChecking no\"" + " -i " + pemFile.getPath() + " " + script.getPath() +
-                            " " + userName +"@" + floatingIp + ":/home/ubuntu");
+                            " " + userName + "@" + floatingIp + ":"+ vmScriptsPath);
 
                     Process copy = pb.start();
                     int exitStatus = copy.waitFor();
@@ -117,8 +132,8 @@ public class GenericServiceTester extends Tester {
                         throw new Exception("Script " + script.getName() + " could not be sent.");
                     }
                     //execute script on VM
-                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName +"@" +
-                            floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + script.getName() + "\"");
+                    pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName + "@" +
+                            floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + vmScriptsPath + "/" + script.getName() + "\"");
 
                     Process execute = pb.start();
                     exitStatus = execute.waitFor();
@@ -160,6 +175,7 @@ public class GenericServiceTester extends Tester {
             for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
                 for (VNFCInstance vnfcInstance : vdu.getVnfc_instance()) {
                     VNFCRepresentation vnfcRepresentation = new VNFCRepresentation();
+                    vnfcRepresentation.setVnfrName(vnfr.getName());
                     vnfcRepresentation.setHostname(vnfcInstance.getHostname());
                     vnfcRepresentation.setConfiguration(confMap);
                     for (Ip ip : vnfcInstance.getIps()) {
@@ -171,7 +187,12 @@ public class GenericServiceTester extends Tester {
                     representationList.add(vnfcRepresentation);
                 }
             }
-            vnfrVnfc.put(vnfr.getType(), representationList);
+            if (!vnfrVnfc.containsKey(vnfr.getType())) {
+                vnfrVnfc.put(vnfr.getType(), representationList);
+            } else {
+                List<VNFCRepresentation> l = vnfrVnfc.get(vnfr.getType());
+                l.addAll(representationList);
+            }
         }
     }
 
@@ -199,8 +220,9 @@ public class GenericServiceTester extends Tester {
             // handle variables of type ${vnfrtype_ip}
             if (findInText(script, vnfr + "_ip")) {
                 LinkedList<String> ips = new LinkedList<>();
-                for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr))
+                for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr)) {
                     ips.addAll(vnfc.getAllIps());
+                }
                 variableValuesMap.put(vnfr + "_ip", ips);
             }
             // store all the network names occurring in that vnfr in a Set
@@ -227,6 +249,7 @@ public class GenericServiceTester extends Tester {
                     variableValuesMap.put(vnfr + "_" + net + "_ip", ips);
                 }
             }
+
         }
 
         // create the prescripts
@@ -242,9 +265,9 @@ public class GenericServiceTester extends Tester {
                 } else {
                     value = variableValuesMap.get(varName).peek();
                 }
-                prescript += varName+"="+value+"; ";
+                prescript += varName + "=" + value + "; ";
             }
-            prescript+=configurationDeclarations;
+            prescript += configurationDeclarations;
             preScripts.add(prescript);
         }
         return preScripts;
@@ -254,8 +277,8 @@ public class GenericServiceTester extends Tester {
     public void addScript(String scriptName) {
         File f = new File(EXTERNAL_PATH_NAME_SCRIPTS + scriptName);
         if (!f.exists()) {
-            log.info("The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
-            log.info("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
+            log.debug("The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
+            log.debug("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
             InputStream is = GenericServiceTester.class.getResourceAsStream(LOCAL_PATH_NAME_SCRIPTS + scriptName);
             File t = null;
             try {
@@ -263,7 +286,7 @@ public class GenericServiceTester extends Tester {
                 OutputStream os = new FileOutputStream(t);
                 byte[] buffer = new byte[1024];
                 int bytesRead;
-                while ((bytesRead=is.read(buffer)) != -1) {
+                while ((bytesRead = is.read(buffer)) != -1) {
                     os.write(buffer, 0, bytesRead);
                 }
                 is.close();
@@ -292,6 +315,10 @@ public class GenericServiceTester extends Tester {
 
     public void setUserName(String name) {
         this.userName = name;
+    }
+
+    public void setVmScriptsPath(String vmScriptsPath) {
+        this.vmScriptsPath = vmScriptsPath;
     }
 
 }

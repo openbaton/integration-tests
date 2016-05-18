@@ -1,5 +1,5 @@
 {
-    "name":"iperf-real-scenario",
+    "name":"fail-in-configure",
     "vendor":"fokus",
     "version":"0.1-ALPHA",
     "vnfd":[
@@ -34,7 +34,7 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":1,
+                    "scale_in_out":2,
                     "vnfc":[
                         {
                             "connection_point":[
@@ -77,7 +77,7 @@
                 {
                     "event":"CONFIGURE",
                     "lifecycle_events":[
-                        "server_configure.sh"
+                        "server_configure_fail.sh"
                     ]
                 }
             ],

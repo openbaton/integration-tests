@@ -19,7 +19,6 @@ import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
-import org.openbaton.integration.test.jms.JMSWaiter;
 import org.openbaton.integration.test.rest.RestWaiter;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -54,9 +53,7 @@ public abstract class Waiter extends Tester {
     public void subscribe(EventEndpoint eventEndpoint) throws SubscriptionException, SDKException {
         if (eventEndpoint == null)
             throw new NullPointerException("EventEndpoint is null");
-        if (eventEndpoint.getType() == EndpointType.JMS)
-            waiter = new JMSWaiter();
-        else if (eventEndpoint.getType() == EndpointType.REST)
+        if (eventEndpoint.getType() == EndpointType.REST)
             waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log);
         waiter.subscribe(eventEndpoint);
     }

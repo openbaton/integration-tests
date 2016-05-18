@@ -26,14 +26,11 @@ import java.util.Properties;
  */
 public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescriptor> {
     /**
-     * @param properties : IntegrationTest properties containing:
+     * @param p : IntegrationTest properties containing:
      *                   nfvo-usr
      *                   nfvo-pwd
      *                   nfvo-ip
      *                   nfvo-port
-     * @param aClass     : example VimInstance.class
-     * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
-     * @param basePath
      */
 
     public NetworkServiceDescriptorDelete(Properties p) {
@@ -48,6 +45,7 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
     @Override
     protected Object doWork() throws SDKException {
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
+        log.info("Delete NSD "+nsd.getName());
         try {
             delete(nsd.getId());
         } catch (SDKException sdkEx) {

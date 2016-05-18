@@ -34,9 +34,6 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	 *                   nfvo-pwd
 	 *                   nfvo-ip
 	 *                   nfvo-port
-	 * @param aClass     : example VimInstance.class
-	 * @param filePath   : example "/etc/json_file/vim_instances/vim-instance.json"
-	 * @param basePath
 	 */
 	public NetworkServiceRecordCreate(Properties properties) {
 		super(properties, NetworkServiceRecord.class, "", "/ns-records");
@@ -52,6 +49,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 	public NetworkServiceRecord create() throws SDKException {
 
 		NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
+        log.info("Launch NSR from NSD "+nsd.getName()+" with id "+nsd.getId());
 		NetworkServiceRecord networkServiceRecord = null;
 		try {
 			networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());

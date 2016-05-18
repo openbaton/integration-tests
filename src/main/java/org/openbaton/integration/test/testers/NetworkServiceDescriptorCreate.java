@@ -15,6 +15,7 @@
  */
 package org.openbaton.integration.test.testers;
 
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.parser.Parser;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.nfvo.VimInstance;
@@ -36,24 +37,34 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
     private static final String EXTERNAL_PATH_NAME_PARSER_NSD = "/etc/openbaton/integration-test/parser-properties/nsd.properties";
     private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
     private static String fileName;
+    private static boolean expectedToFail = false;   // if the creating of the NSD is expected to fail this field should be set to true
 
     public NetworkServiceDescriptorCreate(Properties p){
         super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD,"/ns-descriptors");
     }
 
     @Override
-    protected Object doWork() throws SDKException {
-
+    protected Object doWork() throws SDKException, IntegrationTestException {
+        log.info("Upload NSD "+fileName);
         Object received = null;
         VimInstance vimInstance= (VimInstance) param;
         try {
             received = create();
         }catch(SDKException sdkEx){
-            log.error("Exception during the on-boarding of NetworkServiceDescription from vim with name: "+vimInstance.getName()+" and id: "+vimInstance.getId());
-            throw sdkEx;
+            if (!expectedToFail) {
+                log.error("Exception during the on-boarding of NetworkServiceDescriptor from vim with name: " + vimInstance.getName() + " and id: " + vimInstance.getId());
+                throw sdkEx;
+            } else {
+                log.info("As expected the creation of NSD "+fileName+" failed. Everything is fine.");
+                return received;
+            }
+        }
+        if (expectedToFail) {
+            log.error("The NSD "+fileName+" was expected to throw an error while onboarding to the NFVO but it did not.");
+            throw new IntegrationTestException("The NSD "+fileName+" was expected to throw an error while onboarding to the NFVO but it did not.");
         }
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
-        log.debug(" --- Creating nsd with id: " + nsd.getId());
+        log.debug("Stored NSD with id: " + nsd.getId());
         return received;
     }
 
@@ -68,7 +79,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                     e.printStackTrace();
                 }
             } else {
-                log.warn("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME_NSD + fileName);
+                log.debug("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME_NSD + fileName);
                 body = Utils.getStringFromInputStream(Tester.class.getResourceAsStream(LOCAL_PATH_NAME_NSD + fileName));
             }
             String nsdRandom = null;
@@ -85,12 +96,17 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
                 return mapper.fromJson(nsdRandom, aClass);
             }
             else {
-                log.warn("Missing /etc/openbaton/integration-test-parser-properties/nsd.properties file");
-                log.warn("If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
+                log.debug("Missing /etc/openbaton/integration-test-parser-properties/nsd.properties file");
+                log.debug("If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
             }
             return mapper.fromJson(body, aClass);
     }
     public void setFileName(String fileName){
         this.fileName=fileName;
+    }
+
+    public void setExpectedToFail(String expectedToFailString) {
+        expectedToFail = Boolean.parseBoolean(expectedToFailString);
+        log.trace("Set expectedToFail to "+expectedToFail);
     }
 }

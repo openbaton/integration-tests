@@ -1,5 +1,5 @@
 {
-  "name":"pku_vnf_testing",
+  "name":"iperf-dummy-scenario",
   "vendor":"fokus",
   "version":"0.1-ALPHA",
   "vnfd":[
@@ -43,7 +43,7 @@
               ]
             }
           ],
-          "vimInstanceName":"vim-instance"
+          "vimInstanceName":["vim-instance"]
         }
       ],
       "virtual_link":[
@@ -99,7 +99,7 @@
               ]
             }
           ],
-          "vimInstanceName":"vim-instance"
+          "vimInstanceName":["vim-instance"]
         }
       ],
       "virtual_link":[

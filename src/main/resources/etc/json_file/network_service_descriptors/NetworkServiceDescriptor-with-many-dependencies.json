@@ -1,22 +1,20 @@
 {
   "vendor":"fokus",
   "version":"0",
-  "name":"NSD-dependencies",
+  "name":"many-dependencies-scenario",
   "vnfd":[
     {
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-1",
-      "type":"dummy",
+      "type":"dummy1",
       "endpoint":"dummy",
       "vdu":[
         {
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -28,25 +26,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -62,7 +67,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-2",
-      "type":"dummy",
+      "type":"dummy2",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -71,7 +76,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -83,25 +88,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy2-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -118,7 +130,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-3",
-      "type":"dummy",
+      "type":"dummy3",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -127,7 +139,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -139,25 +151,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy3-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -173,7 +192,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-4",
-      "type":"dummy",
+      "type":"dummy4",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -182,7 +201,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -194,25 +213,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy4-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -229,7 +255,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-5",
-      "type":"dummy",
+      "type":"dummy5",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -238,7 +264,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -250,25 +276,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy5-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -284,7 +317,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-6",
-      "type":"dummy",
+      "type":"dummy6",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -293,7 +326,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -305,25 +338,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy6-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -340,7 +380,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-7",
-      "type":"dummy",
+      "type":"dummy7",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -349,7 +389,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {
@@ -361,25 +401,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy7-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -397,7 +444,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-8",
-      "type":"dummy",
+      "type":"dummy8",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -406,7 +453,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -418,25 +465,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy8-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -455,7 +509,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-9",
-      "type":"dummy",
+      "type":"dummy9",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -464,7 +518,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -476,25 +530,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy9-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -513,7 +574,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-10",
-      "type":"dummy",
+      "type":"dummy10",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -522,7 +583,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":6,
           "vnfc":[
             {
@@ -534,25 +595,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy10-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -568,7 +636,7 @@
       "vendor":"fokus",
       "version":"0.1",
       "name":"vnf-dummy-11",
-      "type":"dummy",
+      "type":"dummy11",
       "endpoint":"dummy",
       "vdu":[
         {
@@ -577,7 +645,7 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":"vim-instance",
+          "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {
@@ -589,25 +657,32 @@
             }]
         }
       ],
+      "configurations":{
+        "name":"dummy11-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
       "virtual_link":[
         {
           "name":"test"
         }
       ],
-      "connection_point":[
-      ],
       "lifecycle_event":[
       ],
-      "vdu_dependency":[
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
       ],
-      "deployment_flavour":[{
-        "df_constraint":[
-          "constraint1",
-          "constraint2"
-        ],
-        "costituent_vdu":[],
-        "flavour_key":"m1.small"
-      }],
+      "vnfPackageLocation":"https://link-to-git-repository.git",
       "requires":[
         "nfvo:ip-en5",
         "dummy:ip"
@@ -959,5 +1034,4 @@
     }
   ]
 }
-
 

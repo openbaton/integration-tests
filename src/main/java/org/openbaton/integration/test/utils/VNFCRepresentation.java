@@ -22,7 +22,12 @@ import java.util.*;
  */
 public class VNFCRepresentation {
 
+    public String toString() {
+        return "VNFC "+vnfrName+" fips "+getAllFips()+" ips "+getAllIps();
+    }
+
     private String hostname;
+    private String vnfrName;
     private Map<String, String> configuration = new HashMap<>();
     private Map<String, List<String>> netIps = new HashMap<>();
     private Map<String, List<String>> netFips = new HashMap<>();
@@ -33,6 +38,14 @@ public class VNFCRepresentation {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public String getVnfrNname() {
+        return vnfrName;
+    }
+
+    public void setVnfrName(String name) {
+        this.vnfrName = name;
     }
 
     public void addConfiguration(String k, String v) {

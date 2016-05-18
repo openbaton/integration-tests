@@ -16,12 +16,16 @@
 package org.openbaton.integration.test.testers;
 
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
+import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
+import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Created by tbr on 01.12.15.
@@ -41,31 +45,20 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
 
     @Override
     protected Object doWork() throws Exception {
-        for (VirtualNetworkFunctionDescriptor vnfd : getVnfds()) {
-            if (vnfd.getVnfPackage().getName().equals(packageName)) {
-                try {
-                    delete(vnfd.getId());
-                } catch (Exception e) {
-                    log.error("Error while deleting vnfd with id "+vnfd.getId()+" from VNFPackage " + packageName+".");
-                    throw e;
-                }
-            }
-        }
-        log.info("Successfully deleted the package " + packageName);
-        return null;
-    }
-
-
-    private List<VirtualNetworkFunctionDescriptor> getVnfds() throws Exception {
-        AbstractRestAgent abstractRestAgent = requestor.abstractRestAgent(VirtualNetworkFunctionDescriptor.class, "/vnf-descriptors");
-        List<VirtualNetworkFunctionDescriptor> obtained = null;
+        log.info("Delete VNFPackage "+packageName);
+        AbstractRestAgent agent = requestor.abstractRestAgent(VNFPackage.class, "/vnf-packages");
         try {
-            obtained = abstractRestAgent.findAll();
+            List<VNFPackage> packages = agent.findAll();
+            for (VNFPackage p : packages) {
+                if (p.getName().equals(packageName))
+                    agent.delete(p.getId());
+            }
         } catch (SDKException e) {
-            log.error("Error trying to get all VNFDs.");
+            log.error("Error while deleting the VNFPackage "+packageName);
             throw e;
         }
-        return obtained;
+        log.debug("--- Successfully deleted the package " + packageName);
+        return param;
     }
 
     public void setPackageName(String packageName) {

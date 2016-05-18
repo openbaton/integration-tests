@@ -1,21 +1,26 @@
 {
-    "name":"iperf-real-scenario",
+    "name":"netcat-scenario-scaling",
     "vendor":"fokus",
     "version":"0.1-ALPHA",
     "vnfd":[
         {
-            "name":"iperfserver",
+            "name":"ncatserver",
             "vendor":"fokus",
             "version":"0.1",
-            "type":"server",
+            "type":"ncatserver",
             "lifecycle_event":[
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "test-install.sh",
-                        "install-srv.sh"
+                        "ncat-install.sh"
                     ]
-                }
+                },
+              {
+                "event":"START",
+                "lifecycle_events":[
+                  "ncat-server-setup.sh"
+                ]
+              }
             ],
             "configurations":{
                 "name":"server-configuration",
@@ -34,7 +39,7 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":1,
+                    "scale_in_out":4,
                     "vnfc":[
                         {
                             "connection_point":[
@@ -58,26 +63,25 @@
                     "flavour_key":"m1.small"
                 }
             ],
-            "type":"server",
             "endpoint":"generic",
             "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         },
         {
-            "name":"iperfclient",
+            "name":"ncatclient",
             "vendor":"fokus",
             "version":"0.1",
-            "type":"client",
+            "type":"ncatclient",
             "lifecycle_event":[
                 {
                     "event":"INSTANTIATE",
                     "lifecycle_events":[
-                        "test-install.sh"
+                        "ncat-install.sh"
                     ]
                 },
                 {
                     "event":"CONFIGURE",
                     "lifecycle_events":[
-                        "server_configure.sh"
+                        "ncatserver_configure.sh"
                     ]
                 }
             ],
@@ -97,16 +101,9 @@
                     "vm_image":[
                         "ubuntu-14.04-server-cloudimg-amd64-disk1"
                     ],
-                    "scale_in_out":2,
+                    "scale_in_out":4,
                     "vnfc":[
                         {
-                            "connection_point":[
-                                {
-                                    "floatingIp":"random",
-                                    "virtual_link_reference":"private"
-                                }
-                            ]
-                        }, {
                             "connection_point":[
                                 {
                                     "floatingIp":"random",
@@ -128,7 +125,6 @@
                     "flavour_key":"m1.small"
                 }
             ],
-            "type":"client",
             "endpoint":"generic",
             "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }
@@ -141,10 +137,10 @@
     "vnf_dependency":[
         {
             "source":{
-                "name":"iperfserver"
+                "name":"ncatserver"
             },
             "target":{
-                "name":"iperfclient"
+                "name":"ncatclient"
             },
             "parameters":[
                 "private"

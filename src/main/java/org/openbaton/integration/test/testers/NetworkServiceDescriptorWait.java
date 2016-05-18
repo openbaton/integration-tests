@@ -50,7 +50,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
         EventEndpoint eventEndpoint = createEventEndpoint(name,EndpointType.REST);
         eventEndpoint.setEvent(Action.RELEASE_RESOURCES_FINISH);
         NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
-        //The eventEndpoint param of EventEndpoint will be set in the RestWaiter or JMSWaiter
+        //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
 
         try {
             subscribe(eventEndpoint);
