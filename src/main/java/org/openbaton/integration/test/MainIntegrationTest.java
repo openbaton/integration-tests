@@ -199,6 +199,8 @@ public class MainIntegrationTest {
                     configureNetworkServiceDescriptorCreate(subTask, currentSection);
                 else if (subTask instanceof NetworkServiceDescriptorDelete)
                     configureNetworkServiceDescriptorDelete(subTask, currentSection);
+                else if (subTask instanceof VirtualNetworkFunctionDescriptorDelete)
+                    configureVirtualNetworkFunctionDescriptorDelete(subTask, currentSection);
                 else if (subTask instanceof NetworkServiceDescriptorWait)
                     configureNetworkServiceDescriptorWaiterWait(subTask, currentSection);
                 else if (subTask instanceof NetworkServiceRecordDelete)
@@ -335,6 +337,16 @@ public class MainIntegrationTest {
 
     private static void configureNetworkServiceDescriptorDelete(SubTask instance, Profile.Section currentSection) {
         //cast and get specific properties
+    }
+
+    private static void configureVirtualNetworkFunctionDescriptorDelete(SubTask subtask, Profile.Section currentSection) {
+        VirtualNetworkFunctionDescriptorDelete w = (VirtualNetworkFunctionDescriptorDelete) subtask;
+        String vnfdType = currentSection.get("vnf-type");
+        String vnfdName = currentSection.get("vnf-name");
+        if (vnfdType != null)
+            w.setVnfdType(vnfdType);
+        if (vnfdName != null)
+            w.setVnfdName(vnfdName);
     }
 
     private static void configureVirtualNetworkFunctionRecordWait(SubTask subTask, Profile.Section currentSection) {

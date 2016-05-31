@@ -53,6 +53,6 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
             throw sdkEx;
         }
         log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
-        return null;
+        return nsd;
     }
 }
