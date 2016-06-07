@@ -47,6 +47,7 @@ public class ScalingTester extends Tester {
         Properties p = Utils.getProperties();
         NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
                 p.getProperty("nfvo-pwd"),
+                p.getProperty("nfvo-project-id"),
                 p.getProperty("nfvo-ip"),
                 p.getProperty("nfvo-port"),
                 "/ns-records",
@@ -87,6 +88,7 @@ public class ScalingTester extends Tester {
         Properties p = Utils.getProperties();
         NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
                 p.getProperty("nfvo-pwd"),
+                p.getProperty("nfvo-project-id"),
                 p.getProperty("nfvo-ip"),
                 p.getProperty("nfvo-port"),
                 "/ns-records/" + nsrId + "/vnfrecords",
@@ -103,6 +105,7 @@ public class ScalingTester extends Tester {
         Properties p = Utils.getProperties();
         NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
                 p.getProperty("nfvo-pwd"),
+                p.getProperty("nfvo-project-id"),
                 p.getProperty("nfvo-ip"),
                 p.getProperty("nfvo-port"),
                 "/ns-records/" + nsrId + "/vnfrecords",

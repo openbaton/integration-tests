@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MainIntegrationTest {
 
@@ -56,7 +55,8 @@ public class MainIntegrationTest {
     private static String nfvoIp;
     private static String nfvoPort;
     private static String nfvoUsr;
-    private static String nfvoPsw;
+    private static String nfvoPwd;
+    private static String projectId;
     private static boolean clearAfterTest = false;
 
     private static Properties loadProperties() throws IOException {
@@ -64,7 +64,8 @@ public class MainIntegrationTest {
         nfvoIp = properties.getProperty("nfvo-ip");
         nfvoPort = properties.getProperty("nfvo-port");
         nfvoUsr = properties.getProperty("nfvo-usr");
-        nfvoPsw = properties.getProperty("nfvo-psw");
+        nfvoPwd = properties.getProperty("nfvo-pwd");
+        projectId = properties.getProperty("nfvo-project-id");
         String clear = properties.getProperty("clear-after-test");
         if (clear != null) {
             try {
@@ -97,24 +98,46 @@ public class MainIntegrationTest {
     private static boolean areVnfmsRegistered(String nfvoIp, String nfvoPort) {
         int i = 0;
         boolean registered = false;
+        String token = "";
+        try {
+            token = Utils.getAccessToken(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd);
+        } catch (Exception e) {
+            log.error("Could not get access token. Are the integration-test.properties correct? "+e.getMessage());
+            exit(1);
+        }
         while (!registered) {
             HttpResponse<String> r = null;
             try {
-                r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers").asString();
+                r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers")
+                        .header("Authorization", token.replaceAll("\"", ""))
+                        .header("project-id", projectId)
+                        .asString();
             } catch (UnirestException e) {
                 log.error("Could not reach NFVO. Is it really running and are the integration-test.properties correct?");
                 return false;
             }
             Gson mapper = new GsonBuilder().setPrettyPrinting().create();
             JsonArray vnfmArray = null;
-            String body = null;
+            String body = "";
             try {
                 body = r.getBody();
             } catch (NullPointerException e) {
                 log.error("Something went wrong asking the NFVO for the registrated VNFMs.");
                 return false;
             }
-            vnfmArray = mapper.fromJson(body, JsonArray.class);
+            JsonElement res = null;
+            try {
+                res = mapper.fromJson(body, JsonElement.class);
+            } catch (Exception e) {
+                log.error("Exception while mapping the NFVO response to a JsonElement: " + e.getMessage());
+                e.printStackTrace();
+                exit(1);
+            }
+            if (res == null || !res.isJsonArray()) {
+                log.error("The NFVO response is null or not as expected. Are user name, password and project-id set correctly? Here is the response: \n" + res);
+                exit(1);
+            }
+            vnfmArray = res.getAsJsonArray();
             if (vnfmArray.size() > 0)
                 registered = true;
             if (i >= 20) {
@@ -270,7 +293,7 @@ public class MainIntegrationTest {
      */
     private static void clearOrchestrator() {
         try {
-            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPsw, nfvoIp, nfvoPort, "1");
+            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPwd, projectId, nfvoIp, nfvoPort, "1");
             NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
             List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
             for (NetworkServiceRecord nsr : nsrList) {
