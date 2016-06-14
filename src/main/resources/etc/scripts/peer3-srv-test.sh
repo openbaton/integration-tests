@@ -1,48 +1,40 @@
 #!/bin/bash
 
-incoming=`sudo netstat -ntp | grep iperf | awk '{print $5}' | grep -v 5001 | sed 's/:.*//'`
-
-# check number of incoming iperf connections
-count=`echo "$incoming" | wc -l`
+# check number of incoming ncat connections
+count=`cat received | wc -l`
 if [ $count -ne 3 ]
 then
+  echo "Peer3 expected to be contacted by three peers (peer2, peer4 and peer5) but it was contacted by $count peers with the following ips:"
+  while read line ; do
+    echo "$line"
+  done < received
   exit 2
 fi
 
-# get the ip addresses of the hosts which connect to peer3
-incoming1=`echo "$incoming" | head -n1`
-incoming2=`echo "$incoming" | head -n2 | tail -n1`
-incoming3=`echo "$incoming" | tail -n1`
-
-
-if [ $incoming1 == ${peer2_private_ip} ] && [ $incoming2 == ${peer4_private2_ip} ] && [ $incoming3 == ${peer5_private2_ip} ] 
-then
-  exit 0
+# tests if peer2, peer4 and peer5 sent their ip addresses to peer3 by checking if the ip addresses are in the 'received' file on the peer
+grep ${peer2_private_ip} received -q
+if [ $? -ne 0 ]; then
+  echo "Peer2 with ip ${peer2_private_ip} did not connect to peer3. The following peers connected to this peer:"
+  while read line ; do
+    echo "$line"
+  done < received
+  exit 1;
 fi
 
-if [ $incoming1 == ${peer2_private_ip} ] && [ $incoming2 == ${peer5_private2_ip} ] && [ $incoming3 == ${peer4_private2_ip} ] 
-then
-  exit 0
+grep ${peer4_private2_ip} received -q
+if [ $? -ne 0 ]; then
+  echo "Peer4 with ip ${peer4_private2_ip} did not connect to peer3. The following peers connected to this peer:"
+  while read line ; do
+    echo "$line"
+  done < received
+  exit 1;
 fi
 
-if [ $incoming1 == ${peer4_private2_ip} ] && [ $incoming2 == ${peer2_private_ip} ] && [ $incoming3 == ${peer5_private2_ip} ] 
-then
-  exit 0
+grep ${peer5_private2_ip} received -q
+if [ $? -ne 0 ]; then
+  echo "Peer5 with ip ${peer5_private2_ip} did not connect to peer3. The following peers connected to this peer:"
+  while read line ; do
+    echo "$line"
+  done < received
+  exit 1;
 fi
-
-if [ $incoming1 == ${peer4_private2_ip} ] && [ $incoming2 == ${peer5_private2_ip} ] && [ $incoming3 == ${peer2_private_ip} ] 
-then
-  exit 0
-fi
-
-if [ $incoming1 == ${peer5_private2_ip} ] && [ $incoming2 == ${peer2_private_ip} ] && [ $incoming3 == ${peer4_private2_ip} ] 
-then
-  exit 0
-fi
-
-if [ $incoming1 == ${peer5_private2_ip} ] && [ $incoming2 == ${peer4_private2_ip} ] && [ $incoming3 == ${peer2_private_ip} ] 
-then
-  exit 0
-fi
-
-exit 1

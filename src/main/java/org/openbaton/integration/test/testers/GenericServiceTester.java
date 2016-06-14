@@ -135,7 +135,7 @@ public class GenericServiceTester extends Tester {
                     pb = new ProcessBuilder("/bin/bash", "-c", "ssh -o \"StrictHostKeyChecking no\" " + userName + "@" +
                             floatingIp + " -i " + pemFile.getPath() + " \"" + preScript + " source " + vmScriptsPath + "/" + script.getName() + "\"");
 
-                    Process execute = pb.start();
+                    Process execute = pb.redirectOutput(ProcessBuilder.Redirect.INHERIT).start();
                     exitStatus = execute.waitFor();
                     if (exitStatus != 0) {
                         log.error("Script " + script.getName() + " exited with status " + exitStatus + ".");

@@ -1,27 +1,31 @@
 #!/bin/bash
 
-incoming=`sudo netstat -ntp | grep iperf | awk '{print $5}' | grep -v 5001 | sed 's/:.*//'`
-
-# check number of incoming iperf connections
-count=`echo "$incoming" | wc -l`
+# check number of incoming ncat connections
+count=`cat received | wc -l`
 if [ $count -ne 2 ]
 then
+  echo "Peer2 expected to be contacted by two peers (peer1 and peer5) but it was contacted by $count peers with the following ips:"
+  while read line ; do
+    echo "$line"
+  done < received
   exit 2
 fi
 
-# get the ip addresses of the hosts which connect to peer2
-incoming1=`echo "$incoming" | head -n1`
-incoming2=`echo "$incoming" | tail -n1`
-
-if [ $incoming1 == ${peer5_private_ip} ] && [ $incoming2 == ${peer1_private_ip} ]
-then
-  exit 0
+# tests if peer1 and peer5 sent their ip addresses to peer2 by checking if the ip addresses are in the 'received' file on the peer
+grep ${peer1_private_ip} received -q
+if [ $? -ne 0 ]; then
+  echo "Peer1 with ip ${peer1_private_ip} did not connect to peer2. The following peers connected to this peer:"
+  while read line ; do
+    echo "$line"
+  done < received
+  exit 1;
 fi
 
-if [ $incoming1 == ${peer1_private_ip} ] && [ $incoming2 == ${peer5_private_ip} ]
-then
-  exit 0
+grep ${peer5_private_ip} received -q
+if [ $? -ne 0 ]; then
+  echo "Peer5 with ip ${peer5_private_ip} did not connect to peer2. The following peers connected to this peer:"
+  while read line ; do
+    echo "$line"
+  done < received
+  exit 1;
 fi
-
-exit 1
-
