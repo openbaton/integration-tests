@@ -46,13 +46,7 @@ public class ScaleIn extends Tester {
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-project-id"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "/ns-records",
-                "1");
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
 
         boolean found = false;
         for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {

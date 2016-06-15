@@ -66,14 +66,7 @@ public class ScaleOut extends Tester {
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-project-id"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "/ns-records",
-                "1");
-
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
         boolean found = false;
         for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
             if (vnfr.getType().equals(vnfrType)) {
@@ -81,6 +74,7 @@ public class ScaleOut extends Tester {
 
                 VNFComponent vnfc = createVNFComponent();
                 try {
+                    System.out.println(mapper.toJson(vnfc));
                     agent.createVNFCInstance(nsr.getId(), vnfr.getId(), vnfc);
                 } catch (SDKException e) {
                     log.warn("Exception while triggering the scale out: "+e.getMessage());

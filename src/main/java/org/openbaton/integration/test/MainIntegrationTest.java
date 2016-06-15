@@ -57,6 +57,7 @@ public class MainIntegrationTest {
     private static String nfvoUsr;
     private static String nfvoPwd;
     private static String projectId;
+    private static boolean sslEnabled;
     private static boolean clearAfterTest = false;
 
     private static Properties loadProperties() throws IOException {
@@ -66,14 +67,9 @@ public class MainIntegrationTest {
         nfvoUsr = properties.getProperty("nfvo-usr");
         nfvoPwd = properties.getProperty("nfvo-pwd");
         projectId = properties.getProperty("nfvo-project-id");
+        sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
         String clear = properties.getProperty("clear-after-test");
-        if (clear != null) {
-            try {
-                clearAfterTest = Boolean.parseBoolean(clear);
-            } catch (Exception e) {
-                log.warn("The property field 'clear-after-test' is not 'true' or 'false' and will not be taken into account.");
-            }
-        }
+        clearAfterTest = Boolean.parseBoolean(clear);
         return properties;
     }
 
@@ -94,67 +90,6 @@ public class MainIntegrationTest {
         }
         return true;
     }
-
-    private static boolean areVnfmsRegistered(String nfvoIp, String nfvoPort) {
-        int i = 0;
-        boolean registered = false;
-        String token = "";
-        try {
-            token = Utils.getAccessToken(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd);
-        } catch (Exception e) {
-            log.error("Could not get access token. Are the integration-test.properties correct? "+e.getMessage());
-            exit(1);
-        }
-        while (!registered) {
-            HttpResponse<String> r = null;
-            try {
-                r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers")
-                        .header("Authorization", token.replaceAll("\"", ""))
-                        .header("project-id", projectId)
-                        .asString();
-            } catch (UnirestException e) {
-                log.error("Could not reach NFVO. Is it really running and are the integration-test.properties correct?");
-                return false;
-            }
-            Gson mapper = new GsonBuilder().setPrettyPrinting().create();
-            JsonArray vnfmArray = null;
-            String body = "";
-            try {
-                body = r.getBody();
-            } catch (NullPointerException e) {
-                log.error("Something went wrong asking the NFVO for the registrated VNFMs.");
-                return false;
-            }
-            JsonElement res = null;
-            try {
-                res = mapper.fromJson(body, JsonElement.class);
-            } catch (Exception e) {
-                log.error("Exception while mapping the NFVO response to a JsonElement: " + e.getMessage());
-                e.printStackTrace();
-                exit(1);
-            }
-            if (res == null || !res.isJsonArray()) {
-                log.error("The NFVO response is null or not as expected. Are user name, password and project-id set correctly? Here is the response: \n" + res);
-                exit(1);
-            }
-            vnfmArray = res.getAsJsonArray();
-            if (vnfmArray.size() > 0)
-                registered = true;
-            if (i >= 20) {
-                if (!registered)
-                    log.error("After 60 seconds no VNFM is registered yet to the NFVO. Is there an error?");
-                return false;
-            }
-            i++;
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-    }
-
 
     public static void main(String[] args) throws Exception {
 
@@ -178,17 +113,6 @@ public class MainIntegrationTest {
         }
 
         log.info("Nfvo is started");
-
-        /******************************
-         * Running VNFMs				  *
-         ******************************/
-
-        if (!areVnfmsRegistered(nfvoIp, nfvoPort)) {
-            log.error("No VNFM is registered yet.");
-            System.exit(1);
-        }
-
-        log.info("A VNFM is registered");
 
         /******************************
          * Now create the VIM		  *
@@ -293,7 +217,7 @@ public class MainIntegrationTest {
      */
     private static void clearOrchestrator() {
         try {
-            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPwd, projectId, nfvoIp, nfvoPort, "1");
+            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPwd, projectId, sslEnabled, nfvoIp, nfvoPort, "1");
             NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
             List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
             for (NetworkServiceRecord nsr : nsrList) {
