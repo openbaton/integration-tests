@@ -1,18 +1,11 @@
 #!/bin/bash
 
-# get the ip address of the host to which peer2 connects to
-outgoing=`sudo netstat -ntp | grep iperf | awk '{print $5}' | grep 5001 | sed 's/:.*//'`
-
-# check number of outgoing iperf connections
-count=`echo "$outgoing" | wc -l`
-if [ $count -ne 1 ]
-then
-  exit 2
+# check if this peer connected to the correct peer(s)
+grep Peer3 sent -q
+if [ $? -ne 0 ]; then
+  echo "Peer2 did not connect to peer3. Instead it connected to the following peers:"
+  while read line ; do
+    echo "$line"
+  done < sent
+  exit 1
 fi
-
-if [ $outgoing == ${peer3_private_ip} ]
-then
-  exit 0
-fi
-
-exit 1

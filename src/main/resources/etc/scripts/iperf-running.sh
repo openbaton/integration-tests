@@ -1,6 +1,6 @@
 #!/bin/bash
 
-iperf_count=`exec ps -aux | grep -v grep | grep iperf | wc -l`
+iperf_count=$(ps -aux | grep -v grep | grep -v "iperf-running" | grep iperf | wc -l)
 if [ $iperf_count -lt 1 ]
 then
   exit 1
