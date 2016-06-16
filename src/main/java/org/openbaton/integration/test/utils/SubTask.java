@@ -22,7 +22,7 @@ import java.util.concurrent.*;
 /**
  * Created by mob on 24.07.15.
  */
-public abstract class SubTask implements Callable<Object>{
+public abstract class SubTask implements Callable<Object> {
 
     private ExecutorService executorService;
     protected List<SubTask> successors;
@@ -32,34 +32,36 @@ public abstract class SubTask implements Callable<Object>{
     public Object param;
 
 
-
-    public SubTask(){
+    public SubTask() {
         this.successors = new LinkedList<>();
-        this.f=new LinkedList<>();
-        successorRemover =null;
+        this.f = new LinkedList<>();
+        successorRemover = null;
     }
 
-    public void setParam(Object param){
+    public void setParam(Object param) {
         this.param = param;
     }
-    public Object getParam(){
+
+    public Object getParam() {
         return param;
     }
-    public void setMaxIntegrationTestTime(int maxIntegrationTestTime){
+
+    public void setMaxIntegrationTestTime(int maxIntegrationTestTime) {
         this.maxIntegrationTestTime = maxIntegrationTestTime;
     }
 
-    public void setMaxConcurrentSuccessors(int maxConcurrentSuccessors){
+    public void setMaxConcurrentSuccessors(int maxConcurrentSuccessors) {
         executorService = Executors.newFixedThreadPool(maxConcurrentSuccessors);
     }
-    public void setSuccessorRemover(SubTask successorRemover){
+
+    public void setSuccessorRemover(SubTask successorRemover) {
         this.successorRemover = successorRemover;
     }
 
     protected abstract Object doWork() throws Exception;
 
     public void addSuccessor(SubTask e) {
-       this.successors.add(e);
+        this.successors.add(e);
     }
 
     @Override
@@ -67,8 +69,7 @@ public abstract class SubTask implements Callable<Object>{
         Object res = doWork();
         for (SubTask successor : successors)
             successor.setParam(res);
-        if (successorRemover !=null)
-        {
+        if (successorRemover != null) {
             successorRemover.setParam(res);
         }
         executeSuccessors();
@@ -82,30 +83,38 @@ public abstract class SubTask implements Callable<Object>{
     }
 
     public boolean awaitTermination() {
-        boolean result=true;
+        boolean result = true;
         try {
             for (Future future : f) {
                 future.get(maxIntegrationTestTime, TimeUnit.SECONDS);
             }
             for (SubTask successor : successors)
-                if(!successor.awaitTermination()){
-                    result=false;break;
+                if (!successor.awaitTermination()) {
+                    result = false;
+                    break;
                 }
-            if (successorRemover !=null && result) {
-                executorService.submit(successorRemover).get(60, TimeUnit.SECONDS);
+            if (successorRemover != null && result) {
+                Future futureSuccessorRemover = this.executorService.submit(successorRemover);
+                futureSuccessorRemover.get(maxIntegrationTestTime, TimeUnit.SECONDS);
+                if (!successorRemover.awaitTermination()) {
+                    result = false;
+                }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();result=false;
+            e.printStackTrace();
+            result = false;
         } catch (ExecutionException e) {
-            e.printStackTrace();result=false;
+            e.printStackTrace();
+            result = false;
         } catch (TimeoutException e) {
-            e.printStackTrace();result=false;
-        }
-        finally {
+            e.printStackTrace();
+            result = false;
+        } finally {
             shutdownAndAwaitTermination();
         }
         return result;
     }
+
     private void shutdownAndAwaitTermination() {
         executorService.shutdown(); // Disable new tasks from being submitted
         try {
