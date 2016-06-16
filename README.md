@@ -8,7 +8,7 @@ Five tests are run.
 1. scenario-dummy-iperf
 2. scenario-many-dependencies
 3. scenario-real-iperf
-4. scenario-complex-iperf
+4. scenario-complex-ncat
 5. scenario-scaling
 6. error-in-configure
 7. error-in-instantiate
@@ -24,14 +24,15 @@ scenario-many-dependencies also uses the Dummy VNFM AMQP but its fake network se
 The test scenario-real-iperf actually deploys a network service on openstack. 
 It consists of two VNFD and deploys one iperf server and two iperf clients. The clients contact the server. 
 
-The test scenario-complex-iperf deploys a more complex network service on openstack. 
+The test scenario-complex-ncat deploys a more complex network service on openstack. 
 Five virtual machines will be running and acting as peers. 
-The following picture shows the architecture in which the peers connect to each other using iperf. 
-A peer at the beginning of an arrow acts as an iperf client and connects to the peer at the end of the arrow. 
+The following picture shows the architecture in which the peers connect to each other using ncat and send their ip address. 
+A peer at the beginning of an arrow acts as an ncat client and connects to the peer at the end of the arrow. 
+The receiving peer stores the ip address of the sender so that it is possible to verify which peer connected to which. 
 The two colours represent the two different networks on which the peers are running and connecting. 
 Blue is the network *private* and black *private2*.
 
-![Complex scenario][complex-iperf]
+![Complex scenario][complex-ncat]
 
 The test scenario-scaling tests the scaling function of Openbaton. 
 It starts by deploying two VMs one acting as a ncat server and one as a ncat client which sends his ip address to the server so that it is possible to check if the client actually connected to the server. 
@@ -65,8 +66,10 @@ Open it and set the property values according to your needs.
 | -------------   				| -------------:																|
 | nfvo-ip  					| The ip of the machine on which the NFVO you want to use is running. |
 | nfvo-port					| The port on which the NFVO is running. |
-| nfvo-usr					| The username if a login is required for the NFVO. |
-| nfvo-pwd                                      | The password if a login is required for the NFVO. |
+| nfvo-usr					| The username required for logging in the NFVO |
+| nfvo-pwd                                      | The password required for logging in the NFVO |
+| nfvo-project-id                               | The id of the project that the integration tests shall use |
+| nfvo-ssl-enabled                               | True if the NFVO uses SSL |
 | local-ip					| The ip of the machine on which the integration test is running. |
 | clear-after-test          | If set to *true*, the NFVO will be cleared of all the remaining NSRs, NSD, VNFPackages and Vim-Instances left from the previous test. |
 | integration-test-scenarios                    | Here you can specify a folder in which you can put integration test scenarios. If *.ini* files exist in this folder, the integration test will use just those files. If there are no files it will use the ones in the projects resource folder. |
