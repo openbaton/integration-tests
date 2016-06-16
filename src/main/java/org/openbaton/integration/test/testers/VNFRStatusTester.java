@@ -33,12 +33,7 @@ public class VNFRStatusTester extends Tester {
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "ns-records",
-                "1");
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
 
         if (status == null)
             throw new IntegrationTestException("Status to test is not declared. Specify it in the .ini file.");

@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MainIntegrationTest {
 
@@ -56,7 +55,9 @@ public class MainIntegrationTest {
     private static String nfvoIp;
     private static String nfvoPort;
     private static String nfvoUsr;
-    private static String nfvoPsw;
+    private static String nfvoPwd;
+    private static String projectId;
+    private static boolean sslEnabled;
     private static boolean clearAfterTest = false;
 
     private static Properties loadProperties() throws IOException {
@@ -64,15 +65,11 @@ public class MainIntegrationTest {
         nfvoIp = properties.getProperty("nfvo-ip");
         nfvoPort = properties.getProperty("nfvo-port");
         nfvoUsr = properties.getProperty("nfvo-usr");
-        nfvoPsw = properties.getProperty("nfvo-psw");
+        nfvoPwd = properties.getProperty("nfvo-pwd");
+        projectId = properties.getProperty("nfvo-project-id");
+        sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
         String clear = properties.getProperty("clear-after-test");
-        if (clear != null) {
-            try {
-                clearAfterTest = Boolean.parseBoolean(clear);
-            } catch (Exception e) {
-                log.warn("The property field 'clear-after-test' is not 'true' or 'false' and will not be taken into account.");
-            }
-        }
+        clearAfterTest = Boolean.parseBoolean(clear);
         return properties;
     }
 
@@ -93,45 +90,6 @@ public class MainIntegrationTest {
         }
         return true;
     }
-
-    private static boolean areVnfmsRegistered(String nfvoIp, String nfvoPort) {
-        int i = 0;
-        boolean registered = false;
-        while (!registered) {
-            HttpResponse<String> r = null;
-            try {
-                r = Unirest.get("http://" + nfvoIp + ":" + nfvoPort + "/api/v1/vnfmanagers").asString();
-            } catch (UnirestException e) {
-                log.error("Could not reach NFVO. Is it really running and are the integration-test.properties correct?");
-                return false;
-            }
-            Gson mapper = new GsonBuilder().setPrettyPrinting().create();
-            JsonArray vnfmArray = null;
-            String body = null;
-            try {
-                body = r.getBody();
-            } catch (NullPointerException e) {
-                log.error("Something went wrong asking the NFVO for the registrated VNFMs.");
-                return false;
-            }
-            vnfmArray = mapper.fromJson(body, JsonArray.class);
-            if (vnfmArray.size() > 0)
-                registered = true;
-            if (i >= 20) {
-                if (!registered)
-                    log.error("After 60 seconds no VNFM is registered yet to the NFVO. Is there an error?");
-                return false;
-            }
-            i++;
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-    }
-
 
     public static void main(String[] args) throws Exception {
 
@@ -155,17 +113,6 @@ public class MainIntegrationTest {
         }
 
         log.info("Nfvo is started");
-
-        /******************************
-         * Running VNFMs				  *
-         ******************************/
-
-        if (!areVnfmsRegistered(nfvoIp, nfvoPort)) {
-            log.error("No VNFM is registered yet.");
-            System.exit(1);
-        }
-
-        log.info("A VNFM is registered");
 
         /******************************
          * Now create the VIM		  *
@@ -270,7 +217,7 @@ public class MainIntegrationTest {
      */
     private static void clearOrchestrator() {
         try {
-            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPsw, nfvoIp, nfvoPort, "1");
+            NFVORequestor requestor = new NFVORequestor(nfvoUsr, nfvoPwd, projectId, sslEnabled, nfvoIp, nfvoPort, "1");
             NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
             List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
             for (NetworkServiceRecord nsr : nsrList) {

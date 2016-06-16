@@ -45,12 +45,7 @@ public class ScalingTester extends Tester {
         NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "/ns-records",
-                "1");
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
 
         boolean found = false;
         for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
@@ -85,13 +80,8 @@ public class ScalingTester extends Tester {
     private int getNumberOfVNFCInstances(String nsrId, String vnfrId) throws IOException, SDKException, IntegrationTestException {
         int num = 0;
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "/ns-records/" + nsrId + "/vnfrecords",
-                "1");
-        VirtualNetworkFunctionRecord vnfr = (VirtualNetworkFunctionRecord) agent.requestGet(vnfrId, VirtualNetworkFunctionRecord.class);
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+        VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId ,vnfrId);
 
         for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
                 num+=vdu.getVnfc_instance().size();
@@ -101,13 +91,8 @@ public class ScalingTester extends Tester {
 
     private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
         Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = new NetworkServiceRecordRestAgent(p.getProperty("nfvo-usr"),
-                p.getProperty("nfvo-pwd"),
-                p.getProperty("nfvo-ip"),
-                p.getProperty("nfvo-port"),
-                "/ns-records/" + nsrId + "/vnfrecords",
-                "1");
-        VirtualNetworkFunctionRecord vnfr = (VirtualNetworkFunctionRecord) agent.requestGet(vnfrId, VirtualNetworkFunctionRecord.class);
+        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+        VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId ,vnfrId);
         return vnfr.getStatus();
     }
 
