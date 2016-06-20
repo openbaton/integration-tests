@@ -81,7 +81,7 @@ dependencies {
 
     compile 'org.springframework:spring-core:' + springVersion
 
-    compile 'org.openbaton:sdk:2.1..1-SNAPSHOT'
+    compile 'org.openbaton:sdk:2.1.1-SNAPSHOT'
     compile 'org.openbaton:catalogue:2.1.1-SNAPSHOT'
     compile 'commons-io:commons-io:2.4'
 }
