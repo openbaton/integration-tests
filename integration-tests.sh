@@ -94,6 +94,7 @@ fi
 
 if [ $start == true ]; then
   java -jar ./build/libs/integration-tests-$VERSION.jar ${args[*]}
+  exit $?
 fi
 
 if [ $print_help == false -a $list == false -a $cleann == false -a $compile == false -a $start == false ]; then

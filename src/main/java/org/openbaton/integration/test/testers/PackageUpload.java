@@ -15,13 +15,10 @@
  */
 package org.openbaton.integration.test.testers;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
+import org.openbaton.sdk.api.exception.SDKException;
+import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
 import java.io.File;
 import java.util.Properties;
@@ -55,12 +52,10 @@ public class PackageUpload extends Tester<VNFPackage> {
             throw new Exception("No package: "+f.getName()+" found!");
         }
 
+        VNFPackageAgent packageAgent = requestor.getVNFPackageAgent();
         try {
-            Unirest.post(nfvoUrl)
-                    .header("accept", "application/json")
-                    .field("file", f)
-                    .asString();
-        } catch (UnirestException e) {
+            packageAgent.create(EXTERNAL_PATH_NAME + packageName);
+        } catch (SDKException e) {
             log.error("Could not store VNFPackage " + packageName);
             throw e;
         }
