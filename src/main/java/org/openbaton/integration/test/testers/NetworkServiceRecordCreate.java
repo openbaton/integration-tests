@@ -24,46 +24,50 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
+/**
+ * Class used to create a new NetworkServiceRecord from a NetworkServiceDescriptor.
+ */
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
-	private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
+  private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
 
-	/**
-	 * @param properties : IntegrationTest properties containing:
-	 *                   nfvo-usr
-	 *                   nfvo-pwd
-	 *                   nfvo-ip
-	 *                   nfvo-port
-	 */
-	public NetworkServiceRecordCreate(Properties properties) {
-		super(properties, NetworkServiceRecord.class, "", "/ns-records");
-	}
+  /**
+   * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   */
+  public NetworkServiceRecordCreate(Properties properties) {
+    super(properties, NetworkServiceRecord.class, "", "/ns-records");
+  }
 
-	@Override
-	protected Object doWork() throws SDKException {
-		return create();
-	}
+  @Override
+  protected Object doWork() throws SDKException {
+    return create();
+  }
 
+  @Override
+  public NetworkServiceRecord create() throws SDKException {
 
-	@Override
-	public NetworkServiceRecord create() throws SDKException {
+    NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
+    log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());
+    NetworkServiceRecord networkServiceRecord = null;
+    try {
+      networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
+    } catch (SDKException sdkEx) {
+      log.error(
+          "Exception during the instantiation of NetworkServiceRecord from nsd of id: "
+              + nsd.getId());
+      throw sdkEx;
+    }
+    log.debug(
+        " --- Creating nsr with id: "
+            + networkServiceRecord.getId()
+            + " from nsd with id: "
+            + nsd.getId());
 
-		NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
-        log.info("Launch NSR from NSD "+nsd.getName()+" with id "+nsd.getId());
-		NetworkServiceRecord networkServiceRecord = null;
-		try {
-			networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
-		} catch (SDKException sdkEx) {
-			log.error("Exception during the instantiation of NetworkServiceRecord from nsd of id: "+nsd.getId());
-			throw sdkEx;
-		}
-		log.debug(" --- Creating nsr with id: " + networkServiceRecord.getId()+" from nsd with id: "+ nsd.getId());
+    return networkServiceRecord;
+  }
 
-		return networkServiceRecord;
-	}
-
-	@Override
-	protected NetworkServiceRecord prepareObject() {
-		return null;
-	}
+  @Override
+  protected NetworkServiceRecord prepareObject() {
+    return null;
+  }
 }

@@ -15,44 +15,42 @@
  */
 package org.openbaton.integration.test.testers;
 
-import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
 import java.util.Properties;
 
 /**
  * Created by mob on 29.07.15.
+ *
+ * Tester used to delete a NetworkServiceDescriptor.
  */
 public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescriptor> {
-    /**
-     * @param p : IntegrationTest properties containing:
-     *                   nfvo-usr
-     *                   nfvo-pwd
-     *                   nfvo-ip
-     *                   nfvo-port
-     */
+  /**
+   * @param p : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   */
+  public NetworkServiceDescriptorDelete(Properties p) {
+    super(p, NetworkServiceDescriptor.class, "", "/ns-descriptors");
+  }
 
-    public NetworkServiceDescriptorDelete(Properties p) {
-        super(p, NetworkServiceDescriptor.class,"","/ns-descriptors");
-    }
+  @Override
+  protected NetworkServiceDescriptor prepareObject() {
+    return null;
+  }
 
-    @Override
-    protected NetworkServiceDescriptor prepareObject() {
-        return null;
+  @Override
+  protected Object doWork() throws SDKException {
+    NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
+    log.info("Delete NSD " + nsd.getName());
+    try {
+      delete(nsd.getId());
+    } catch (SDKException sdkEx) {
+      log.error(
+          "Exception during deletion of NetworkServiceDescription with id: " + nsd.getId(), sdkEx);
+      throw sdkEx;
     }
-
-    @Override
-    protected Object doWork() throws SDKException {
-        NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
-        log.info("Delete NSD "+nsd.getName());
-        try {
-            delete(nsd.getId());
-        } catch (SDKException sdkEx) {
-            log.error("Exception during deletion of NetworkServiceDescription with id: "+nsd.getId(), sdkEx);
-            throw sdkEx;
-        }
-        log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:"+nsd.getId());
-        return nsd;
-    }
+    log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:" + nsd.getId());
+    return nsd;
+  }
 }

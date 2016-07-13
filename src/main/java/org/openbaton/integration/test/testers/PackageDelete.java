@@ -18,50 +18,48 @@ package org.openbaton.integration.test.testers;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
-import org.openbaton.sdk.api.util.AbstractRestAgent;
+import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Created by tbr on 01.12.15.
+ *
+ * Class used to delete a VNFPackage.
  */
 public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
-    private String packageName = "";
+  private String packageName = "";
 
+  public PackageDelete(Properties properties) {
+    super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+  }
 
-    public PackageDelete(Properties properties) {
-        super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+  @Override
+  protected VirtualNetworkFunctionDescriptor prepareObject() {
+    return null;
+  }
+
+  @Override
+  protected Object doWork() throws Exception {
+    log.info("Delete VNFPackage " + packageName);
+    VNFPackageAgent agent = requestor.getVNFPackageAgent();
+
+    try {
+      List<VNFPackage> packages = agent.findAll();
+      for (VNFPackage p : packages) {
+        if (p.getName().equals(packageName)) agent.delete(p.getId());
+      }
+    } catch (SDKException e) {
+      log.error("Error while deleting the VNFPackage " + packageName);
+      throw e;
     }
+    log.debug("--- Successfully deleted the package " + packageName);
+    return param;
+  }
 
-    @Override
-    protected VirtualNetworkFunctionDescriptor prepareObject() {
-        return null;
-    }
-
-    @Override
-    protected Object doWork() throws Exception {
-        log.info("Delete VNFPackage "+packageName);
-        AbstractRestAgent agent = requestor.abstractRestAgent(VNFPackage.class, "/vnf-packages");
-        try {
-            List<VNFPackage> packages = agent.findAll();
-            for (VNFPackage p : packages) {
-                if (p.getName().equals(packageName))
-                    agent.delete(p.getId());
-            }
-        } catch (SDKException e) {
-            log.error("Error while deleting the VNFPackage "+packageName);
-            throw e;
-        }
-        log.debug("--- Successfully deleted the package " + packageName);
-        return param;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName=packageName;
-    }
+  public void setPackageName(String packageName) {
+    this.packageName = packageName;
+  }
 }

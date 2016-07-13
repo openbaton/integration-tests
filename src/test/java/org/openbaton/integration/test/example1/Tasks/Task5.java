@@ -24,18 +24,18 @@ import java.util.Properties;
  */
 public class Task5 extends SubTask {
 
-    private Properties properties;
+  private Properties properties;
 
-    public Task5(Properties properties){
-        this.properties=properties;
-    }
+  public Task5(Properties properties) {
+    this.properties = properties;
+  }
 
-    @Override
-    protected Object doWork() throws Exception {
-        int i = (int) getParam();
-        i++;
-        Thread.sleep(1000);
-        System.out.println("Task5 id:"+Thread.currentThread().getId()+", counter is: "+i);
-        return i;
-    }
+  @Override
+  protected Object doWork() throws Exception {
+    int i = (int) getParam();
+    i++;
+    Thread.sleep(1000);
+    System.out.println("Task5 id:" + Thread.currentThread().getId() + ", counter is: " + i);
+    return i;
+  }
 }

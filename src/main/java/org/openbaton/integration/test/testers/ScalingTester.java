@@ -19,92 +19,109 @@ import java.util.Properties;
  */
 
 /**
- * This class tests if the expected number of VNFC-Instances of a VNFR exist and
- * if the VNFR is in an active state.
- * After a sclaing operation it passes the updated NSR to the next tester!
- * Therefore it should always be executed after the VirtualNetworkFunctionRecordWait of a
- * scaling operation finished.
+ * This class tests if the expected number of VNFC-Instances of a VNFR exist and if the VNFR is in
+ * an active state. After a sclaing operation it passes the updated NSR to the next tester!
+ * Therefore it should always be executed after the VirtualNetworkFunctionRecordWait of a scaling
+ * operation finished.
  */
 public class ScalingTester extends Tester {
 
-    private String vnfrType = "";
-    private int vnfcCount = 0;
+  private String vnfrType = "";
+  private int vnfcCount = 0;
 
-    public ScalingTester(Properties properties) {
-        super(properties, ScaleOut.class, "", "");
-    }
+  public ScalingTester(Properties properties) {
+    super(properties, ScaleOut.class, "", "");
+  }
 
-    @Override
-    protected Serializable prepareObject() {
-        return null;
-    }
+  @Override
+  protected Serializable prepareObject() {
+    return null;
+  }
 
-    @Override
-    protected Object doWork() throws Exception {
-        log.info("Start ScalingTester");
-        NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
+  @Override
+  protected Object doWork() throws Exception {
+    log.info("Start ScalingTester");
+    NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-        Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    Properties p = Utils.getProperties();
+    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
 
-        boolean found = false;
-        for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
-            if (vnfr.getType().equals(vnfrType)) {
-                found = true;
+    boolean found = false;
+    for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
+      if (vnfr.getType().equals(vnfrType)) {
+        found = true;
 
-                Status state = getVNFRState(nsr.getId(), vnfr.getId());
-                if (!state.equals(Status.ACTIVE))
-                    throw new IntegrationTestException("State of VNFR "+vnfr.getName()+" of type "+vnfr.getType()+" is not ACTIVE but "+state+".");
+        Status state = getVNFRState(nsr.getId(), vnfr.getId());
+        if (!state.equals(Status.ACTIVE))
+          throw new IntegrationTestException(
+              "State of VNFR "
+                  + vnfr.getName()
+                  + " of type "
+                  + vnfr.getType()
+                  + " is not ACTIVE but "
+                  + state
+                  + ".");
 
-                int numInstances = getNumberOfVNFCInstances(nsr.getId(), vnfr.getId());
-                log.info("Found " + numInstances + " VNFC instance/s of VNFR "+vnfr.getType()+" with id "+vnfr.getId());
-                if (numInstances == vnfcCount) {
-                    log.info("ScalingTester finished successfully");
-                } else {
-                    log.error("Expected number of VNFCInstances was "+vnfcCount+" but ScalingTester found "+numInstances);
-                    throw new IntegrationTestException("ScalingTester did not finish successfully");
-                }
-            }
+        int numInstances = getNumberOfVNFCInstances(nsr.getId(), vnfr.getId());
+        log.info(
+            "Found "
+                + numInstances
+                + " VNFC instance/s of VNFR "
+                + vnfr.getType()
+                + " with id "
+                + vnfr.getId());
+        if (numInstances == vnfcCount) {
+          log.info("ScalingTester finished successfully");
+        } else {
+          log.error(
+              "Expected number of VNFCInstances was "
+                  + vnfcCount
+                  + " but ScalingTester found "
+                  + numInstances);
+          throw new IntegrationTestException("ScalingTester did not finish successfully");
         }
-        if (!found)
-            log.warn("did not find a VNFR of type " + vnfrType);
-
-        // get the updated nsr
-        NetworkServiceRecord nsrUpdated = agent.findById(nsr.getId());
-        if (nsrUpdated == null)
-            log.warn("Could not retrieve the updated NSR. This may cause errors in following tasks");
-
-        return nsrUpdated;
+      }
     }
+    if (!found) log.warn("did not find a VNFR of type " + vnfrType);
 
-    private int getNumberOfVNFCInstances(String nsrId, String vnfrId) throws IOException, SDKException, IntegrationTestException {
-        int num = 0;
-        Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
-        VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId ,vnfrId);
+    // get the updated nsr
+    NetworkServiceRecord nsrUpdated = agent.findById(nsr.getId());
+    if (nsrUpdated == null)
+      log.warn("Could not retrieve the updated NSR. This may cause errors in following tasks");
 
-        for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
-                num+=vdu.getVnfc_instance().size();
-        }
-        return num;
+    return nsrUpdated;
+  }
+
+  private int getNumberOfVNFCInstances(String nsrId, String vnfrId)
+      throws IOException, SDKException, IntegrationTestException {
+    int num = 0;
+    Properties p = Utils.getProperties();
+    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
+
+    for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
+      num += vdu.getVnfc_instance().size();
     }
+    return num;
+  }
 
-    private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
-        Properties p = Utils.getProperties();
-        NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
-        VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId ,vnfrId);
-        return vnfr.getStatus();
-    }
+  private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
+    Properties p = Utils.getProperties();
+    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
+    return vnfr.getStatus();
+  }
 
-    public void setVnfrType(String vnfrType) {
-        this.vnfrType = vnfrType;
-    }
+  public void setVnfrType(String vnfrType) {
+    this.vnfrType = vnfrType;
+  }
 
-    public void setVnfcCount(String vnfcCount) {
-        try {
-            this.vnfcCount = Integer.parseInt(vnfcCount);
-        } catch (NumberFormatException e) {
-            log.warn("The field vnfc-count in the ini file is not a number. This will probably cause this test to fail.");
-        }
+  public void setVnfcCount(String vnfcCount) {
+    try {
+      this.vnfcCount = Integer.parseInt(vnfcCount);
+    } catch (NumberFormatException e) {
+      log.warn(
+          "The field vnfc-count in the ini file is not a number. This will probably cause this test to fail.");
     }
+  }
 }

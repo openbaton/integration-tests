@@ -23,17 +23,18 @@ import java.util.Properties;
  * Created by mob on 18.08.15.
  */
 public class Task2 extends SubTask {
-    private Properties properties;
+  private Properties properties;
 
-    public Task2(Properties properties){
-        this.properties=properties;
-    }
-    @Override
-    protected Object doWork() throws Exception {
-        int i = (int) getParam();
-        i++;
-        Thread.sleep(1000);
-        System.out.println("Task2 id:"+Thread.currentThread().getId()+", counter is: "+i);
-        return i;
-    }
+  public Task2(Properties properties) {
+    this.properties = properties;
+  }
+
+  @Override
+  protected Object doWork() throws Exception {
+    int i = (int) getParam();
+    i++;
+    Thread.sleep(1000);
+    System.out.println("Task2 id:" + Thread.currentThread().getId() + ", counter is: " + i);
+    return i;
+  }
 }

@@ -23,36 +23,34 @@ import java.util.Properties;
 
 /**
  * Created by mob on 04.08.15.
+ *
+ * Class used to delete a VimInstance.
  */
 public class VimInstanceDelete extends Tester<VimInstance> {
 
-    /**
-     * @param properties : IntegrationTest properties containing:
-     *                   nfvo-usr
-     *                   nfvo-pwd
-     *                   nfvo-ip
-     *                   nfvo-port
-     */
-    public VimInstanceDelete(Properties properties) {
-        super(properties, VimInstance.class, "", "/datacenters");
-    }
+  /**
+   * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   */
+  public VimInstanceDelete(Properties properties) {
+    super(properties, VimInstance.class, "", "/datacenters");
+  }
 
-    @Override
-    protected VimInstance prepareObject() {
-        return null;
-    }
+  @Override
+  protected VimInstance prepareObject() {
+    return null;
+  }
 
-    @Override
-    protected Object doWork() throws SDKException {
-        VimInstance vi = (VimInstance) param;
-        log.info("Delete vim instance "+vi.getName());
-        try {
-            delete(vi.getId());
-        } catch (SDKException sdkEx) {
-            log.error("Exception during deleting of VimInstance with id: "+vi.getId(), sdkEx);
-            throw sdkEx;
-        }
-        log.debug("--- VimInstanceDelete has deleted the vimInstance:"+vi.getName());
-        return null;
+  @Override
+  protected Object doWork() throws SDKException {
+    VimInstance vi = (VimInstance) param;
+    log.info("Delete vim instance " + vi.getName());
+    try {
+      delete(vi.getId());
+    } catch (SDKException sdkEx) {
+      log.error("Exception during deleting of VimInstance with id: " + vi.getId(), sdkEx);
+      throw sdkEx;
     }
+    log.debug("--- VimInstanceDelete has deleted the vimInstance:" + vi.getName());
+    return null;
+  }
 }
