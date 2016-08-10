@@ -25,7 +25,7 @@ import java.util.Properties;
 /**
  * Created by tbr on 15.02.16.
  *
- * Class used to to get the latest version of a NetworkServiceRecord from the NFVO.
+ * Class used to get the latest version of a NetworkServiceRecord from the NFVO.
  */
 public class NetworkServiceRecordGetLatest extends Tester {
 

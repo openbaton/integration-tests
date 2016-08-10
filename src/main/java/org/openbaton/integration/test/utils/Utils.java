@@ -24,6 +24,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.openbaton.catalogue.security.Project;
+import org.openbaton.catalogue.security.User;
+import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,5 +189,39 @@ public class Utils {
   private class ParseComError implements Serializable {
     String error_description;
     String error;
+  }
+
+  public static String getProjectIdByName(NFVORequestor requestor, String projectName) {
+    List<Project> projectList = null;
+    try {
+      projectList = requestor.getProjectAgent().findAll();
+    } catch (Exception e) {
+      log.warn("Could not connect to NFVO and retrieve the project id of project " + projectName);
+    }
+    for (Project project : projectList) {
+      if (project.getName().equals(projectName)) return project.getId();
+    }
+    log.warn("Did not find a project named " + projectName);
+    return "";
+  }
+
+  public static String getUserIdByName(NFVORequestor requestor, String userName) {
+    User u = getUserByName(requestor, userName);
+    if (u == null) return "";
+    else return u.getId();
+  }
+
+  public static User getUserByName(NFVORequestor requestor, String userName) {
+    List<User> userList = null;
+    try {
+      userList = requestor.getUserAgent().findAll();
+    } catch (Exception e) {
+      log.warn("Could not connect to NFVO and retrieve the user id of user " + userName);
+    }
+    for (User user : userList) {
+      if (user.getUsername().equals(userName)) return user;
+    }
+    log.warn("Did not find a user named " + userName);
+    return null;
   }
 }

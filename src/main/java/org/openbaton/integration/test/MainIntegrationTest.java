@@ -159,6 +159,13 @@ public class MainIntegrationTest {
             else if (subTask instanceof VNFRStatusTester)
               configureVnfrStatusTester(subTask, currentSection);
             else if (subTask instanceof Pause) configurePause(subTask, currentSection);
+            else if (subTask instanceof UserCreate) configureUserCreate(subTask, currentSection);
+            else if (subTask instanceof UserDelete) configureUserDelete(subTask, currentSection);
+            else if (subTask instanceof UserUpdate) configureUserUpdate(subTask, currentSection);
+            else if (subTask instanceof ProjectCreate)
+              configureProjectCreate(subTask, currentSection);
+            else if (subTask instanceof ProjectDelete)
+              configureProjectDelete(subTask, currentSection);
           }
         };
     itm.setLogger(log);
@@ -437,6 +444,57 @@ public class MainIntegrationTest {
     } catch (NumberFormatException e) {
       log.warn("The duration field of Pause is not an integer so we cannot use it");
     }
+  }
+
+  private static void configureUserCreate(SubTask instance, Profile.Section currentSection) {
+    UserCreate userCreate = (UserCreate) instance;
+    userCreate.setExpectedToFail(currentSection.get("expected-to-fail"));
+    userCreate.setNewUserName(currentSection.get("new-user-name"));
+    userCreate.setNewUserPwd(currentSection.get("new-user-password"));
+    userCreate.setAsUser(currentSection.get("as-user-name"));
+    userCreate.setAsUserPassword(currentSection.get("as-user-password"));
+    userCreate.setUserIsAdmin(currentSection.get("new-user-is-admin"));
+    userCreate.setUserProjects(currentSection.get("user-projects"));
+    userCreate.setGuestProjects(currentSection.get("guest-projects"));
+    userCreate.setEnabled(currentSection.get("enabled"));
+  }
+
+  private static void configureUserDelete(SubTask instance, Profile.Section currentSection) {
+    UserDelete userDelete = (UserDelete) instance;
+    userDelete.setExpectedToFail(currentSection.get("expected-to-fail"));
+    userDelete.setAsUser(currentSection.get("as-user-name"));
+    userDelete.setUserPassword(currentSection.get("as-user-password"));
+    userDelete.setUserToDelete(currentSection.get("user-to-delete"));
+  }
+
+  private static void configureUserUpdate(SubTask instance, Profile.Section currentSection) {
+    UserUpdate userUpdate = (UserUpdate) instance;
+    userUpdate.setExpectedToFail(currentSection.get("expected-to-fail"));
+    userUpdate.setNewUserName(currentSection.get("user-name-new"));
+    userUpdate.setNewUserPwd(currentSection.get("user-password-new"));
+    userUpdate.setAsUser(currentSection.get("as-user-name"));
+    userUpdate.setUserPassword(currentSection.get("as-user-password"));
+    userUpdate.setUserIsAdmin(currentSection.get("user-is-admin"));
+    userUpdate.setUserProjects(currentSection.get("user-projects"));
+    userUpdate.setGuestProjects(currentSection.get("guest-projects"));
+    userUpdate.setEnabled(currentSection.get("enabled"));
+    userUpdate.setOldUserName(currentSection.get("user-name-old"));
+  }
+
+  private static void configureProjectCreate(SubTask instance, Profile.Section currentSection) {
+    ProjectCreate projectCreate = (ProjectCreate) instance;
+    projectCreate.setExpectedToFail(currentSection.get("expected-to-fail"));
+    projectCreate.setAsUser(currentSection.get("as-user-name"));
+    projectCreate.setUserPassword(currentSection.get("as-user-password"));
+    projectCreate.setProjectName(currentSection.get("project-name"));
+  }
+
+  private static void configureProjectDelete(SubTask instance, Profile.Section currentSection) {
+    ProjectDelete projectDelete = (ProjectDelete) instance;
+    projectDelete.setExpectedToFail(currentSection.get("expected-to-fail"));
+    projectDelete.setAsUser(currentSection.get("as-user-name"));
+    projectDelete.setUserPassword(currentSection.get("as-user-password"));
+    projectDelete.setProjectToDelete(currentSection.get("project-name"));
   }
 
   private static void exit(int i) {

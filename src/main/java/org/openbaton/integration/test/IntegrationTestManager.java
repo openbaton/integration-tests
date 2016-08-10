@@ -50,6 +50,8 @@ public abstract class IntegrationTestManager {
       rootSubTask.call();
     } catch (Exception e) {
       log(e.getMessage(), "ERROR");
+      e.printStackTrace();
+      return false;
     }
     return rootSubTask.awaitTermination();
   }
