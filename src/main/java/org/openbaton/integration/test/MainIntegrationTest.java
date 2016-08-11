@@ -130,6 +130,8 @@ public class MainIntegrationTest {
           protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
             if (subTask instanceof VimInstanceCreate)
               configureVimInstanceCreate(subTask, currentSection);
+            if (subTask instanceof VimInstanceDelete)
+              configureVimInstanceDelete(subTask, currentSection);
             else if (subTask instanceof NetworkServiceDescriptorCreate)
               configureNetworkServiceDescriptorCreate(subTask, currentSection);
             else if (subTask instanceof NetworkServiceDescriptorDelete)
@@ -361,6 +363,18 @@ public class MainIntegrationTest {
   private static void configureVimInstanceCreate(SubTask instance, Profile.Section currentSection) {
     VimInstanceCreate w = (VimInstanceCreate) instance;
     w.setFileName(currentSection.get("name-file"));
+    w.setAsUser(currentSection.get("as-user-name"));
+    w.setAsUserPassword(currentSection.get("as-user-password"));
+    w.setExpectedToFail(currentSection.get("expected-to-fail"));
+    w.setInProject(currentSection.get("in-project"));
+  }
+
+  private static void configureVimInstanceDelete(SubTask instance, Profile.Section currentSection) {
+    VimInstanceDelete w = (VimInstanceDelete) instance;
+    w.setAsUser(currentSection.get("as-user-name"));
+    w.setAsUserPassword(currentSection.get("as-user-password"));
+    w.setExpectedToFail(currentSection.get("expected-to-fail"));
+    w.setInProject(currentSection.get("in-project"));
   }
 
   private static void configureGenericServiceTester(
