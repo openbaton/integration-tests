@@ -50,7 +50,8 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
     log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());
     NetworkServiceRecord networkServiceRecord = null;
     try {
-      networkServiceRecord = this.requestor.getNetworkServiceRecordAgent().create(nsd.getId());
+      networkServiceRecord =
+          this.requestor.getNetworkServiceRecordAgent().create(nsd.getId(), null, null);
     } catch (SDKException sdkEx) {
       log.error(
           "Exception during the instantiation of NetworkServiceRecord from nsd of id: "
