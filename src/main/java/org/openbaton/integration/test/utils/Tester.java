@@ -28,55 +28,58 @@ import java.util.Properties;
 
 /**
  * Created by lto on 15/07/15.
+ *
+ * Abstract class that represents the tasks defined in the .ini files.
  */
-public abstract class Tester<T extends Serializable> extends SubTask{
-    private String FILE_NAME;
-    protected final Class<T> aClass;
-    private final AbstractRestAgent abstractRestAgent;
-    protected NFVORequestor requestor ;
-    protected Gson mapper;
-    protected static final Logger log = LoggerFactory.getLogger(Tester.class);
+public abstract class Tester<T extends Serializable> extends SubTask {
+  private String FILE_NAME;
+  protected final Class<T> aClass;
+  private final AbstractRestAgent abstractRestAgent;
+  protected NFVORequestor requestor;
+  protected Gson mapper;
+  protected static final Logger log = LoggerFactory.getLogger(Tester.class);
 
-    /**
-     *
-     * @param properties: IntegrationTest properties containing:
-     *                  nfvo-usr
-     *                  nfvo-pwd
-     *                  nfvo-ip
-     *                  nfvo-port
-     * @param aClass: example VimInstance.class
-     * @param filePath: example "/etc/json_file/vim_instances/vim-instance.json"
-     */
-    public Tester(Properties properties, Class<T> aClass, String filePath, String basePath) {
-        this.FILE_NAME = filePath;
-        GsonBuilder builder = new GsonBuilder();
-        mapper = builder.create();
-        //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
-        requestor = new NFVORequestor(properties.getProperty("nfvo-usr"),properties.getProperty("nfvo-pwd"), properties.getProperty("nfvo-project-id"), Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")), properties.getProperty("nfvo-ip"),properties.getProperty("nfvo-port"),"1");
-        this.aClass = aClass;
-        abstractRestAgent = requestor.abstractRestAgent(aClass, basePath);
-    }
+  /**
+   *
+   * @param properties: IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   * @param aClass: example VimInstance.class
+   * @param filePath: example "/etc/json_file/vim_instances/vim-instance.json"
+   */
+  public Tester(Properties properties, Class<T> aClass, String filePath, String basePath) {
+    this.FILE_NAME = filePath;
+    GsonBuilder builder = new GsonBuilder();
+    mapper = builder.create();
+    //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
+    requestor =
+        new NFVORequestor(
+            properties.getProperty("nfvo-usr"),
+            properties.getProperty("nfvo-pwd"),
+            properties.getProperty("nfvo-project-id"),
+            Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
+            properties.getProperty("nfvo-ip"),
+            properties.getProperty("nfvo-port"),
+            "1");
+    this.aClass = aClass;
+    abstractRestAgent = requestor.abstractRestAgent(aClass, basePath);
+  }
 
-    public T create() throws SDKException {
-        T expected = prepareObject();
-        if(expected==null)
-            throw new NullPointerException();
-        T obtained;
-        obtained = (T) abstractRestAgent.create(expected);
+  public T create() throws SDKException {
+    T expected = prepareObject();
+    if (expected == null) throw new NullPointerException();
+    T obtained;
+    obtained = (T) abstractRestAgent.create(expected);
 
+    log.trace("Received: " + obtained.toString());
 
-        log.trace("Received: " + obtained.toString());
+    return obtained;
+  }
 
-        return obtained;
-    }
+  public void delete(String id) throws SDKException {
 
-    public void delete(String id) throws SDKException {
+    abstractRestAgent.delete(id);
 
-        abstractRestAgent.delete(id);
+    log.trace("Deleted: " + id);
+  }
 
-        log.trace("Deleted: " + id);
-    }
-
-    protected abstract T prepareObject();
-
+  protected abstract T prepareObject();
 }
