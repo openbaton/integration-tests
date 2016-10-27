@@ -56,13 +56,13 @@ If that is successful, the network service is stopped and the network service re
 In the cases of the *scenario-real-iperf*, *scenario-complex-iperf* and *scenario-scaling* test also the service itself is tested, i.e. if iperf is running and the clients can connect to the server. 
 Therefore the integration tests will execute some scripts for testing on the virtual machines. 
 
-# Technical Requirements
+## Technical Requirements
 
 1. A running NFVO with the openstack-plugin and test-plugin
 2. A running Generic VNFM
 3. A running Dummy VNFM AMQP
 
-# How to install and configure the Integration Tests
+## How to install and configure the Integration Tests
 
 If your NFVO does not yet contain the test-plugin and openstack-plugin (look for jars named *test-plugin* and *openstack-plugin* in the directory *nfvo/plugins/vim-drivers*) you will have to get them first. Therefore git clone the [test-plugin] project to your machine, use a shell to navigate to the project's root directory and execute *./gradlew build*. You will find the test-plugin jar in the folder *build/libs/*. Copy it into the directory *nfvo/plugins/vim-drivers* of the NFVO. Do the same for the [openstack-plugin].
 
@@ -123,9 +123,9 @@ The scenario *error-in-terminate.ini* needs some special configuration in the NF
 Then use a shell to navigate into the project's root directory. 
 Execute the command *./integration-tests.sh compile*.
 
-# How to use the Integration Tests
+## How to use the Integration Tests
 
-## Start the Integration Test
+### Start the Integration Test
 
 Before starting the integration tests be sure that the NFVO, Generic VNFM and Dummy VNFM you want to use are already running. 
 Then start the test by executing *./integration-tests.sh start*.
@@ -133,40 +133,43 @@ It is possible to specify the test scenarios you want to run so that not every t
 Therefore use additional command line arguments while starting the integration tests. Every scenario occuring as an argument will be executed. For example *./integration-tests.sh start scenario-real-iperf.ini scenario-scaling.ini* will just execute the tests described in the files *scenario-real-iperf.ini* and *scenario-scaling.ini* located in the folder */src/main/resources/integration-test-scenarios*.
 If you do not pass any command line arguments, every available scenario will be executed. To see which scenarios are available execute *./integration-tests.sh list*.
 
-## Test results
+### Test results
 
 While the tests are running they will produce output to the console. This output will be logged in the file integration-test.log which is in the project's root directory. 
 If a test finished it will either tell you that it passed successfully or not. 
 If it did not pass correctly you will find the reason in the log file. 
 
-# How to extend the Integration Tests
+## How to extend the Integration Tests
 
 You can write your own integration test scenarios. 
 Please refer to [the documentation][integration-test-write] to learn more.
 
-# Issue tracker
+## Issue tracker
 
 Issues and bug reports should be posted to the GitHub Issue Tracker of this project
 
-# What is Open Baton?
+## What is Open Baton?
 
-OpenBaton is an open source project providing a comprehensive implementation of the ETSI Management and Orchestration (MANO) specification.
+Open Baton is an open source project providing a comprehensive implementation of the ETSI Management and Orchestration (MANO) specification and the TOSCA Standard.
 
-Open Baton is a ETSI NFV MANO compliant framework. Open Baton was part of the OpenSDNCore (www.opensdncore.org) project started almost three years ago by Fraunhofer FOKUS with the objective of providing a compliant implementation of the ETSI NFV specification. 
+Open Baton provides multiple mechanisms for interoperating with different VNFM vendor solutions. It has a modular architecture which can be easily extended for supporting additional use cases. 
 
-Open Baton is easily extensible. It integrates with OpenStack, and provides a plugin mechanism for supporting additional VIM types. It supports Network Service management either using a generic VNFM or interoperating with VNF-specific VNFM. It uses different mechanisms (REST or PUB/SUB) for interoperating with the VNFMs. It integrates with additional components for the runtime management of a Network Service. For instance, it provides autoscaling and fault management based on monitoring information coming from the the monitoring system available at the NFVI level.
+It integrates with OpenStack as standard de-facto VIM implementation, and provides a driver mechanism for supporting additional VIM types. It supports Network Service management either using the provided Generic VNFM and Juju VNFM, or integrating additional specific VNFMs. It provides several mechanisms (REST or PUB/SUB) for interoperating with external VNFMs. 
 
-# Source Code and documentation
+It can be combined with additional components (Monitoring, Fault Management, Autoscaling, and Network Slicing Engine) for building a unique MANO comprehensive solution.
 
-The Source Code of the other Open Baton projects can be found [here][openbaton-github] and the documentation can be found [here][openbaton-doc] .
+## Source Code and documentation
 
-# News and Website
+The Source Code of the other Open Baton projects can be found [here][openbaton-github] and the documentation can be found [here][openbaton-doc]
+
+## News and Website
 
 Check the [Open Baton Website][openbaton]
-Follow us on Twitter @[openbaton][openbaton-twitter].
 
-# Licensing and distribution
-Copyright [2015-2016] Open Baton project
+Follow us on Twitter @[openbaton][openbaton-twitter]
+
+## Licensing and distribution
+Copyright © [2015-2016] Open Baton project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 
@@ -181,10 +184,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-# Support
+## Support
 The Open Baton project provides community support through the Open Baton Public Mailing List and through StackOverflow using the tags openbaton.
 
-# Supported by
+## Supported by
   <img src="https://raw.githubusercontent.com/openbaton/openbaton.github.io/master/images/fokus.png" width="250"/><img src="https://raw.githubusercontent.com/openbaton/openbaton.github.io/master/images/tu.png" width="150"/>
 
 [fokus-logo]: https://raw.githubusercontent.com/openbaton/openbaton.github.io/master/images/fokus.png
