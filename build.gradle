@@ -19,7 +19,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE")
     }
 }
 
