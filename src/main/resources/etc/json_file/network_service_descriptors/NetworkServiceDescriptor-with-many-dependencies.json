@@ -20,7 +20,7 @@
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -41,10 +41,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy8_configure.sh",
+            "dummy4_configure.sh",
+            "dummy7_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -78,7 +86,7 @@
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -99,10 +107,20 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy10_configure.sh",
+            "dummy3_configure.sh",
+            "dummy6_configure.sh",
+            "dummy1_configure.sh",
+            "dummy11_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -129,15 +147,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -158,10 +174,16 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy4_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -187,15 +209,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -216,10 +236,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy11_configure.sh",
+            "dummy7_configure.sh",
+            "dummy5_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -246,15 +274,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -275,10 +301,17 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy6_configure.sh",
+            "dummy9_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -304,15 +337,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -333,10 +364,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy4_configure.sh",
+            "dummy7_configure.sh",
+            "dummy8_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -363,15 +402,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -392,10 +429,16 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy10_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -423,15 +466,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -452,10 +493,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy10_configure.sh",
+            "dummy6_configure.sh",
+            "dummy5_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -484,15 +533,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -513,10 +560,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy10_configure.sh",
+            "dummy8_configure.sh",
+            "dummy2_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -545,15 +600,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":6,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -574,10 +627,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy5_configure.sh",
+            "dummy2_configure.sh",
+            "dummy1_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -603,15 +664,13 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "lifecycle_event":[
-          ],
           "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {
               "connection_point":[
                 {
-                  "virtual_link_reference":"test"
+                  "virtual_link_reference":"private"
                 }
               ]
             }]
@@ -632,10 +691,18 @@
       },
       "virtual_link":[
         {
-          "name":"test"
+          "name":"private"
         }
       ],
       "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy1_configure.sh",
+            "dummy3_configure.sh",
+            "dummy5_configure.sh"
+          ]
+        }
       ],
       "deployment_flavour":[
         {
@@ -653,7 +720,7 @@
   ],
   "vld":[
     {
-      "name":"test"
+      "name":"private"
     }
   ],
   "vnf_dependency":[
