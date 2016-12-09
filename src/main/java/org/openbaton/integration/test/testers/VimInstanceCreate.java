@@ -41,7 +41,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test/vim-instances/";
   private static final String EXTERNAL_PATH_NAME_PARSER_VIM =
       "/etc/openbaton/integration-test/parser-properties/vim.properties";
-  private static String fileName;
+  private String fileName;
   private boolean expectedToFail = false;
   private String
       asUser; // if another user than specified in the integration-test.properties file should try to create the user
@@ -143,7 +143,6 @@ public class VimInstanceCreate extends Tester<VimInstance> {
       log.debug("vim-instance.json (random): " + vimRandom);
       return mapper.fromJson(vimRandom, aClass);
     } else {
-      log.debug("Missing /etc/openbaton/integration-test-parser-properties/vim.properties file");
       log.debug(
           "If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
     }

@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public class Pause extends Tester {
 
-  int duration = 0;
+  private int duration = 0;
 
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
@@ -43,9 +43,9 @@ public class Pause extends Tester {
 
   @Override
   protected Object doWork() throws Exception {
-    log.debug("Start pausing for " + duration + " seconds");
+    log.debug("Start pausing for " + duration + " milliseconds");
     Thread.sleep(duration);
-    log.debug("Paused for " + duration + " seconds");
+    log.debug("Paused for " + duration + " milliseconds");
     return param;
   }
 

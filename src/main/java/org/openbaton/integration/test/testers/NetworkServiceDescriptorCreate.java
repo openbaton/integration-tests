@@ -43,8 +43,9 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
   private static final String EXTERNAL_PATH_NAME_PARSER_NSD =
       "/etc/openbaton/integration-test/parser-properties/nsd.properties";
   private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
-  private static String fileName;
-  private static boolean expectedToFail =
+
+  private String fileName;
+  private boolean expectedToFail =
       false; // if the creating of the NSD is expected to fail this field should be set to true
 
   public NetworkServiceDescriptorCreate(Properties p) {
@@ -116,7 +117,6 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
       log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
       return mapper.fromJson(nsdRandom, aClass);
     } else {
-      log.debug("Missing /etc/openbaton/integration-test-parser-properties/nsd.properties file");
       log.debug(
           "If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
     }

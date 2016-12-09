@@ -59,7 +59,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
       throw sdkEx;
     }
     log.debug(
-        " --- Creating nsr with id: "
+        " --- Created nsr with id: "
             + networkServiceRecord.getId()
             + " from nsd with id: "
             + nsd.getId());
