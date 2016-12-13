@@ -61,17 +61,22 @@ Therefore the integration tests will execute some scripts for testing on the vir
 
 ## Technical Requirements
 
-1. A running NFVO with the OpenStack vim driver and Test vim driver
+1. A running NFVO with the OpenStack vim driver and Test vim driver. Follow the documentation [here][openbaton-doc] for several installation mechanisms.
 2. A running Generic VNFM
 3. A running Dummy VNFM
 4. OpenStack
 
 ## How to install and configure the Integration Tests
 
-If your NFVO does not yet contain the Test vim driver and OpenStack vim driver (look for jars named *test-plugin* and *openstack-plugin* in the directory *nfvo/plugins/vim-drivers*) you will have to get them first. Therefore git clone the [test-plugin] project to your machine, use a shell to navigate to the project's root directory and execute *./gradlew build*. You will find the test-plugin jar in the folder *build/libs/*. Copy it into the directory *nfvo/plugins/vim-drivers* of the NFVO. Do the same for the [openstack-plugin].
+Assuming that you have properly installed the NFVO and the required plugins for your specific use cases, you will need to install and configure the integration-test project properly. 
 
-Use git to clone the integration-test project to your machine. 
-In *integration-tests/src/main/resources* is a file named integration-test.properties. 
+First of all, clone the integration-test project to your machine.
+
+```bash
+git clone https://github.com/openbaton/integration-tests.git
+```
+
+The second step is to configure the properties file properly. You can find an example of the integration-test.properties file in  *integration-tests/src/main/resources*. 
 Open it and set the property values according to your needs. 
 
 | Field          				| Value       																|
@@ -87,8 +92,7 @@ Open it and set the property values according to your needs.
 | integration-test-scenarios                    | Here you can specify a folder in which you can put integration test scenarios. If *.ini* files exist in this folder, the integration test will use just those files. If there are no files it will use the ones in the projects resource folder |
 | external-properties-file   | If you want to use another file for fetching the properties. It is already preset to */etc/openbaton/integration-test/integration-test.properties*. If it does not exist it will not be used. |
 
-
-After that you will also need a keypair for openstack. Create one and download the private key as a .pem file. 
+In case you plan to use scenarios which are instantiating VMs on OpenStack, you will need a keypair. Create one directly from the OpenStack dashboard and download the private key as a .pem file. 
 Rename it to *integration-test.pem* and provide it with the needed permissions by executing *chmod 400 integration-test.pem*.
 If it does not exist already create the directory */etc/openbaton/integration-test* on your machine and move the pem file into it. 
 The next step is to create a vim file. 
@@ -115,12 +119,11 @@ Here is an example where you just have to change some fields.
 
 Name the vim file *real-vim.json* and add it to the folder *integration-tests/src/main/resources/etc/json_file/vim_instances/* in the project.
 In the folder *integration-tests/src/main/resources/etc/json_file/network_service_descriptors* of the project you will find a file named NetworkServiceDescriptor-iperf-real.json and one named NetworkServiceDescriptor-complex-iperf.json. 
-Download the [ubuntu-14.04-server-cloudimg-amd64-disk1][ubuntu-image] image and store it in OpenStack. 
+Make sure that the official Ubuntu cloud image [ubuntu-14.04-server-cloudimg-amd64-disk1][ubuntu-image] is available on the glance image repository in your OpenStack instance. 
 
-The scenario *error-in-terminate.ini* needs some special configuration in the NFVO if you want to run it. Change **nfvo.delete.vnfr.wait** to **true** in */etc/openbaton/openbaton.properties* before starting the NFVO.
+The scenario *error-in-terminate.ini* needs some special configuration in the NFVO if you want to run it. Change **nfvo.delete.vnfr.wait** to **true** in */etc/openbaton/openbaton.properties* and restart the NFVO if it was already running.
 
-Then use a shell to navigate into the project's root directory. 
-Execute the command *./integration-tests.sh compile*.
+Then use a terminal to navigate into the project's root directory and execute the command *./integration-tests.sh compile*.
 
 ## How to use the Integration Tests
 
