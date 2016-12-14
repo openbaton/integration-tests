@@ -26,7 +26,7 @@ function output_available_scenarios
 {
   for f in `ls $SCENARIO_PATH`;
   do
-    echo $f
+    echo $f | grep "\.ini$"
   done
 }
 
@@ -38,7 +38,7 @@ else
   SCENARIO_PATH=`get_property ./src/main/resources/integration-tests.properties "integration-test-scenarios"`
 fi
 
-if [ -z $SCENARIO_PATH ] || [ ! -d $SCENARIO_PATH ]; then
+if [ -z $SCENARIO_PATH ] || [ ! -d $SCENARIO_PATH ] || [ `ls -1 $SCENARIO_PATH | grep "\.ini$" | wc -l` -eq 0 ]; then
   SCENARIO_PATH='./src/main/resources/integration-test-scenarios/'
 fi
 

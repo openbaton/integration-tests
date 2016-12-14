@@ -277,8 +277,8 @@ public class MainIntegrationTest {
 
   private static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
     List<URL> external =
-        Utils.getFilesAsURL(
-            properties.getProperty("integration-test-scenarios", SCENARIO_PATH) + "*.ini");
+        Utils.getExternalFilesAsURL(
+            properties.getProperty("integration-test-scenarios", SCENARIO_PATH));
     if (external.size() > 0) return external;
     //if there are no files on the machine, us the scenarios in the project's resource folder
     return Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");

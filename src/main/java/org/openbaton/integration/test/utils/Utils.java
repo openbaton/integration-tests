@@ -34,6 +34,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -117,6 +118,32 @@ public class Utils {
         urls.add(resource.getURL());
       } catch (IOException e) {
         e.printStackTrace();
+      }
+    }
+    return urls;
+  }
+
+  /*
+   * Get .ini files from an external directory.
+   */
+  public static List<URL> getExternalFilesAsURL(String location) {
+    File dir = new File(location);
+    File[] iniFiles =
+        dir.listFiles(
+            new FilenameFilter() {
+              @Override
+              public boolean accept(File dir, String name) {
+                return name.endsWith(".ini");
+              }
+            });
+    List<URL> urls = new LinkedList<>();
+    if (iniFiles == null) return urls;
+    for (File f : iniFiles) {
+      try {
+        urls.add(f.toURI().toURL());
+      } catch (MalformedURLException e) {
+        log.error(
+            "Could not add file " + f.getName() + " because its URL is not formatted correctly.");
       }
     }
     return urls;
