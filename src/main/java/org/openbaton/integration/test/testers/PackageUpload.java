@@ -29,7 +29,7 @@ import java.util.Properties;
  * Class used to upload a VNFPackage to the NFVO. Class used to upload a VNFPackage to the NFVO.
  */
 public class PackageUpload extends Tester<VNFPackage> {
-  private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test/vnf-packages/";
+  private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-tests/vnf-packages/";
   private String packageName = "";
   private String nfvoUrl = "";
 

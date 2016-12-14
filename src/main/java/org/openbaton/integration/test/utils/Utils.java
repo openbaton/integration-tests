@@ -47,7 +47,7 @@ import java.util.Properties;
  */
 public class Utils {
 
-  private static final String PROPERTIES_FILE = "/integration-test.properties";
+  private static final String PROPERTIES_FILE = "/integration-tests.properties";
   private static Logger log = LoggerFactory.getLogger(Utils.class);
 
   public static Properties getProperties() throws IOException {

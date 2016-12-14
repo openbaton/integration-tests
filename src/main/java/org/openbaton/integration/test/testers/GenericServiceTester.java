@@ -43,9 +43,9 @@ public class GenericServiceTester extends Tester {
 
   private static final String LOCAL_PATH_NAME_SCRIPTS = "/etc/scripts/";
   private static final String EXTERNAL_PATH_NAME_SCRIPTS =
-      "/etc/openbaton/integration-test/scripts/";
+      "/etc/openbaton/integration-tests/scripts/";
   private static final String EXTERNAL_PATH_NAME_PEM =
-      "/etc/openbaton/integration-test/integration-test.pem";
+      "/etc/openbaton/integration-tests/integration-test.pem";
 
   private List<File> scripts = new LinkedList<File>();
   private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();

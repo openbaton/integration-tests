@@ -76,7 +76,7 @@ First of all, clone the integration-test project to your machine.
 git clone https://github.com/openbaton/integration-tests.git
 ```
 
-The second step is to configure the properties file properly. You can find an example of the integration-test.properties file in  *integration-tests/src/main/resources*. 
+The second step is to configure the properties file properly. You can find an example of the integration-tests.properties file in  *integration-tests/src/main/resources*. 
 Open it and set the property values according to your needs. 
 
 | Field          				| Value       																|
@@ -90,7 +90,7 @@ Open it and set the property values according to your needs.
 | local-ip					| The ip of the machine on which the integration test is running |
 | clear-after-test                              | If set to *true*, the NFVO will be cleared of all the remaining NSRs, NSD, VNFPackages and Vim-Instances left from previous test |
 | integration-test-scenarios                    | Here you can specify a folder in which you can put integration test scenarios. If *.ini* files exist in this folder, the integration test will use just those files. If there are no files it will use the ones in the projects resource folder |
-| external-properties-file   | If you want to use another file for fetching the properties. It is already preset to */etc/openbaton/integration-test/integration-test.properties*. If it does not exist it will not be used. |
+| external-properties-file   | If you want to use another file for fetching the properties. It is already preset to */etc/openbaton/integration-tests/integration-tests.properties*. If it does not exist it will not be used. |
 
 In case you plan to use scenarios which are instantiating VMs on OpenStack, you will need a keypair. Create one directly from the OpenStack dashboard and download the private key as a .pem file. 
 Rename it to *integration-test.pem* and provide it with the needed permissions by executing *chmod 400 integration-test.pem*.

@@ -34,7 +34,7 @@ public class VimInstanceDelete extends Tester<VimInstance> {
 
   private boolean expectedToFail = false;
   private String
-      asUser; // if another user than specified in the integration-test.properties file should try to create the user
+      asUser; // if another user than specified in the integration-tests.properties file should try to create the user
   private String asUserPassword;
   private String inProject; // specifies the project in which to delete the vim instance
   private Properties properties = null;

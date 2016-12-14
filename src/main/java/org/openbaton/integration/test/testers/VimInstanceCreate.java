@@ -38,13 +38,14 @@ import java.util.Properties;
 public class VimInstanceCreate extends Tester<VimInstance> {
 
   private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
-  private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-test/vim-instances/";
+  private static final String EXTERNAL_PATH_NAME =
+      "/etc/openbaton/integration-tests/vim-instances/";
   private static final String EXTERNAL_PATH_NAME_PARSER_VIM =
-      "/etc/openbaton/integration-test/parser-properties/vim.properties";
+      "/etc/openbaton/integration-tests/parser-properties/vim.properties";
   private String fileName;
   private boolean expectedToFail = false;
   private String
-      asUser; // if another user than specified in the integration-test.properties file should try to create the user
+      asUser; // if another user than specified in the integration-tests.properties file should try to create the user
   private String asUserPassword;
   private String inProject; // specifies the project in which to create the vim instance
   private Properties properties = null;

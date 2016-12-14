@@ -35,7 +35,7 @@ public class UserUpdate extends Tester<User> {
   private boolean expectedToFail =
       false; // if the creating of the user is expected to fail this field should be set to true
   private String
-      asUser; // if another user than specified in the integration-test.properties file should try to create the user
+      asUser; // if another user than specified in the integration-tests.properties file should try to create the user
   private String oldUserName;
   private String userPassword;
   private String newUserName;

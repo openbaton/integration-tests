@@ -39,9 +39,9 @@ import java.util.Properties;
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor> {
   private static final String LOCAL_PATH_NAME_NSD = "/etc/json_file/network_service_descriptors/";
   private static final String EXTERNAL_PATH_NAME_NSD =
-      "/etc/openbaton/integration-test/network-service-descriptors/";
+      "/etc/openbaton/integration-tests/network-service-descriptors/";
   private static final String EXTERNAL_PATH_NAME_PARSER_NSD =
-      "/etc/openbaton/integration-test/parser-properties/nsd.properties";
+      "/etc/openbaton/integration-tests/parser-properties/nsd.properties";
   private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
 
   private String fileName;
