@@ -780,7 +780,10 @@
       },
       "target":{
         "name": "vnf-dummy-1"
-      }
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
     },{
       "source" : {
         "name": "vnf-dummy-6"
