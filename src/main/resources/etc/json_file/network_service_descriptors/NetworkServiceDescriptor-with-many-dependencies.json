@@ -59,7 +59,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "source",
@@ -127,7 +126,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -190,7 +188,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "param1",
@@ -254,7 +251,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -318,7 +314,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "param1",
@@ -382,7 +377,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -445,7 +439,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -511,7 +504,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -578,7 +570,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -645,7 +636,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
@@ -709,7 +699,6 @@
           "flavour_key":"m1.small"
         }
       ],
-      "vnfPackageLocation":"https://link-to-git-repository.git",
       "provides":[
         "ip",
         "target",
