@@ -182,6 +182,7 @@
               "connection_point": [
                 {
                   "floatingIp": "random",
+		  "interfaceId":0,
                   "virtual_link_reference": "private"
                 },
                 {
@@ -326,6 +327,7 @@
               "connection_point": [
                 {
                   "floatingIp": "random",
+		  "interfaceId":0,
                   "virtual_link_reference": "private"
                 },
                 {
