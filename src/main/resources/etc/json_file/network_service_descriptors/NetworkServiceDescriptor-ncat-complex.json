@@ -186,7 +186,8 @@
                   "virtual_link_reference": "private"
                 },
                 {
-                  "virtual_link_reference": "private2"
+                  "virtual_link_reference": "private2",
+		  "interfaceId":1
                 }
               ]
             }
@@ -331,7 +332,8 @@
                   "virtual_link_reference": "private"
                 },
                 {
-                  "virtual_link_reference": "private2"
+                  "virtual_link_reference": "private2",
+	          "interfaceId":1
                 }
               ]
             }
