@@ -182,12 +182,12 @@
               "connection_point": [
                 {
                   "floatingIp": "random",
-		  "interfaceId":1,
+		          "interfaceId":0,
                   "virtual_link_reference": "private"
                 },
                 {
                   "virtual_link_reference": "private2",
-		  "interfaceId":0
+                  "interfaceId":1
                 }
               ]
             }
@@ -328,12 +328,12 @@
               "connection_point": [
                 {
                   "floatingIp": "random",
-		  "interfaceId":1,
+                  "interfaceId":0,
                   "virtual_link_reference": "private"
                 },
                 {
                   "virtual_link_reference": "private2",
-	          "interfaceId":0
+	              "interfaceId":1
                 }
               ]
             }
