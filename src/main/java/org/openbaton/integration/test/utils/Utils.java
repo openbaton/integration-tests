@@ -194,7 +194,9 @@ public class Utils {
               + "]: Error signing-in ["
               + error.error
               + "] - "
-              + error.error_description);
+              + error.error_description,
+          new StackTraceElement[0],
+          "");
     }
     JsonObject jobj = new Gson().fromJson(responseString, JsonObject.class);
     log.trace("JsonTokeAccess is: " + jobj.toString());
@@ -207,7 +209,9 @@ public class Utils {
       String error = jobj.get("error").getAsString();
       if (error.equals("invalid_grant")) {
         throw new SDKException(
-            "Error during authentication: " + jobj.get("error_description").getAsString(), e);
+            "Error during authentication",
+            e.getStackTrace(),
+            jobj.get("error_description").getAsString());
       }
     }
     return bearerToken;
