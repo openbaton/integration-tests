@@ -44,8 +44,6 @@ public class GenericServiceTester extends Tester {
   private static final String LOCAL_PATH_NAME_SCRIPTS = "/etc/scripts/";
   private static final String EXTERNAL_PATH_NAME_SCRIPTS =
       "/etc/openbaton/integration-tests/scripts/";
-  private static final String EXTERNAL_PATH_NAME_PEM =
-      "/etc/openbaton/integration-tests/integration-test.pem";
 
   private List<File> scripts = new LinkedList<File>();
   private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
@@ -68,13 +66,6 @@ public class GenericServiceTester extends Tester {
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
     fillVnfrVnfc(nsr);
     List<String> floatingIps = new LinkedList<>();
-
-    File pemFile = new File(EXTERNAL_PATH_NAME_PEM);
-    Runtime r = Runtime.getRuntime();
-
-    for (String k : vnfrVnfc.keySet()) {
-      for (VNFCRepresentation v : vnfrVnfc.get(k)) {}
-    }
 
     if (virtualLink.equals("")) {
       if (vnfrVnfc.containsKey(vnfrType)) {
@@ -140,10 +131,7 @@ public class GenericServiceTester extends Tester {
               new ProcessBuilder(
                   "/bin/bash",
                   "-c",
-                  "scp -o \"StrictHostKeyChecking no\""
-                      + " -i "
-                      + pemFile.getPath()
-                      + " "
+                  "scp -o \"StrictHostKeyChecking no\" "
                       + script.getPath()
                       + " "
                       + userName
@@ -167,8 +155,6 @@ public class GenericServiceTester extends Tester {
                       + userName
                       + "@"
                       + floatingIp
-                      + " -i "
-                      + pemFile.getPath()
                       + " \""
                       + preScript
                       + " source "
