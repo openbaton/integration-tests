@@ -104,7 +104,7 @@ public class Utils {
     }
   }
 
-  public static List<URL> getFilesAsURL(String location) {
+  public static LinkedList<URL> getFilesAsURL(String location) {
     PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
     Resource[] resources = {};
     try {
@@ -112,7 +112,7 @@ public class Utils {
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
-    List<URL> urls = new LinkedList<>();
+    LinkedList<URL> urls = new LinkedList<>();
     for (Resource resource : resources) {
       try {
         urls.add(resource.getURL());
@@ -126,7 +126,7 @@ public class Utils {
   /*
    * Get .ini files from an external directory.
    */
-  public static List<URL> getExternalFilesAsURL(String location) {
+  public static LinkedList<URL> getExternalFilesAsURL(String location) {
     File dir = new File(location);
     File[] iniFiles =
         dir.listFiles(
@@ -136,7 +136,7 @@ public class Utils {
                 return name.endsWith(".ini");
               }
             });
-    List<URL> urls = new LinkedList<>();
+    LinkedList<URL> urls = new LinkedList<>();
     if (iniFiles == null) return urls;
     for (File f : iniFiles) {
       try {

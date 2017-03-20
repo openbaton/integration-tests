@@ -276,12 +276,35 @@ public class MainIntegrationTest {
   }
 
   private static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
-    List<URL> external =
-        Utils.getExternalFilesAsURL(
-            properties.getProperty("integration-test-scenarios", SCENARIO_PATH));
-    if (external.size() > 0) return external;
-    //if there are no files on the machine, us the scenarios in the project's resource folder
-    return Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");
+    String externalScenariosPath = properties.getProperty("integration-test-scenarios");
+    // scenario files stored on the host machine
+    LinkedList<URL> externalFiles = new LinkedList<>();
+    if (externalScenariosPath != null)
+      externalFiles =
+          Utils.getExternalFilesAsURL(properties.getProperty("integration-test-scenarios"));
+
+    // scenario files already included in this project
+    LinkedList<URL> internalFiles = Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");
+
+    LinkedList<URL> urlsToAdd = new LinkedList<>();
+    for (URL externalUrl : externalFiles) {
+      boolean foundInternalEquivalent = false;
+      for (URL internalUrl : internalFiles) {
+        String[] splittedExternal = externalUrl.toString().split("/");
+        String externalName = splittedExternal[splittedExternal.length - 1];
+        String[] splittedInternal = internalUrl.toString().split("/");
+        String internalName = splittedInternal[splittedInternal.length - 1];
+        if (internalName.equals(externalName)) {
+          foundInternalEquivalent = true;
+          internalFiles.remove(internalUrl);
+          urlsToAdd.add(externalUrl);
+          break;
+        }
+      }
+      if (!foundInternalEquivalent) urlsToAdd.add(externalUrl);
+    }
+    internalFiles.addAll(urlsToAdd);
+    return internalFiles;
   }
 
   private static void configureNetworkServiceDescriptorWait(
