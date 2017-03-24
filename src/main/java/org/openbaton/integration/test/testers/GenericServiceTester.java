@@ -290,16 +290,16 @@ public class GenericServiceTester extends Tester {
       }
       for (String net : netnames) {
         // handle variables of type ${vnfrtype_network_fip}
-        if (findInText(script, vnfr + "_" + net + "_fip")) {
+        if (findInText(script, vnfr + "_" + net.replace('-', '_') + "_fip")) {
           LinkedList<String> fips = new LinkedList<>();
           for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr)) fips.addAll(vnfc.getFipsByNet(net));
-          variableValuesMap.put(vnfr + "_" + net + "_fip", fips);
+          variableValuesMap.put(vnfr + "_" + net.replace('-', '_') + "_fip", fips);
         }
         // handle variables of type ${vnfrtype_network_ip}
-        if (findInText(script, vnfr + "_" + net + "_ip")) {
+        if (findInText(script, vnfr + "_" + net.replace('-', '_') + "_ip")) {
           LinkedList<String> ips = new LinkedList<>();
           for (VNFCRepresentation vnfc : vnfrVnfc.get(vnfr)) ips.addAll(vnfc.getIpsByNet(net));
-          variableValuesMap.put(vnfr + "_" + net + "_ip", ips);
+          variableValuesMap.put(vnfr + "_" + net.replace('-', '_') + "_ip", ips);
         }
       }
     }
