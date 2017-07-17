@@ -21,7 +21,7 @@ import org.openbaton.integration.test.parser.Parser;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
+import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,6 +56,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   public VimInstanceCreate(Properties properties) {
     super(properties, VimInstance.class, LOCAL_PATH_NAME, "/datacenters");
     this.properties = properties;
+    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override
@@ -77,15 +78,14 @@ public class VimInstanceCreate extends Tester<VimInstance> {
           log.info("Upload vim instance " + fileName + " as user " + asUser);
         }
 
-        VimInstanceRestAgent vimAgent =
-            new VimInstanceRestAgent(
+        VimInstanceAgent vimAgent =
+            new VimInstanceAgent(
                 asUser,
                 asUserPassword,
                 projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/datacenters",
                 "1");
         VimInstance expected = prepareObject();
         if (expected == null) throw new NullPointerException();

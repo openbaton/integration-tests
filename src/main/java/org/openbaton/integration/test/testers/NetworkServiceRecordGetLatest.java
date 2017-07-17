@@ -17,7 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.sdk.api.util.AbstractRestAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -50,8 +50,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
       throw new NullPointerException("The passed NSR was null.");
     }
     log.debug("Try retrieving the latest state of the NSR with id " + nsr.getId());
-    AbstractRestAgent<NetworkServiceRecord> agent =
-        this.requestor.abstractRestAgent(NetworkServiceRecord.class, "/ns-records");
+    NetworkServiceRecordAgent agent = this.requestor.getNetworkServiceRecordAgent();
     nsr = agent.findById(nsr.getId());
     log.debug("The latest NSR is: \n" + nsr);
     return nsr;

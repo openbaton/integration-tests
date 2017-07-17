@@ -34,7 +34,12 @@ import java.util.Properties;
 public abstract class Tester<T extends Serializable> extends SubTask {
   private String FILE_NAME;
   protected final Class<T> aClass;
-  private final AbstractRestAgent abstractRestAgent;
+
+  public void setAbstractRestAgent(AbstractRestAgent abstractRestAgent) {
+    this.abstractRestAgent = abstractRestAgent;
+  }
+
+  private AbstractRestAgent abstractRestAgent;
   protected NFVORequestor requestor;
   protected Gson mapper;
   protected static final Logger log = LoggerFactory.getLogger(Tester.class);
@@ -60,7 +65,6 @@ public abstract class Tester<T extends Serializable> extends SubTask {
             properties.getProperty("nfvo-port"),
             "1");
     this.aClass = aClass;
-    abstractRestAgent = requestor.abstractRestAgent(aClass, basePath);
   }
 
   public T create() throws SDKException {

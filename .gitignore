@@ -46,3 +46,4 @@ out
 test-output
 atlassian-ide-plugin.xml
 .gradletasknamecache
+/src/main/resources/etc/json_file/vim_instances/real-vim.json

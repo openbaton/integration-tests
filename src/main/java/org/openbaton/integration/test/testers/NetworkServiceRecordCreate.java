@@ -36,6 +36,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
    */
   public NetworkServiceRecordCreate(Properties properties) {
     super(properties, NetworkServiceRecord.class, "", "/ns-records");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

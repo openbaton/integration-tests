@@ -22,22 +22,48 @@ import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.catalogue.nfvo.VimInstance;
-import org.openbaton.integration.test.testers.*;
+import org.openbaton.integration.test.testers.GenericServiceTester;
+import org.openbaton.integration.test.testers.NetworkServiceDescriptorCreate;
+import org.openbaton.integration.test.testers.NetworkServiceDescriptorDelete;
+import org.openbaton.integration.test.testers.NetworkServiceDescriptorWait;
+import org.openbaton.integration.test.testers.NetworkServiceRecordCreate;
+import org.openbaton.integration.test.testers.NetworkServiceRecordDelete;
+import org.openbaton.integration.test.testers.NetworkServiceRecordWait;
+import org.openbaton.integration.test.testers.PackageDelete;
+import org.openbaton.integration.test.testers.PackageUpload;
+import org.openbaton.integration.test.testers.Pause;
+import org.openbaton.integration.test.testers.ProjectCreate;
+import org.openbaton.integration.test.testers.ProjectDelete;
+import org.openbaton.integration.test.testers.ScaleIn;
+import org.openbaton.integration.test.testers.ScaleOut;
+import org.openbaton.integration.test.testers.ScalingTester;
+import org.openbaton.integration.test.testers.UserCreate;
+import org.openbaton.integration.test.testers.UserDelete;
+import org.openbaton.integration.test.testers.UserUpdate;
+import org.openbaton.integration.test.testers.VNFRStatusTester;
+import org.openbaton.integration.test.testers.VimInstanceCreate;
+import org.openbaton.integration.test.testers.VimInstanceDelete;
+import org.openbaton.integration.test.testers.VirtualNetworkFunctionDescriptorDelete;
+import org.openbaton.integration.test.testers.VirtualNetworkFunctionRecordWait;
 import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.NetworkServiceDescriptorRestAgent;
-import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
-import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
-import org.openbaton.sdk.api.util.AbstractRestAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceDescriptorAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
+import org.openbaton.sdk.api.rest.VNFPackageAgent;
+import org.openbaton.sdk.api.rest.VimInstanceAgent;
+import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
@@ -222,7 +248,7 @@ public class MainIntegrationTest {
     try {
       NFVORequestor requestor =
           new NFVORequestor(nfvoUsr, nfvoPwd, projectId, sslEnabled, nfvoIp, nfvoPort, "1");
-      NetworkServiceRecordRestAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
+      NetworkServiceRecordAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
       List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
       for (NetworkServiceRecord nsr : nsrList) {
         try {
@@ -232,7 +258,7 @@ public class MainIntegrationTest {
         }
       }
       Thread.sleep(1000);
-      NetworkServiceDescriptorRestAgent nsdAgent = requestor.getNetworkServiceDescriptorAgent();
+      NetworkServiceDescriptorAgent nsdAgent = requestor.getNetworkServiceDescriptorAgent();
       List<NetworkServiceDescriptor> nsdList = nsdAgent.findAll();
       for (NetworkServiceDescriptor nsd : nsdList) {
         try {
@@ -242,15 +268,15 @@ public class MainIntegrationTest {
         }
       }
       Thread.sleep(1000);
-      AbstractRestAgent vnfdAgent =
-          requestor.abstractRestAgent(VirtualNetworkFunctionDescriptor.class, "/vnf-descriptors");
+      VirtualNetworkFunctionDescriptorAgent vnfdAgent =
+          requestor.getVirtualNetworkFunctionDescriptorAgent();
+
       List<VirtualNetworkFunctionDescriptor> vnfdList = vnfdAgent.findAll();
       for (VirtualNetworkFunctionDescriptor vnfd : vnfdList) {
         vnfdAgent.delete(vnfd.getId());
       }
       Thread.sleep(1000);
-      AbstractRestAgent packageAgent =
-          requestor.abstractRestAgent(VNFPackage.class, "/vnf-packages");
+      VNFPackageAgent packageAgent = requestor.getVNFPackageAgent();
       List<VNFPackage> packageList = packageAgent.findAll();
       for (VNFPackage p : packageList) {
         try {
@@ -259,7 +285,7 @@ public class MainIntegrationTest {
           log.error("Could not remove VNFPackage " + p.getName() + " with ID " + p.getId());
         }
       }
-      VimInstanceRestAgent vimAgent = requestor.getVimInstanceAgent();
+      VimInstanceAgent vimAgent = requestor.getVimInstanceAgent();
       List<VimInstance> vimList = vimAgent.findAll();
       for (VimInstance vim : vimList) {
         try {

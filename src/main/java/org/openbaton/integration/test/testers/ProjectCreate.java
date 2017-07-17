@@ -25,15 +25,15 @@ import java.util.Properties;
 
 /**
  * Created by tbr on 02.08.16.
- *
+ * <p>
  * Class used to create a new project.
  */
 public class ProjectCreate extends Tester<Project> {
 
-  private boolean expectedToFail =
-      false; // if the creating of the user is expected to fail this field should be set to true
-  private String
-      asUser; // if another user than specified in the integration-tests.properties file should try to create the project
+  private boolean expectedToFail = false;
+  // if the creating of the user is expected to fail this field should be set to true
+  private String asUser;
+  // if another user than specified in the integration-tests.properties file should try to create the project
   private String userPassword;
   private String projectName;
 
@@ -51,16 +51,18 @@ public class ProjectCreate extends Tester<Project> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException {
-    if (asUser != null && !"".equals(asUser))
+    if (asUser != null && !"".equals(asUser)) {
       log.info("Try to create a new project " + projectName + " while logged in as " + asUser);
-    else log.info("Try to create a new project " + projectName);
+    } else {
+      log.info("Try to create a new project " + projectName);
+    }
     Project project = new Project();
     project.setName(projectName);
 
     try {
       log.debug("Creating new project " + project.toString());
       ProjectAgent projectAgent;
-      if (asUser != null && !"".equals(asUser))
+      if (asUser != null && !"".equals(asUser)) {
         projectAgent =
             new ProjectAgent(
                 asUser,
@@ -69,9 +71,10 @@ public class ProjectCreate extends Tester<Project> {
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/projects",
                 "1");
-      else projectAgent = requestor.getProjectAgent();
+      } else {
+        projectAgent = requestor.getProjectAgent();
+      }
       projectAgent.create(project);
     } catch (SDKException e) {
       if (expectedToFail) {
@@ -82,9 +85,10 @@ public class ProjectCreate extends Tester<Project> {
         throw e;
       }
     }
-    if (expectedToFail)
+    if (expectedToFail) {
       throw new IntegrationTestException(
           "The creation of project " + projectName + " was expected to fail but it did not.");
+    }
 
     log.info("Successfully created the new project " + projectName);
     return param;

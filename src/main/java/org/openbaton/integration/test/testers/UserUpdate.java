@@ -102,7 +102,6 @@ public class UserUpdate extends Tester<User> {
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/users",
                 "1");
       else userAgent = requestor.getUserAgent();
       userAgent.update(user, user.getId());

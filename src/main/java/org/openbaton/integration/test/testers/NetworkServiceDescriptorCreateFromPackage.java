@@ -18,7 +18,7 @@ package org.openbaton.integration.test.testers;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.util.AbstractRestAgent;
+import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +56,11 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
   }
 
   private String getVnfdIdByType(String type) {
-    AbstractRestAgent abstractRestAgent =
-        requestor.abstractRestAgent(VirtualNetworkFunctionDescriptor.class, "/vnf-descriptors");
+    VirtualNetworkFunctionDescriptorAgent vnfdAgent =
+        requestor.getVirtualNetworkFunctionDescriptorAgent();
     List<VirtualNetworkFunctionDescriptor> obtained = null;
     try {
-      obtained = abstractRestAgent.findAll();
+      obtained = vnfdAgent.findAll();
     } catch (SDKException e) {
       log.error("Error trying to get all VNFDs.");
     } catch (ClassNotFoundException e) {

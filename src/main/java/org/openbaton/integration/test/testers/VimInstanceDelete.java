@@ -20,7 +20,7 @@ import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.VimInstanceRestAgent;
+import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
 import java.util.Properties;
 
@@ -73,15 +73,14 @@ public class VimInstanceDelete extends Tester<VimInstance> {
           log.info("Delete Vim Instance " + vi.getName() + " as user " + asUser);
         }
 
-        VimInstanceRestAgent vimAgent =
-            new VimInstanceRestAgent(
+        VimInstanceAgent vimAgent =
+            new VimInstanceAgent(
                 asUser,
                 asUserPassword,
                 projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/datacenters",
                 "1");
         vimAgent.delete(vi.getId());
       } else {

@@ -19,7 +19,6 @@ import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
-import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
@@ -71,7 +70,6 @@ public class UserDelete extends Tester<User> {
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/users",
                 "1");
       else userAgent = requestor.getUserAgent();
       userAgent.delete(userId);

@@ -16,13 +16,11 @@
 package org.openbaton.integration.test.testers;
 
 import org.openbaton.catalogue.security.Project;
-import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
-import org.openbaton.sdk.api.rest.UserAgent;
 
 import java.util.Properties;
 
@@ -71,7 +69,6 @@ public class ProjectDelete extends Tester<Project> {
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
-                "/projects",
                 "1");
       else projectAgent = requestor.getProjectAgent();
       projectAgent.delete(projectId);

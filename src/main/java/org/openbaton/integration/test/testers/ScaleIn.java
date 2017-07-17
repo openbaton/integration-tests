@@ -20,7 +20,7 @@ import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -51,7 +51,7 @@ public class ScaleIn extends Tester {
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
     Properties p = Utils.getProperties();
-    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;
     for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {

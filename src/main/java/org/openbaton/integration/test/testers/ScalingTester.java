@@ -23,7 +23,7 @@ import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.NetworkServiceRecordRestAgent;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -59,7 +59,7 @@ public class ScalingTester extends Tester {
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
     Properties p = Utils.getProperties();
-    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;
     for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
@@ -111,7 +111,7 @@ public class ScalingTester extends Tester {
       throws IOException, SDKException, IntegrationTestException {
     int num = 0;
     Properties p = Utils.getProperties();
-    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
 
     for (VirtualDeploymentUnit vdu : vnfr.getVdu()) {
@@ -122,7 +122,7 @@ public class ScalingTester extends Tester {
 
   private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
     Properties p = Utils.getProperties();
-    NetworkServiceRecordRestAgent agent = requestor.getNetworkServiceRecordAgent();
+    NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
     return vnfr.getStatus();
   }

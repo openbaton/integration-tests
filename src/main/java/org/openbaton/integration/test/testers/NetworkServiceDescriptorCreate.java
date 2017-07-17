@@ -50,6 +50,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
   public NetworkServiceDescriptorCreate(Properties p) {
     super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD, "/ns-descriptors");
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
