@@ -68,7 +68,7 @@ public class ProjectCreate extends Tester<Project> {
             new ProjectAgent(
                 asUser,
                 userPassword,
-                properties.getProperty("nfvo-project-id"),
+                projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),

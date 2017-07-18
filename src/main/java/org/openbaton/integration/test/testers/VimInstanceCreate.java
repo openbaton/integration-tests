@@ -64,7 +64,6 @@ public class VimInstanceCreate extends Tester<VimInstance> {
     Object result;
     try {
       if (asUser != null && !"".equals(asUser)) {
-        String projectId = properties.getProperty("nfvo-project-id");
         if (inProject != null && !"".equals(inProject)) {
           log.info(
               "Upload vim instance "

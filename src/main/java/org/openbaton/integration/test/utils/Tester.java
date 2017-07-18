@@ -59,7 +59,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
         new NFVORequestor(
             properties.getProperty("nfvo-usr"),
             properties.getProperty("nfvo-pwd"),
-            properties.getProperty("nfvo-project-id"),
+            projectId,
             Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
             properties.getProperty("nfvo-ip"),
             properties.getProperty("nfvo-port"),

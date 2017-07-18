@@ -67,7 +67,7 @@ public class UserDelete extends Tester<User> {
             new UserAgent(
                 asUser,
                 userPassword,
-                properties.getProperty("nfvo-project-id"),
+                projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),

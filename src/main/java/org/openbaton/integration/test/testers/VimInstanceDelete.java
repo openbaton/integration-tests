@@ -60,7 +60,6 @@ public class VimInstanceDelete extends Tester<VimInstance> {
 
     try {
       if (asUser != null && !"".equals(asUser)) {
-        String projectId = properties.getProperty("nfvo-project-id");
         if (inProject != null && !"".equals(inProject)) {
           log.info(
               "Delete Vim Instance "
