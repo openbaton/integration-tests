@@ -50,6 +50,7 @@ public class UserUpdate extends Tester<User> {
   public UserUpdate(Properties p) {
     super(p, User.class, "", "/users");
     properties = p;
+    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override

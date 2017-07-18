@@ -34,6 +34,7 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
 
   public PackageDelete(Properties properties) {
     super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override

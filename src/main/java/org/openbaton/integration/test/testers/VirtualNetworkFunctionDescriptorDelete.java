@@ -37,6 +37,7 @@ public class VirtualNetworkFunctionDescriptorDelete
 
   public VirtualNetworkFunctionDescriptorDelete(Properties p) {
     super(p, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 
   @Override

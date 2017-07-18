@@ -38,6 +38,7 @@ public class ScaleIn extends Tester {
 
   public ScaleIn(Properties properties) {
     super(properties, ScaleIn.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

@@ -82,7 +82,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
 
     abstractRestAgent.delete(id);
 
-    log.trace("Deleted: " + id);
+    log.debug("Deleted: " + id);
   }
 
   protected abstract T prepareObject();

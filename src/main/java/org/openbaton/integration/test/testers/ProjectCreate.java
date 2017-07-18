@@ -42,6 +42,7 @@ public class ProjectCreate extends Tester<Project> {
   public ProjectCreate(Properties p) {
     super(p, Project.class, "", "/projects");
     properties = p;
+    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override

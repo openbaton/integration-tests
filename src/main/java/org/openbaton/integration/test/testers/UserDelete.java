@@ -44,6 +44,7 @@ public class UserDelete extends Tester<User> {
   public UserDelete(Properties p) {
     super(p, User.class, "", "/users");
     this.properties = p;
+    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override

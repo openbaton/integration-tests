@@ -43,6 +43,7 @@ public class ProjectDelete extends Tester<Project> {
   public ProjectDelete(Properties p) {
     super(p, Project.class, "", "/projects");
     this.properties = p;
+    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override

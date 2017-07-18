@@ -45,6 +45,7 @@ public class VimInstanceDelete extends Tester<VimInstance> {
   public VimInstanceDelete(Properties properties) {
     super(properties, VimInstance.class, "", "/datacenters");
     this.properties = properties;
+    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override

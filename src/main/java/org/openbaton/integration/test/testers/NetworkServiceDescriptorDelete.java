@@ -32,6 +32,7 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
    */
   public NetworkServiceDescriptorDelete(Properties p) {
     super(p, NetworkServiceDescriptor.class, "", "/ns-descriptors");
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override

@@ -48,6 +48,7 @@ public class UserCreate extends Tester<User> {
   public UserCreate(Properties p) {
     super(p, User.class, "", "/users");
     properties = p;
+    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override

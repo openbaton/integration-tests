@@ -34,6 +34,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
    */
   public NetworkServiceRecordGetLatest(Properties properties) {
     super(properties, NetworkServiceRecordGetLatest.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

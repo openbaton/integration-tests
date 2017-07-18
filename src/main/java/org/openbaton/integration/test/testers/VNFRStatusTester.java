@@ -35,6 +35,7 @@ public class VNFRStatusTester extends Tester {
 
   public VNFRStatusTester(Properties properties) {
     super(properties, VNFRStatusTester.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

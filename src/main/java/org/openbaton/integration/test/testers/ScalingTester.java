@@ -46,6 +46,7 @@ public class ScalingTester extends Tester {
 
   public ScalingTester(Properties properties) {
     super(properties, ScaleOut.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

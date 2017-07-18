@@ -41,6 +41,7 @@ public class PackageUpload extends Tester<VNFPackage> {
             + ":"
             + p.getProperty("nfvo-port")
             + "/api/v1/vnf-packages/";
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override

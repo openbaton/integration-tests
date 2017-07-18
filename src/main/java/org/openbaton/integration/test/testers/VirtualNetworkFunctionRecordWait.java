@@ -39,6 +39,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
 
   public VirtualNetworkFunctionRecordWait(Properties properties) {
     super(properties, VirtualNetworkFunctionRecordWait.class, "", "");
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 
   @Override

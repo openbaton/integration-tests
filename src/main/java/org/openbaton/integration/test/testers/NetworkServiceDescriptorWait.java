@@ -36,6 +36,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
 
   public NetworkServiceDescriptorWait(Properties properties) {
     super(properties, NetworkServiceRecordWait.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
