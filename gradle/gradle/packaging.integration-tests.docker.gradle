@@ -31,6 +31,7 @@ task buildDocker(type: Docker) {
     }
     runCommand('mkdir -p /var/log/openbaton')
     entryPoint(["java", "-jar", "/${componentName}.jar"])
+    exposePort(8181)
 }
 
 buildDocker.dependsOn(build)
