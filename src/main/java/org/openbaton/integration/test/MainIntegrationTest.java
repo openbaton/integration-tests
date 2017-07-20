@@ -90,6 +90,7 @@ public class MainIntegrationTest {
     sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
     if (projectId == null) {
       projectId = findProjectId(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd, sslEnabled);
+      properties.setProperty("nfvo-project-id", projectId);
     }
     String clear = properties.getProperty("clear-after-test");
     clearAfterTest = Boolean.parseBoolean(clear);
