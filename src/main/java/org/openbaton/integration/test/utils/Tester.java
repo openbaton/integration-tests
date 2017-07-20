@@ -35,6 +35,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   protected Properties properties;
   private String FILE_NAME;
   protected final Class<T> aClass;
+  protected String sshPrivateKeyFilePath;
 
   public void setAbstractRestAgent(AbstractRestAgent abstractRestAgent) {
     this.abstractRestAgent = abstractRestAgent;
@@ -56,6 +57,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
     this.properties = properties;
+    this.sshPrivateKeyFilePath = properties.getProperty("ssh-private-key-file-path","/etc/openbaton/integration-test/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
     requestor =
         new NFVORequestor(

@@ -132,6 +132,7 @@ public class GenericServiceTester extends Tester {
                   "/bin/bash",
                   "-c",
                   "scp -o \"StrictHostKeyChecking no\" "
+                      + (sshPrivateKeyFilePath == null && ! new File(sshPrivateKeyFilePath).exists() ? "" : " -i "+sshPrivateKeyFilePath)
                       + script.getPath()
                       + " "
                       + userName
@@ -152,6 +153,7 @@ public class GenericServiceTester extends Tester {
                   "/bin/bash",
                   "-c",
                   "ssh -o \"StrictHostKeyChecking no\" "
+                      + (sshPrivateKeyFilePath == null && ! new File(sshPrivateKeyFilePath).exists() ? "" : " -i "+sshPrivateKeyFilePath)
                       + userName
                       + "@"
                       + floatingIp
