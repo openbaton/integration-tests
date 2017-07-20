@@ -29,7 +29,7 @@ task buildDocker(type: Docker) {
         from jar
         rename {"${componentName}.jar"}
     }
-    runCommand('mkdir -p /var/log/openbaton')
+    runCommand('mkdir -p /var/log/openbaton && apk add --no-cache --update openssh')
     entryPoint(["java", "-jar", "/${componentName}.jar"])
     exposePort(8181)
 }
