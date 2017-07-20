@@ -32,6 +32,7 @@ import java.util.Properties;
  * Abstract class that represents the tasks defined in the .ini files.
  */
 public abstract class Tester<T extends Serializable> extends SubTask {
+  protected Properties properties;
   private String FILE_NAME;
   protected final Class<T> aClass;
 
@@ -54,6 +55,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     this.FILE_NAME = filePath;
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
+    this.properties = properties;
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
     requestor =
         new NFVORequestor(

@@ -56,7 +56,7 @@ public abstract class Waiter extends Tester {
   public void subscribe(EventEndpoint eventEndpoint) throws SubscriptionException, SDKException {
     if (eventEndpoint == null) throw new NullPointerException("EventEndpoint is null");
     if (eventEndpoint.getType() == EndpointType.REST)
-      waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log);
+      waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log, properties);
     waiter.subscribe(eventEndpoint);
   }
 
