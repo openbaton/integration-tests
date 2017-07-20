@@ -100,8 +100,9 @@ public class MainIntegrationTest {
       String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
       throws SDKException, ClassNotFoundException {
 
+    // TODO make the project nullable
     NFVORequestor requestor =
-        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, null, nfvoIp, nfvoPort, "1");
+        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, "default", nfvoIp, nfvoPort, "1");
     List<Project> projects = requestor.getProjectAgent().findAll();
     for (Project p : projects) {
       if (p.getName().equals("default")) {
