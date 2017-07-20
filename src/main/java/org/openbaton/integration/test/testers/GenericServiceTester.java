@@ -129,10 +129,12 @@ public class GenericServiceTester extends Tester {
           //store script on VM
           ProcessBuilder pb =
               new ProcessBuilder(
-                  "/bin/bash",
+                  "/bin/sh",
                   "-c",
                   "scp -o \"StrictHostKeyChecking no\" "
-                      + (sshPrivateKeyFilePath == null && ! new File(sshPrivateKeyFilePath).exists() ? "" : " -i "+sshPrivateKeyFilePath)
+                      + (sshPrivateKeyFilePath == null && !new File(sshPrivateKeyFilePath).exists()
+                          ? ""
+                          : "-i " + sshPrivateKeyFilePath + " ")
                       + script.getPath()
                       + " "
                       + userName
@@ -150,10 +152,12 @@ public class GenericServiceTester extends Tester {
           //execute script on VM
           pb =
               new ProcessBuilder(
-                  "/bin/bash",
+                  "/bin/sh",
                   "-c",
                   "ssh -o \"StrictHostKeyChecking no\" "
-                      + (sshPrivateKeyFilePath == null && ! new File(sshPrivateKeyFilePath).exists() ? "" : " -i "+sshPrivateKeyFilePath)
+                      + (sshPrivateKeyFilePath == null && !new File(sshPrivateKeyFilePath).exists()
+                          ? ""
+                          : "-i " + sshPrivateKeyFilePath + " ")
                       + userName
                       + "@"
                       + floatingIp
