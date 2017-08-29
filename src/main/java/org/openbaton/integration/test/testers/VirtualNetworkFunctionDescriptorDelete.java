@@ -20,6 +20,7 @@ import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class VirtualNetworkFunctionDescriptorDelete
   private String vnfdType = "";
   private String vnfdName = "";
 
-  public VirtualNetworkFunctionDescriptorDelete(Properties p) {
+  public VirtualNetworkFunctionDescriptorDelete(Properties p) throws FileNotFoundException {
     super(p, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
     this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }

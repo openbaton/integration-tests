@@ -21,13 +21,16 @@ import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
+
 /**
  * Created by mob on 31.07.15.
  */
 public interface WaiterInterface {
-  void subscribe(EventEndpoint endpoint) throws SubscriptionException, SDKException;
+  void subscribe(EventEndpoint endpoint)
+      throws SubscriptionException, SDKException, FileNotFoundException;
 
-  void unSubscribe() throws SDKException;
+  void unSubscribe() throws SDKException, FileNotFoundException;
 
   boolean waitForEvent(int timeOut) throws InterruptedException;
 

@@ -48,13 +48,13 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
   private boolean expectedToFail =
       false; // if the creating of the NSD is expected to fail this field should be set to true
 
-  public NetworkServiceDescriptorCreate(Properties p) {
+  public NetworkServiceDescriptorCreate(Properties p) throws FileNotFoundException {
     super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD, "/ns-descriptors");
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     log.info("Upload NSD " + fileName);
     Object received = null;
     VimInstance vimInstance = (VimInstance) param;
@@ -89,7 +89,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
   }
 
   @Override
-  protected NetworkServiceDescriptor prepareObject() {
+  protected NetworkServiceDescriptor prepareObject() throws FileNotFoundException {
     String body = null;
     File f = new File(EXTERNAL_PATH_NAME_NSD + fileName);
     if (f != null && f.exists()) {

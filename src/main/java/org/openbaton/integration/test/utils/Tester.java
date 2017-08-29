@@ -23,6 +23,7 @@ import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -57,7 +58,9 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
     this.properties = properties;
-    this.sshPrivateKeyFilePath = properties.getProperty("ssh-private-key-file-path","/etc/openbaton/integration-test/integration-test.key");
+    this.sshPrivateKeyFilePath =
+        properties.getProperty(
+            "ssh-private-key-file-path", "/etc/openbaton/integration-test/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
     requestor =
         new NFVORequestor(
@@ -71,7 +74,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     this.aClass = aClass;
   }
 
-  public T create() throws SDKException {
+  public T create() throws SDKException, FileNotFoundException {
     T expected = prepareObject();
     if (expected == null) throw new NullPointerException();
     T obtained;
@@ -89,5 +92,5 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     log.debug("Deleted: " + id);
   }
 
-  protected abstract T prepareObject();
+  protected abstract T prepareObject() throws FileNotFoundException;
 }

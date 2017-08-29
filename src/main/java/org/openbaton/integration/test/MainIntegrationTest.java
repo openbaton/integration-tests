@@ -99,7 +99,7 @@ public class MainIntegrationTest {
 
   private static String findProjectId(
       String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
-      throws SDKException, ClassNotFoundException {
+      throws SDKException, ClassNotFoundException, FileNotFoundException {
 
     // TODO make the project nullable
     NFVORequestor requestor =

@@ -19,6 +19,7 @@ import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Properties;
  */
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
-  public NetworkServiceRecordDelete(Properties properties) {
+  public NetworkServiceRecordDelete(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecord.class, "", "/ns-records");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }

@@ -24,6 +24,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,7 +44,7 @@ public class ScaleOut extends Tester {
   private String virtualLink = "";
   private String floatingIp = "random";
 
-  public ScaleOut(Properties properties) {
+  public ScaleOut(Properties properties) throws FileNotFoundException {
     super(properties, ScaleOut.class, "", "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
