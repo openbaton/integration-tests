@@ -1,150 +1,153 @@
 {
-    "name":"netcat-scenario-scaling",
-    "vendor":"fokus",
-    "version":"0.1-ALPHA",
-    "vnfd":[
+  "name": "netcat-scenario-scaling",
+  "vendor": "fokus",
+  "version": "0.1-ALPHA",
+  "vnfd": [
+    {
+      "name": "ncatserver",
+      "vendor": "fokus",
+      "version": "0.1",
+      "type": "ncatserver",
+      "lifecycle_event": [
         {
-            "name":"ncatserver",
-            "vendor":"fokus",
-            "version":"0.1",
-            "type":"ncatserver",
-            "lifecycle_event":[
-                {
-                    "event":"INSTANTIATE",
-                    "lifecycle_events":[
-                        "ncat-install.sh"
-                    ]
-                },
-              {
-                "event":"START",
-                "lifecycle_events":[
-                  "ncat-server-setup.sh"
-                ]
-              }
-            ],
-            "configurations":{
-                "name":"server-configuration",
-                "configurationParameters":[{  
-                  "confKey":"conf3",
-                  "value":"3"
-               },
-	       {  
-                  "confKey":"conf4",
-                  "value":"4"
-               }
-                ]
-            },
-            "vdu":[
-                {
-                    "vm_image":[
-                        "ubuntu-14.04-server-cloudimg-amd64-disk1"
-                    ],
-                    "scale_in_out":4,
-                    "vnfc":[
-                        {
-                            "connection_point":[
-                                {
-                                    "floatingIp":"random",
-                                    "virtual_link_reference":"private"
-                                }
-                            ]
-                        }
-                    ],
-                    "vimInstanceName":["vim-instance"]
-                }
-            ],
-            "virtual_link":[
-                {
-                    "name":"private"
-                }
-            ],
-            "deployment_flavour":[
-                {
-                    "flavour_key":"m1.small"
-                }
-            ],
-            "endpoint":"generic",
-            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+          "event": "INSTANTIATE",
+          "lifecycle_events": [
+            "ncat-install.sh"
+          ]
         },
         {
-            "name":"ncatclient",
-            "vendor":"fokus",
-            "version":"0.1",
-            "type":"ncatclient",
-            "lifecycle_event":[
-                {
-                    "event":"INSTANTIATE",
-                    "lifecycle_events":[
-                        "ncat-install.sh"
-                    ]
-                },
-                {
-                    "event":"CONFIGURE",
-                    "lifecycle_events":[
-                        "ncatserver_configure.sh"
-                    ]
-                }
-            ],
-            "configurations":{
-                "name":"client-configuration",
-                "configurationParameters":[{  
-                  "confKey":"conf1",
-                  "value":"1"
-               },
-	       {  
-                  "confKey":"conf2",
-                  "value":"2"
-               }]
-            },
-            "vdu":[
-                {
-                    "vm_image":[
-                        "ubuntu-14.04-server-cloudimg-amd64-disk1"
-                    ],
-                    "scale_in_out":4,
-                    "vnfc":[
-                        {
-                            "connection_point":[
-                                {
-                                    "floatingIp":"random",
-                                    "virtual_link_reference":"private"
-                                }
-                            ]
-                        }
-                    ],
-                    "vimInstanceName":["vim-instance"]
-                }
-            ],
-            "virtual_link":[
-                {
-                    "name":"private"
-                }
-            ],
-            "deployment_flavour":[
-                {
-                    "flavour_key":"m1.small"
-                }
-            ],
-            "endpoint":"generic",
-            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+          "event": "START",
+          "lifecycle_events": [
+            "ncat-server-setup.sh"
+          ]
         }
-    ],
-    "vld":[
+      ],
+      "configurations": {
+        "name": "server-configuration",
+        "configurationParameters": [
+          {
+            "confKey": "conf3",
+            "value": "3"
+          },
+          {
+            "confKey": "conf4",
+            "value": "4"
+          }
+        ]
+      },
+      "vdu": [
         {
-            "name":"private"
+          "vm_image": [
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "scale_in_out": 4,
+          "vnfc": [
+            {
+              "connection_point": [
+                {
+                  "floatingIp": "random",
+                  "virtual_link_reference": "private"
+                }
+              ]
+            }
+          ],
+          "vimInstanceName": [
+            "vim-instance"
+          ]
         }
-    ],
-    "vnf_dependency":[
+      ],
+      "virtual_link": [
         {
-            "source":{
-                "name":"ncatserver"
-            },
-            "target":{
-                "name":"ncatclient"
-            },
-            "parameters":[
-                "private"
-            ]
+          "name": "private"
         }
-    ]
+      ],
+      "deployment_flavour": [
+        {
+          "flavour_key": "m1.small"
+        }
+      ],
+      "endpoint": "generic",
+      "vnfPackageLocation": "https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+    },
+    {
+      "name": "ncatclient",
+      "vendor": "fokus",
+      "version": "0.1",
+      "type": "ncatclient",
+      "lifecycle_event": [
+        {
+          "event": "INSTANTIATE",
+          "lifecycle_events": [
+            "ncat-install.sh"
+          ]
+        },
+        {
+          "event": "CONFIGURE",
+          "lifecycle_events": [
+            "ncatserver_configure.sh"
+          ]
+        }
+      ],
+      "configurations": {
+        "name": "client-configuration",
+        "configurationParameters": [
+          {
+            "confKey": "conf1",
+            "value": "1"
+          },
+          {
+            "confKey": "conf2",
+            "value": "2"
+          }
+        ]
+      },
+      "vdu": [
+        {
+          "vm_image": [
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "scale_in_out": 4,
+          "vnfc": [
+            {
+              "connection_point": [
+                {
+                  "floatingIp": "random",
+                  "virtual_link_reference": "private"
+                }
+              ]
+            }
+          ],
+          "vimInstanceName": [
+            "vim-instance"
+          ]
+        }
+      ],
+      "virtual_link": [
+        {
+          "name": "private"
+        }
+      ],
+      "deployment_flavour": [
+        {
+          "flavour_key": "m1.small"
+        }
+      ],
+      "endpoint": "generic",
+      "vnfPackageLocation": "https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
+    }
+  ],
+  "vld": [
+    {
+      "name": "private"
+    }
+  ],
+  "vnf_dependency": [
+    {
+      "source": "ncatserver",
+      "target": "ncatclient",
+      "parameters": [
+        "private"
+      ]
+    }
+  ]
 }
