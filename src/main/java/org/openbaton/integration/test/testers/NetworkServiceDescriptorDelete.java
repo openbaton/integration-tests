@@ -19,6 +19,7 @@ import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -30,7 +31,7 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
   /**
    * @param p : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public NetworkServiceDescriptorDelete(Properties p) {
+  public NetworkServiceDescriptorDelete(Properties p) throws FileNotFoundException {
     super(p, NetworkServiceDescriptor.class, "", "/ns-descriptors");
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }

@@ -19,6 +19,7 @@ import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -32,7 +33,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public NetworkServiceRecordGetLatest(Properties properties) {
+  public NetworkServiceRecordGetLatest(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordGetLatest.class, "", "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }

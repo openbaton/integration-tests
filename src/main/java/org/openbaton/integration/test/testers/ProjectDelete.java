@@ -22,6 +22,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -40,7 +41,7 @@ public class ProjectDelete extends Tester<Project> {
 
   private Properties properties = null;
 
-  public ProjectDelete(Properties p) {
+  public ProjectDelete(Properties p) throws FileNotFoundException {
     super(p, Project.class, "", "/projects");
     this.properties = p;
     this.setAbstractRestAgent(requestor.getProjectAgent());
@@ -52,7 +53,7 @@ public class ProjectDelete extends Tester<Project> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete project " + projectToDelete + " while logged in as " + asUser);
     else log.info("Try to delete project " + projectToDelete);

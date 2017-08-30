@@ -22,6 +22,7 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -34,18 +35,18 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public NetworkServiceRecordCreate(Properties properties) {
+  public NetworkServiceRecordCreate(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecord.class, "", "/ns-records");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
-  protected Object doWork() throws SDKException {
+  protected Object doWork() throws SDKException, FileNotFoundException {
     return create();
   }
 
   @Override
-  public NetworkServiceRecord create() throws SDKException {
+  public NetworkServiceRecord create() throws SDKException, FileNotFoundException {
 
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
     log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());

@@ -53,14 +53,14 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public VimInstanceCreate(Properties properties) {
+  public VimInstanceCreate(Properties properties) throws FileNotFoundException {
     super(properties, VimInstance.class, LOCAL_PATH_NAME, "/datacenters");
     this.properties = properties;
     this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     Object result;
     try {
       if (asUser != null && !"".equals(asUser)) {

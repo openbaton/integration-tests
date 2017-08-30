@@ -81,7 +81,8 @@ public class RestWaiter implements WaiterInterface {
    * @throws SubscriptionException
    */
   @Override
-  public void subscribe(EventEndpoint eventEndpoint) throws SDKException, SubscriptionException {
+  public void subscribe(EventEndpoint eventEndpoint)
+      throws SDKException, SubscriptionException, FileNotFoundException {
     try {
       launchServer();
     } catch (IOException e) {
@@ -113,7 +114,7 @@ public class RestWaiter implements WaiterInterface {
    * @throws SDKException
    */
   @Override
-  public void unSubscribe() throws SDKException {
+  public void unSubscribe() throws SDKException, FileNotFoundException {
     if (ee == null) throw new NullPointerException("EventEndpoint is null");
     this.requestor.getEventAgent().requestDelete(unsubscriptionId);
     stopServer();

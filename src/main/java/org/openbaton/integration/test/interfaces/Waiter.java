@@ -23,6 +23,7 @@ import org.openbaton.integration.test.rest.RestWaiter;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -53,7 +54,8 @@ public abstract class Waiter extends Tester {
    * @throws SubscriptionException
    * @throws SDKException
    */
-  public void subscribe(EventEndpoint eventEndpoint) throws SubscriptionException, SDKException {
+  public void subscribe(EventEndpoint eventEndpoint)
+      throws SubscriptionException, SDKException, FileNotFoundException {
     if (eventEndpoint == null) throw new NullPointerException("EventEndpoint is null");
     if (eventEndpoint.getType() == EndpointType.REST)
       waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log, properties);
@@ -85,7 +87,7 @@ public abstract class Waiter extends Tester {
    *
    * @throws SDKException
    */
-  public void unSubscribe() throws SDKException {
+  public void unSubscribe() throws SDKException, FileNotFoundException {
     if (waiter == null)
       throw new NullPointerException(
           "Waiter is null (use subscribe and waitForEvent before unSubscribe)");

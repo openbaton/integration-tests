@@ -23,6 +23,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -47,7 +48,7 @@ public class UserUpdate extends Tester<User> {
 
   private Properties properties = null;
 
-  public UserUpdate(Properties p) {
+  public UserUpdate(Properties p) throws FileNotFoundException {
     super(p, User.class, "", "/users");
     properties = p;
     this.setAbstractRestAgent(requestor.getUserAgent());
@@ -59,7 +60,7 @@ public class UserUpdate extends Tester<User> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     if (asUser != null && !"".equals(asUser))
       log.info("Try to update user " + oldUserName + " while logged in as " + asUser);
     else log.info("Try to update user " + oldUserName);

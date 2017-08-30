@@ -22,6 +22,7 @@ import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -40,12 +41,12 @@ import java.util.Set;
 public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDescriptorCreate {
   private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
 
-  public NetworkServiceDescriptorCreateFromPackage(Properties p) {
+  public NetworkServiceDescriptorCreateFromPackage(Properties p) throws FileNotFoundException {
     super(p);
   }
 
   @Override
-  protected NetworkServiceDescriptor prepareObject() {
+  protected NetworkServiceDescriptor prepareObject() throws FileNotFoundException {
     NetworkServiceDescriptor nsd = super.prepareObject();
     Set<VirtualNetworkFunctionDescriptor> vnfds = nsd.getVnfd();
     for (VirtualNetworkFunctionDescriptor vnfd : vnfds) {
@@ -55,7 +56,7 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
     return nsd;
   }
 
-  private String getVnfdIdByType(String type) {
+  private String getVnfdIdByType(String type) throws FileNotFoundException {
     VirtualNetworkFunctionDescriptorAgent vnfdAgent =
         requestor.getVirtualNetworkFunctionDescriptorAgent();
     List<VirtualNetworkFunctionDescriptor> obtained = null;
