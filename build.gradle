@@ -78,7 +78,7 @@ configurations.all {
     exclude group: 'org.slf4j', module: 'slf4j-simple'
 }
 
-apply from: 'gradle/gradle/packaging.integration-tests.docker.gradle'
+apply from: 'gradle/gradle/packaging.openbaton-integration-tests.docker.gradle'
 
 dependencies {
 
