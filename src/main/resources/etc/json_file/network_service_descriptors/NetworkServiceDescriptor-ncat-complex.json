@@ -370,57 +370,89 @@
   ],
   "vnf_dependency": [
     {
-      "source":"ncatpeer1",
-      "target":"ncatpeer5",
+      "source": {
+        "name": "ncatpeer1"
+      },
+      "target": {
+        "name": "ncatpeer5"
+      },
       "parameters": [
         "private"
       ]
     },
     {
-      "source": "ncatpeer2",
-      "target": "ncatpeer1",
+      "source": {
+        "name": "ncatpeer2"
+      },
+      "target": {
+        "name": "ncatpeer1"
+      },
       "parameters": [
         "private"
       ]
     },
     {
-      "source": "ncatpeer2",
-      "target": "ncatpeer5",
+      "source": {
+        "name": "ncatpeer2"
+      },
+      "target": {
+        "name": "ncatpeer5"
+      },
       "parameters": [
         "private"
       ]
     },
     {
-      "source": "ncatpeer3",
-      "target": "ncatpeer2",
+      "source": {
+        "name": "ncatpeer3"
+      },
+      "target": {
+        "name": "ncatpeer2"
+      },
       "parameters": [
         "private"
       ]
     },
     {
-      "source": "ncatpeer3",
-      "target": "ncatpeer5",
+      "source": {
+        "name": "ncatpeer3"
+      },
+      "target": {
+        "name": "ncatpeer5"
+      },
       "parameters": [
         "private2"
       ]
     },
     {
-      "source": "ncatpeer3",
-      "target": "ncatpeer4",
+      "source": {
+        "name": "ncatpeer3"
+      },
+      "target": {
+        "name": "ncatpeer4"
+      },
       "parameters": [
         "private2"
       ]
     },
     {
-      "source": "ncatpeer4",
-      "target": "ncatpeer3",
+      "source": {
+        "name": "ncatpeer4"
+      },
+      "target": {
+        "name": "ncatpeer3"
+      },
       "parameters": [
         "private2"
       ]
     },
     {
-      "source": "ncatpeer5",
-      "target": "ncatpeer4",
+      "source": {
+        "name": "ncatpeer5"
+      },
+      "target": {
+        "name": "ncatpeer4"
+      },
       "parameters": [
         "private2"
       ]

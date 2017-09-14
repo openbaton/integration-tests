@@ -1,991 +1,1052 @@
 {
-  "vld": [
+  "vendor":"fokus",
+  "version":"0",
+  "name":"many-dependencies-scenario",
+  "vnfd":[
     {
-      "name": "private"
-    }
-  ],
-  "name": "many-dependencies-scenario",
-  "vnf_dependency": [
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-2",
-      "source": "vnf-dummy-1"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-2",
-      "source": "vnf-dummy-3"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-6",
-      "source": "vnf-dummy-4"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-3",
-      "source": "vnf-dummy-4"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-2",
-      "source": "vnf-dummy-6"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-1",
-      "source": "vnf-dummy-4"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-5",
-      "source": "vnf-dummy-6"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-4",
-      "source": "vnf-dummy-5"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param3"
-      ],
-      "target": "vnf-dummy-1",
-      "source": "vnf-dummy-7"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2",
-        "param3"
-      ],
-      "target": "vnf-dummy-4",
-      "source": "vnf-dummy-7"
-    },
-    {
-      "parameters": [
-        "param2",
-        "param3"
-      ],
-      "target": "vnf-dummy-6",
-      "source": "vnf-dummy-7"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-6",
-      "source": "vnf-dummy-8"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-8",
-      "source": "vnf-dummy-6"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-8",
-      "source": "vnf-dummy-5"
-    },
-    {
-      "parameters": [
-        "param3",
-        "param4"
-      ],
-      "target": "vnf-dummy-1",
-      "source": "vnf-dummy-8"
-    },
-    {
-      "parameters": [
-        "param2"
-      ],
-      "target": "vnf-dummy-5",
-      "source": "vnf-dummy-9"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2",
-        "param3",
-        "param4"
-      ],
-      "target": "vnf-dummy-9",
-      "source": "vnf-dummy-8"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-9",
-      "source": "vnf-dummy-2"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-9",
-      "source": "vnf-dummy-10"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-8",
-      "source": "vnf-dummy-10"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-7",
-      "source": "vnf-dummy-10"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-2",
-      "source": "vnf-dummy-10"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-10",
-      "source": "vnf-dummy-1"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-10",
-      "source": "vnf-dummy-2"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-10",
-      "source": "vnf-dummy-5"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-11",
-      "source": "vnf-dummy-1"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-11",
-      "source": "vnf-dummy-3"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-11",
-      "source": "vnf-dummy-5"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-2",
-      "source": "vnf-dummy-11"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-4",
-      "source": "vnf-dummy-11"
-    },
-    {
-      "parameters": [
-        "param1",
-        "param2"
-      ],
-      "target": "vnf-dummy-6",
-      "source": "vnf-dummy-11"
-    }
-  ],
-  "version": "0",
-  "vnfd": [
-    {
-      "vdu": [
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-1",
+      "type":"dummy1",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
+          "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName": [
-            "vim-instance"
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
+        }
+      ],
+      "configurations":{
+        "name":"dummy-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy8_configure.sh",
+            "dummy4_configure.sh",
+            "dummy7_configure.sh"
           ]
         }
       ],
-      "name": "vnf-dummy-1",
-      "type": "dummy1",
-      "provides": [
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
         "ip",
         "source",
         "param1",
         "param2"
-      ],
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "configurations": {
-        "name": "dummy-configuration",
-        "configurationParameters": [
-          {
-            "confKey": "conf3",
-            "value": "3"
-          },
-          {
-            "confKey": "conf4",
-            "value": "4"
-          }
-        ]
-      },
-      "version": "0.1",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "dummy8_configure.sh",
-            "dummy4_configure.sh",
-            "dummy7_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
       ]
     },
     {
-      "vdu": [
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-2",
+      "type":"dummy2",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
+          "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName": [
-            "vim-instance"
+          "lifecycle_event":[
           ],
-          "lifecycle_event": []
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "name": "vnf-dummy-2",
-      "type": "dummy2",
-      "provides": [
-        "ip",
-        "target",
-        "param1",
-        "param2"
-      ],
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "configurations": {
-        "name": "dummy2-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy2-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy10_configure.sh",
             "dummy3_configure.sh",
             "dummy6_configure.sh",
             "dummy1_configure.sh",
             "dummy11_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
           ]
         }
       ],
-      "name": "vnf-dummy-3",
-      "type": "dummy3",
-      "provides": [
-        "ip",
-        "param1",
-        "param2"
-      ],
-      "deployment_flavour": [
+      "deployment_flavour":[
         {
-          "flavour_key": "m1.small"
+          "flavour_key":"m1.small"
         }
       ],
-      "configurations": {
-        "name": "dummy3-configuration",
-        "configurationParameters": [
-          {
-            "confKey": "conf3",
-            "value": "3"
-          },
-          {
-            "confKey": "conf4",
-            "value": "4"
-          }
-        ]
-      },
-      "version": "0.1",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "dummy4_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
-          ]
-        }
-      ],
-      "name": "vnf-dummy-4",
-      "type": "dummy4",
-      "provides": [
+      "provides":[
         "ip",
         "target",
         "param1",
         "param2"
-      ],
-      "deployment_flavour": [
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-3",
+      "type":"dummy3",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "flavour_key": "m1.small"
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "configurations": {
-        "name": "dummy4-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy3-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy4_configure.sh"
+          ]
+        }
+      ],
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
+        "ip",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-4",
+      "type":"dummy4",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
+        }
+      ],
+      "configurations":{
+        "name":"dummy4-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy11_configure.sh",
             "dummy7_configure.sh",
             "dummy5_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
           ]
         }
       ],
-      "name": "vnf-dummy-5",
-      "type": "dummy5",
-      "provides": [
-        "ip",
-        "param1",
-        "param2"
-      ],
-      "deployment_flavour": [
+      "deployment_flavour":[
         {
-          "flavour_key": "m1.small"
+          "flavour_key":"m1.small"
         }
       ],
-      "configurations": {
-        "name": "dummy5-configuration",
-        "configurationParameters": [
-          {
-            "confKey": "conf3",
-            "value": "3"
-          },
-          {
-            "confKey": "conf4",
-            "value": "4"
-          }
-        ]
-      },
-      "version": "0.1",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "dummy6_configure.sh",
-            "dummy9_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
-          ]
-        }
-      ],
-      "name": "vnf-dummy-6",
-      "type": "dummy6",
-      "provides": [
+      "provides":[
         "ip",
         "target",
         "param1",
         "param2"
-      ],
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "configurations": {
-        "name": "dummy6-configuration",
-        "configurationParameters": [
-          {
-            "confKey": "conf3",
-            "value": "3"
-          },
-          {
-            "confKey": "conf4",
-            "value": "4"
-          }
-        ]
-      },
-      "version": "0.1",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "dummy4_configure.sh",
-            "dummy7_configure.sh",
-            "dummy8_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
+
       ]
     },
     {
-      "vdu": [
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-5",
+      "type":"dummy5",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 1,
-          "vm_image": [
+          "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName": [
-            "vim-instance"
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
+        }
+      ],
+      "configurations":{
+        "name":"dummy5-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy6_configure.sh",
+            "dummy9_configure.sh"
           ]
         }
       ],
-      "name": "vnf-dummy-7",
-      "type": "dummy7",
-      "provides": [
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
+        "ip",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-6",
+      "type":"dummy6",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
+        }
+      ],
+      "configurations":{
+        "name":"dummy6-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy4_configure.sh",
+            "dummy7_configure.sh",
+            "dummy8_configure.sh"
+          ]
+        }
+      ],
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-7",
+      "type":"dummy7",
+      "endpoint":"dummy",
+      "vdu":[
+        {
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":1,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
+        }
+      ],
+      "configurations":{
+        "name":"dummy7-configuration",
+        "configurationParameters":[
+          {
+            "confKey":"conf3",
+            "value":"3"
+          },
+          {
+            "confKey":"conf4",
+            "value":"4"
+          }
+        ]
+      },
+      "virtual_link":[
+        {
+          "name":"private"
+        }
+      ],
+      "lifecycle_event":[
+        {
+          "event":"CONFIGURE",
+          "lifecycle_events":[
+            "dummy10_configure.sh"
+          ]
+        }
+      ],
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
         "ip",
         "target",
         "param1",
         "param2",
         "param3"
-      ],
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "configurations": {
-        "name": "dummy7-configuration",
-        "configurationParameters": [
-          {
-            "confKey": "conf3",
-            "value": "3"
-          },
-          {
-            "confKey": "conf4",
-            "value": "4"
-          }
-        ]
-      },
-      "version": "0.1",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "dummy10_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
+
       ]
     },
     {
-      "vdu": [
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-8",
+      "type":"dummy8",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
+          "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName": [
-            "vim-instance"
-          ]
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "name": "vnf-dummy-8",
-      "type": "dummy8",
-      "provides": [
-        "ip",
-        "target",
-        "param1",
-        "param2",
-        "param3",
-        "param4"
-      ],
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "configurations": {
-        "name": "dummy8-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy8-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy10_configure.sh",
             "dummy6_configure.sh",
             "dummy5_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 3,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
           ]
         }
       ],
-      "name": "vnf-dummy-9",
-      "type": "dummy9",
-      "provides": [
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
         "ip",
         "target",
         "param1",
         "param2",
         "param3",
         "param4"
-      ],
-      "deployment_flavour": [
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-9",
+      "type":"dummy9",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "flavour_key": "m1.small"
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":3,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "configurations": {
-        "name": "dummy9-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy9-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy10_configure.sh",
             "dummy8_configure.sh",
             "dummy2_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 6,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
           ]
         }
       ],
-      "name": "vnf-dummy-10",
-      "type": "dummy10",
-      "provides": [
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
         "ip",
         "target",
         "param1",
-        "param2"
-      ],
-      "deployment_flavour": [
+        "param2",
+        "param3",
+        "param4"
+
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-10",
+      "type":"dummy10",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "flavour_key": "m1.small"
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":6,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "configurations": {
-        "name": "dummy10-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy10-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy5_configure.sh",
             "dummy2_configure.sh",
             "dummy1_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        }
-      ]
-    },
-    {
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private"
-                }
-              ]
-            }
-          ],
-          "scale_in_out": 1,
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "vimInstanceName": [
-            "vim-instance"
           ]
         }
       ],
-      "name": "vnf-dummy-11",
-      "type": "dummy11",
-      "provides": [
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
         "ip",
         "target",
         "param1",
         "param2"
-      ],
-      "deployment_flavour": [
+      ]
+    },
+    {
+      "vendor":"fokus",
+      "version":"0.1",
+      "name":"vnf-dummy-11",
+      "type":"dummy11",
+      "endpoint":"dummy",
+      "vdu":[
         {
-          "flavour_key": "m1.small"
+          "vm_image":[
+            "ubuntu-14.04-server-cloudimg-amd64-disk1"
+          ],
+          "vimInstanceName":["vim-instance"],
+          "scale_in_out":1,
+          "vnfc":[
+            {
+              "connection_point":[
+                {
+                  "virtual_link_reference":"private"
+                }
+              ]
+            }]
         }
       ],
-      "configurations": {
-        "name": "dummy11-configuration",
-        "configurationParameters": [
+      "configurations":{
+        "name":"dummy11-configuration",
+        "configurationParameters":[
           {
-            "confKey": "conf3",
-            "value": "3"
+            "confKey":"conf3",
+            "value":"3"
           },
           {
-            "confKey": "conf4",
-            "value": "4"
+            "confKey":"conf4",
+            "value":"4"
           }
         ]
       },
-      "version": "0.1",
-      "virtual_link": [
+      "virtual_link":[
         {
-          "name": "private"
+          "name":"private"
         }
       ],
-      "vendor": "fokus",
-      "endpoint": "dummy",
-      "lifecycle_event": [
+      "lifecycle_event":[
         {
-          "lifecycle_events": [
+          "event":"CONFIGURE",
+          "lifecycle_events":[
             "dummy1_configure.sh",
             "dummy3_configure.sh",
             "dummy5_configure.sh"
-          ],
-          "event": "CONFIGURE"
+          ]
         }
+      ],
+      "deployment_flavour":[
+        {
+          "flavour_key":"m1.small"
+        }
+      ],
+      "provides":[
+        "ip",
+        "target",
+        "param1",
+        "param2"
       ]
     }
   ],
-  "vendor": "fokus"
+  "vld":[
+    {
+      "name":"private"
+    }
+  ],
+  "vnf_dependency":[
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-3"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-3"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-4"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-5"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },{
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      },
+      "parameters":[
+        "param1", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-7"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param2", "param3"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-6"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-1"
+      },
+      "parameters":[
+        "param3", "param4"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-9"
+      },
+      "target":{
+        "name": "vnf-dummy-5"
+      },
+      "parameters":[
+        "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-8"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2", "param3", "param4"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-2"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-9"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-8"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-7"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-10"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-2"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-10"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-1"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-3"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-5"
+      },
+      "target":{
+        "name": "vnf-dummy-11"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-2"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-4"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    },
+    {
+      "source" : {
+        "name": "vnf-dummy-11"
+      },
+      "target":{
+        "name": "vnf-dummy-6"
+      },
+      "parameters":[
+        "param1", "param2"
+      ]
+    }
+  ]
 }
+

@@ -140,8 +140,12 @@
     ],
     "vnf_dependency":[
         {
-            "source":"iperfserver",
-            "target":"iperfclient",
+            "source":{
+                "name":"iperfserver"
+            },
+            "target":{
+                "name":"iperfclient"
+            },
             "parameters":[
                 "private"
             ]

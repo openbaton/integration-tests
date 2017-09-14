@@ -1,162 +1,160 @@
 {
-  "vnf_dependency": [
-    {
-      "source": "iperfserver",
-      "target": "iperfclient",
-      "parameters": [
-        "private"
-      ]
-    }
-  ],
-  "vendor": "fokus",
-  "name": "fail-in-terminate",
-  "vld": [
-    {
-      "name": "private"
-    }
-  ],
-  "version": "0.1-ALPHA",
-  "vnfd": [
-    {
-      "deployment_flavour": [
+    "name":"fail-in-terminate",
+    "vendor":"fokus",
+    "version":"0.1-ALPHA",
+    "vnfd":[
         {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "type": "server",
-      "vendor": "fokus",
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
+            "name":"iperfserver",
+            "vendor":"fokus",
+            "version":"0.1",
+            "type":"server",
+            "lifecycle_event":[
                 {
-                  "virtual_link_reference": "private",
-                  "floatingIp": "random"
+                    "event":"INSTANTIATE",
+                    "lifecycle_events":[
+                        "test-install.sh",
+                        "install-srv.sh"
+                    ]
                 }
-              ]
-            }
-          ],
-          "vimInstanceName": [
-            "vim-instance"
-          ],
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "scale_in_out": 2
-        }
-      ],
-      "vnfPackageLocation": "https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "test-install.sh",
-            "install-srv.sh"
-          ],
-          "event": "INSTANTIATE"
-        }
-      ],
-      "version": "0.1",
-      "configurations": {
-        "configurationParameters": [
-          {
-            "value": "3",
-            "confKey": "conf3"
-          },
-          {
-            "value": "4",
-            "confKey": "conf4"
-          }
-        ],
-        "name": "server-configuration"
-      },
-      "name": "iperfserver",
-      "endpoint": "generic"
-    },
-    {
-      "deployment_flavour": [
-        {
-          "flavour_key": "m1.small"
-        }
-      ],
-      "type": "client",
-      "vendor": "fokus",
-      "vdu": [
-        {
-          "vnfc": [
-            {
-              "connection_point": [
-                {
-                  "virtual_link_reference": "private",
-                  "floatingIp": "random"
-                }
-              ]
+            ],
+            "configurations":{
+                "name":"server-configuration",
+                "configurationParameters":[{  
+                  "confKey":"conf3",
+                  "value":"3"
+               },
+	       {  
+                  "confKey":"conf4",
+                  "value":"4"
+               }
+                ]
             },
-            {
-              "connection_point": [
+            "vdu":[
                 {
-                  "virtual_link_reference": "private",
-                  "floatingIp": "random"
+                    "vm_image":[
+                        "ubuntu-14.04-server-cloudimg-amd64-disk1"
+                    ],
+                    "scale_in_out":2,
+                    "vnfc":[
+                        {
+                            "connection_point":[
+                                {
+                                    "floatingIp":"random",
+                                    "virtual_link_reference":"private"
+                                }
+                            ]
+                        }
+                    ],
+                    "vimInstanceName":["vim-instance"]
                 }
-              ]
-            }
-          ],
-          "vimInstanceName": [
-            "vim-instance"
-          ],
-          "vm_image": [
-            "ubuntu-14.04-server-cloudimg-amd64-disk1"
-          ],
-          "scale_in_out": 2
-        }
-      ],
-      "vnfPackageLocation": "https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git",
-      "virtual_link": [
-        {
-          "name": "private"
-        }
-      ],
-      "lifecycle_event": [
-        {
-          "lifecycle_events": [
-            "test-install.sh"
-          ],
-          "event": "INSTANTIATE"
+            ],
+            "virtual_link":[
+                {
+                    "name":"private"
+                }
+            ],
+            "deployment_flavour":[
+                {
+                    "flavour_key":"m1.small"
+                }
+            ],
+            "type":"server",
+            "endpoint":"generic",
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         },
         {
-          "lifecycle_events": [
-            "server_configure.sh"
-          ],
-          "event": "CONFIGURE"
-        },
-        {
-          "lifecycle_events": [
-            "failing_script.sh"
-          ],
-          "event": "TERMINATE"
+            "name":"iperfclient",
+            "vendor":"fokus",
+            "version":"0.1",
+            "type":"client",
+            "lifecycle_event":[
+                {
+                    "event":"INSTANTIATE",
+                    "lifecycle_events":[
+                        "test-install.sh"
+                    ]
+                },
+                {
+                    "event":"CONFIGURE",
+                    "lifecycle_events":[
+                        "server_configure.sh"
+                    ]
+                }, 
+                {
+                    "event":"TERMINATE", 
+                    "lifecycle_events":[
+                        "failing_script.sh"
+                    ]
+                }
+            ],
+            "configurations":{
+                "name":"client-configuration",
+                "configurationParameters":[{  
+                  "confKey":"conf1",
+                  "value":"1"
+               },
+	       {  
+                  "confKey":"conf2",
+                  "value":"2"
+               }]
+            },
+            "vdu":[
+                {
+                    "vm_image":[
+                        "ubuntu-14.04-server-cloudimg-amd64-disk1"
+                    ],
+                    "scale_in_out":2,
+                    "vnfc":[
+                        {
+                            "connection_point":[
+                                {
+                                    "floatingIp":"random",
+                                    "virtual_link_reference":"private"
+                                }
+                            ]
+                        }, {
+                            "connection_point":[
+                                {
+                                    "floatingIp":"random",
+                                    "virtual_link_reference":"private"
+                                }
+                            ]
+                        }
+                    ],
+                    "vimInstanceName":["vim-instance"]
+                }
+            ],
+            "virtual_link":[
+                {
+                    "name":"private"
+                }
+            ],
+            "deployment_flavour":[
+                {
+                    "flavour_key":"m1.small"
+                }
+            ],
+            "type":"client",
+            "endpoint":"generic",
+            "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }
-      ],
-      "version": "0.1",
-      "configurations": {
-        "configurationParameters": [
-          {
-            "value": "1",
-            "confKey": "conf1"
-          },
-          {
-            "value": "2",
-            "confKey": "conf2"
-          }
-        ],
-        "name": "client-configuration"
-      },
-      "name": "iperfclient",
-      "endpoint": "generic"
-    }
-  ]
+    ],
+    "vld":[
+        {
+            "name":"private"
+        }
+    ],
+    "vnf_dependency":[
+        {
+            "source":{
+                "name":"iperfserver"
+            },
+            "target":{
+                "name":"iperfclient"
+            },
+            "parameters":[
+                "private"
+            ]
+        }
+    ]
 }
