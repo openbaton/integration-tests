@@ -22,6 +22,7 @@ import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.catalogue.nfvo.VimInstance;
+import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.testers.GenericServiceTester;
 import org.openbaton.integration.test.testers.NetworkServiceDescriptorCreate;
 import org.openbaton.integration.test.testers.NetworkServiceDescriptorDelete;
@@ -78,17 +79,38 @@ public class MainIntegrationTest {
   private static boolean sslEnabled;
   private static boolean clearAfterTest = false;
 
-  private static Properties loadProperties() throws IOException {
+  private static Properties loadProperties()
+      throws IOException, SDKException, ClassNotFoundException {
     Properties properties = Utils.getProperties();
     nfvoIp = properties.getProperty("nfvo-ip");
     nfvoPort = properties.getProperty("nfvo-port");
     nfvoUsr = properties.getProperty("nfvo-usr");
     nfvoPwd = properties.getProperty("nfvo-pwd");
-    projectId = properties.getProperty("nfvo-project-id");
+    projectId = properties.getProperty("nfvo-project-id", null);
     sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
+    if (projectId == null) {
+      projectId = findProjectId(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd, sslEnabled);
+      properties.setProperty("nfvo-project-id", projectId);
+    }
     String clear = properties.getProperty("clear-after-test");
     clearAfterTest = Boolean.parseBoolean(clear);
     return properties;
+  }
+
+  private static String findProjectId(
+      String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
+      throws SDKException, ClassNotFoundException, FileNotFoundException {
+
+    // TODO make the project nullable
+    NFVORequestor requestor =
+        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, "default", nfvoIp, nfvoPort, "1");
+    List<Project> projects = requestor.getProjectAgent().findAll();
+    for (Project p : projects) {
+      if (p.getName().equals("default")) {
+        return p.getId();
+      }
+    }
+    return projects.get(0).getId();
   }
 
   private static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
@@ -145,8 +167,9 @@ public class MainIntegrationTest {
         fileNames.add(name);
       }
       for (String arg : clArgs) {
-        if (!fileNames.contains(arg))
+        if (!fileNames.contains(arg)) {
           log.warn("The argument " + arg + " does not specify an existing test scenario.");
+        }
       }
     }
 
@@ -154,46 +177,55 @@ public class MainIntegrationTest {
         new IntegrationTestManager("org.openbaton.integration.test.testers") {
           @Override
           protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
-            if (subTask instanceof VimInstanceCreate)
+            subTask.setProjectId(projectId);
+            if (subTask instanceof VimInstanceCreate) {
               configureVimInstanceCreate(subTask, currentSection);
-            if (subTask instanceof VimInstanceDelete)
+            }
+            if (subTask instanceof VimInstanceDelete) {
               configureVimInstanceDelete(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceDescriptorCreate)
+            } else if (subTask instanceof NetworkServiceDescriptorCreate) {
               configureNetworkServiceDescriptorCreate(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceDescriptorDelete)
+            } else if (subTask instanceof NetworkServiceDescriptorDelete) {
               configureNetworkServiceDescriptorDelete(subTask, currentSection);
-            else if (subTask instanceof VirtualNetworkFunctionDescriptorDelete)
+            } else if (subTask instanceof VirtualNetworkFunctionDescriptorDelete) {
               configureVirtualNetworkFunctionDescriptorDelete(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceDescriptorWait)
+            } else if (subTask instanceof NetworkServiceDescriptorWait) {
               configureNetworkServiceDescriptorWait(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceRecordDelete)
+            } else if (subTask instanceof NetworkServiceRecordDelete) {
               configureNetworkServiceRecordDelete(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceRecordCreate)
+            } else if (subTask instanceof NetworkServiceRecordCreate) {
               configureNetworkServiceRecordCreate(subTask, currentSection);
-            else if (subTask instanceof NetworkServiceRecordWait)
+            } else if (subTask instanceof NetworkServiceRecordWait) {
               configureNetworkServiceRecordWait(subTask, currentSection);
-            else if (subTask instanceof VirtualNetworkFunctionRecordWait)
+            } else if (subTask instanceof VirtualNetworkFunctionRecordWait) {
               configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
-            else if (subTask instanceof GenericServiceTester)
+            } else if (subTask instanceof GenericServiceTester) {
               configureGenericServiceTester(subTask, currentSection);
-            else if (subTask instanceof ScaleOut) configureScaleOut(subTask, currentSection);
-            else if (subTask instanceof ScaleIn) configureScaleIn(subTask, currentSection);
-            else if (subTask instanceof ScalingTester)
+            } else if (subTask instanceof ScaleOut) {
+              configureScaleOut(subTask, currentSection);
+            } else if (subTask instanceof ScaleIn) {
+              configureScaleIn(subTask, currentSection);
+            } else if (subTask instanceof ScalingTester) {
               configureScalingTester(subTask, currentSection);
-            else if (subTask instanceof PackageUpload)
+            } else if (subTask instanceof PackageUpload) {
               configurePackageUpload(subTask, currentSection);
-            else if (subTask instanceof PackageDelete)
+            } else if (subTask instanceof PackageDelete) {
               configurePackageDelete(subTask, currentSection);
-            else if (subTask instanceof VNFRStatusTester)
+            } else if (subTask instanceof VNFRStatusTester) {
               configureVnfrStatusTester(subTask, currentSection);
-            else if (subTask instanceof Pause) configurePause(subTask, currentSection);
-            else if (subTask instanceof UserCreate) configureUserCreate(subTask, currentSection);
-            else if (subTask instanceof UserDelete) configureUserDelete(subTask, currentSection);
-            else if (subTask instanceof UserUpdate) configureUserUpdate(subTask, currentSection);
-            else if (subTask instanceof ProjectCreate)
+            } else if (subTask instanceof Pause) {
+              configurePause(subTask, currentSection);
+            } else if (subTask instanceof UserCreate) {
+              configureUserCreate(subTask, currentSection);
+            } else if (subTask instanceof UserDelete) {
+              configureUserDelete(subTask, currentSection);
+            } else if (subTask instanceof UserUpdate) {
+              configureUserUpdate(subTask, currentSection);
+            } else if (subTask instanceof ProjectCreate) {
               configureProjectCreate(subTask, currentSection);
-            else if (subTask instanceof ProjectDelete)
+            } else if (subTask instanceof ProjectDelete) {
               configureProjectDelete(subTask, currentSection);
+            }
           }
         };
     itm.setLogger(log);
@@ -207,7 +239,9 @@ public class MainIntegrationTest {
       if (clArgs.size() > 0
           && !clArgs.contains(
               name)) // if test names are passed through the command line, only these will be executed
-      continue;
+      {
+        continue;
+      }
       executedTests = true;
       startTime = System.currentTimeMillis();
       if (itm.runTestScenario(properties, url, name)) {
@@ -226,7 +260,9 @@ public class MainIntegrationTest {
         log.error("Test: " + name + " completed with errors :(\n");
         allTestsPassed = false;
       }
-      if (clearAfterTest) clearOrchestrator();
+      if (clearAfterTest) {
+        clearOrchestrator();
+      }
     }
     if (!executedTests) {
       log.warn("No tests were executed.");
@@ -305,9 +341,10 @@ public class MainIntegrationTest {
     String externalScenariosPath = properties.getProperty("integration-test-scenarios");
     // scenario files stored on the host machine
     LinkedList<URL> externalFiles = new LinkedList<>();
-    if (externalScenariosPath != null)
+    if (externalScenariosPath != null) {
       externalFiles =
           Utils.getExternalFilesAsURL(properties.getProperty("integration-test-scenarios"));
+    }
 
     // scenario files already included in this project
     LinkedList<URL> internalFiles = Utils.getFilesAsURL(SCENARIO_PATH + "*.ini");
@@ -327,7 +364,9 @@ public class MainIntegrationTest {
           break;
         }
       }
-      if (!foundInternalEquivalent) urlsToAdd.add(externalUrl);
+      if (!foundInternalEquivalent) {
+        urlsToAdd.add(externalUrl);
+      }
     }
     internalFiles.addAll(urlsToAdd);
     return internalFiles;
@@ -356,8 +395,12 @@ public class MainIntegrationTest {
     VirtualNetworkFunctionDescriptorDelete w = (VirtualNetworkFunctionDescriptorDelete) subtask;
     String vnfdType = currentSection.get("vnf-type");
     String vnfdName = currentSection.get("vnf-name");
-    if (vnfdType != null) w.setVnfdType(vnfdType);
-    if (vnfdName != null) w.setVnfdName(vnfdName);
+    if (vnfdType != null) {
+      w.setVnfdType(vnfdType);
+    }
+    if (vnfdName != null) {
+      w.setVnfdName(vnfdName);
+    }
   }
 
   private static void configureVirtualNetworkFunctionRecordWait(
@@ -433,14 +476,22 @@ public class MainIntegrationTest {
     String vnfrType = currentSection.get("vnf-type");
     String vmScriptsPath = currentSection.get("vm-scripts-path");
     String user = currentSection.get("user-name");
-    if (vnfrType != null) t.setVnfrType(vnfrType);
+    if (vnfrType != null) {
+      t.setVnfrType(vnfrType);
+    }
 
-    if (vmScriptsPath != null) t.setVmScriptsPath(vmScriptsPath);
+    if (vmScriptsPath != null) {
+      t.setVmScriptsPath(vmScriptsPath);
+    }
 
     String netName = currentSection.get("net-name");
-    if (netName != null) t.setVirtualLink(netName);
+    if (netName != null) {
+      t.setVirtualLink(netName);
+    }
 
-    if (user != null) t.setUserName(user);
+    if (user != null) {
+      t.setUserName(user);
+    }
 
     for (int i = 1; !stop; i++) {
       String scriptName = currentSection.get("script-" + i);
@@ -457,26 +508,38 @@ public class MainIntegrationTest {
     String vnfrType = currentSection.get("vnf-type");
     String virtualLink = currentSection.get("virtual-link");
     String floatingIp = currentSection.get("floating-ip");
-    if (vnfrType != null) t.setVnfrType(vnfrType);
+    if (vnfrType != null) {
+      t.setVnfrType(vnfrType);
+    }
 
-    if (virtualLink != null) t.setVirtualLink(virtualLink);
+    if (virtualLink != null) {
+      t.setVirtualLink(virtualLink);
+    }
 
-    if (floatingIp != null) t.setFloatingIp(floatingIp);
+    if (floatingIp != null) {
+      t.setFloatingIp(floatingIp);
+    }
   }
 
   private static void configureScaleIn(SubTask subTask, Profile.Section currentSection) {
     ScaleIn t = (ScaleIn) subTask;
     String vnfrType = currentSection.get("vnf-type");
-    if (vnfrType != null) t.setVnfrType(vnfrType);
+    if (vnfrType != null) {
+      t.setVnfrType(vnfrType);
+    }
   }
 
   private static void configureScalingTester(SubTask subTask, Profile.Section currentSection) {
     ScalingTester t = (ScalingTester) subTask;
     String vnfrType = currentSection.get("vnf-type");
     String vnfcCount = currentSection.get("vnfc-count");
-    if (vnfrType != null) t.setVnfrType(vnfrType);
+    if (vnfrType != null) {
+      t.setVnfrType(vnfrType);
+    }
 
-    if (vnfcCount != null) t.setVnfcCount(vnfcCount);
+    if (vnfcCount != null) {
+      t.setVnfcCount(vnfcCount);
+    }
   }
 
   private static void configurePackageUpload(SubTask instance, Profile.Section currentSection) {
@@ -492,10 +555,14 @@ public class MainIntegrationTest {
   private static void configureVnfrStatusTester(SubTask instance, Profile.Section currentSection) {
     VNFRStatusTester t = (VNFRStatusTester) instance;
     String status = currentSection.get("status");
-    if (status != null) t.setStatus(status);
+    if (status != null) {
+      t.setStatus(status);
+    }
 
     String vnfrType = currentSection.get("vnf-type");
-    if (vnfrType != null) t.setVnfrType(vnfrType);
+    if (vnfrType != null) {
+      t.setVnfrType(vnfrType);
+    }
   }
 
   private static void configurePause(SubTask instance, Profile.Section currentSection) {

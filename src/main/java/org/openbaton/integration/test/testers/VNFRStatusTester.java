@@ -21,6 +21,7 @@ import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -33,8 +34,9 @@ public class VNFRStatusTester extends Tester {
   private String vnfrType = "";
   private Status status = null;
 
-  public VNFRStatusTester(Properties properties) {
+  public VNFRStatusTester(Properties properties) throws FileNotFoundException {
     super(properties, VNFRStatusTester.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

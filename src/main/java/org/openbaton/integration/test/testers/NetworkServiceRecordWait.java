@@ -23,6 +23,7 @@ import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -35,8 +36,9 @@ public class NetworkServiceRecordWait extends Waiter {
 
   private String name = NetworkServiceRecordWait.class.getSimpleName();
 
-  public NetworkServiceRecordWait(Properties properties) {
+  public NetworkServiceRecordWait(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordWait.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -46,7 +48,8 @@ public class NetworkServiceRecordWait extends Waiter {
 
   @Override
   protected Object doWork()
-      throws SDKException, SubscriptionException, InterruptedException, IntegrationTestException {
+      throws SDKException, SubscriptionException, InterruptedException, IntegrationTestException,
+          FileNotFoundException {
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 

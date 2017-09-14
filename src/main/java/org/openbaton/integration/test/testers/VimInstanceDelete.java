@@ -22,6 +22,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -42,9 +43,10 @@ public class VimInstanceDelete extends Tester<VimInstance> {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public VimInstanceDelete(Properties properties) {
+  public VimInstanceDelete(Properties properties) throws FileNotFoundException {
     super(properties, VimInstance.class, "", "/datacenters");
     this.properties = properties;
+    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override
@@ -59,7 +61,6 @@ public class VimInstanceDelete extends Tester<VimInstance> {
 
     try {
       if (asUser != null && !"".equals(asUser)) {
-        String projectId = properties.getProperty("nfvo-project-id");
         if (inProject != null && !"".equals(inProject)) {
           log.info(
               "Delete Vim Instance "

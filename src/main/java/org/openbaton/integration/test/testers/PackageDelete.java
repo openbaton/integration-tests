@@ -21,6 +21,7 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,8 +33,9 @@ import java.util.Properties;
 public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   private String packageName = "";
 
-  public PackageDelete(Properties properties) {
+  public PackageDelete(Properties properties) throws FileNotFoundException {
     super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override

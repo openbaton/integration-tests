@@ -21,6 +21,7 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -39,9 +40,10 @@ public class ProjectCreate extends Tester<Project> {
 
   private Properties properties = null;
 
-  public ProjectCreate(Properties p) {
+  public ProjectCreate(Properties p) throws FileNotFoundException {
     super(p, Project.class, "", "/projects");
     properties = p;
+    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override
@@ -50,7 +52,7 @@ public class ProjectCreate extends Tester<Project> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     if (asUser != null && !"".equals(asUser)) {
       log.info("Try to create a new project " + projectName + " while logged in as " + asUser);
     } else {
@@ -67,7 +69,7 @@ public class ProjectCreate extends Tester<Project> {
             new ProjectAgent(
                 asUser,
                 userPassword,
-                properties.getProperty("nfvo-project-id"),
+                projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),

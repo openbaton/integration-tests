@@ -22,6 +22,7 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -45,9 +46,10 @@ public class UserCreate extends Tester<User> {
 
   private Properties properties = null;
 
-  public UserCreate(Properties p) {
+  public UserCreate(Properties p) throws FileNotFoundException {
     super(p, User.class, "", "/users");
     properties = p;
+    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -56,7 +58,7 @@ public class UserCreate extends Tester<User> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     if (asUser != null && !"".equals(asUser))
       log.info("Try to create a new user " + newUserName + " while logged in as " + asUser);
     else log.info("Try to create a new user " + newUserName);
@@ -93,7 +95,7 @@ public class UserCreate extends Tester<User> {
             new UserAgent(
                 asUser,
                 asUserPassword,
-                properties.getProperty("nfvo-project-id"),
+                projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),

@@ -21,6 +21,7 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -33,7 +34,7 @@ public class PackageUpload extends Tester<VNFPackage> {
   private String packageName = "";
   private String nfvoUrl = "";
 
-  public PackageUpload(Properties p) {
+  public PackageUpload(Properties p) throws FileNotFoundException {
     super(p, VNFPackage.class, EXTERNAL_PATH_NAME, "/vnf-packages");
     nfvoUrl =
         "http://"
@@ -41,6 +42,7 @@ public class PackageUpload extends Tester<VNFPackage> {
             + ":"
             + p.getProperty("nfvo-port")
             + "/api/v1/vnf-packages/";
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override

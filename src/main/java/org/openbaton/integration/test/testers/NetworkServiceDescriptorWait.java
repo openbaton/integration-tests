@@ -22,6 +22,7 @@ import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -34,8 +35,9 @@ public class NetworkServiceDescriptorWait extends Waiter {
 
   private static final String name = "NetworkServiceDescriptorWait";
 
-  public NetworkServiceDescriptorWait(Properties properties) {
+  public NetworkServiceDescriptorWait(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordWait.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
@@ -44,7 +46,8 @@ public class NetworkServiceDescriptorWait extends Waiter {
   }
 
   @Override
-  protected Object doWork() throws SubscriptionException, SDKException, InterruptedException {
+  protected Object doWork()
+      throws SubscriptionException, SDKException, InterruptedException, FileNotFoundException {
 
     EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
     eventEndpoint.setEvent(getAction());

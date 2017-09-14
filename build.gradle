@@ -20,6 +20,7 @@ buildscript {
     dependencies {
         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE")
+        classpath("se.transmode.gradle:gradle-docker:1.2")
     }
 }
 
@@ -29,6 +30,7 @@ plugins {
 }
 apply plugin: 'gradle-one-jar'
 apply plugin: 'java'
+apply plugin: 'docker'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
@@ -75,6 +77,8 @@ repositories {
 configurations.all {
     exclude group: 'org.slf4j', module: 'slf4j-simple'
 }
+
+apply from: 'gradle/gradle/packaging.openbaton-integration-tests.docker.gradle'
 
 dependencies {
 

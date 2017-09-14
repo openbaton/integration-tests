@@ -25,6 +25,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
@@ -44,8 +45,9 @@ public class ScalingTester extends Tester {
   private String vnfrType = "";
   private int vnfcCount = 0;
 
-  public ScalingTester(Properties properties) {
+  public ScalingTester(Properties properties) throws FileNotFoundException {
     super(properties, ScaleOut.class, "", "");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override

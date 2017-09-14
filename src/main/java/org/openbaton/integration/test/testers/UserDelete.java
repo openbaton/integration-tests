@@ -22,6 +22,7 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 /**
@@ -41,9 +42,10 @@ public class UserDelete extends Tester<User> {
 
   private Properties properties = null;
 
-  public UserDelete(Properties p) {
+  public UserDelete(Properties p) throws FileNotFoundException {
     super(p, User.class, "", "/users");
     this.properties = p;
+    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -52,7 +54,7 @@ public class UserDelete extends Tester<User> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete user " + userToDelete + " while logged in as " + asUser);
     else log.info("Try to delete user " + userToDelete);
@@ -66,7 +68,7 @@ public class UserDelete extends Tester<User> {
             new UserAgent(
                 asUser,
                 userPassword,
-                properties.getProperty("nfvo-project-id"),
+                projectId,
                 Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),

@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -55,13 +56,19 @@ public class RestWaiter implements WaiterInterface {
   private String unsubscriptionId;
   private Action action;
   private String payload;
+  private Properties properties;
 
   public RestWaiter(
-      String waiterName, NFVORequestor nfvoRequestor, Gson gsonMapper, Logger logger) {
+      String waiterName,
+      NFVORequestor nfvoRequestor,
+      Gson gsonMapper,
+      Logger logger,
+      Properties properties) {
     name = waiterName;
     requestor = nfvoRequestor;
     mapper = gsonMapper;
     log = logger;
+    this.properties = properties;
     ee = null;
     unsubscriptionId = null;
   }
@@ -74,7 +81,8 @@ public class RestWaiter implements WaiterInterface {
    * @throws SubscriptionException
    */
   @Override
-  public void subscribe(EventEndpoint eventEndpoint) throws SDKException, SubscriptionException {
+  public void subscribe(EventEndpoint eventEndpoint)
+      throws SDKException, SubscriptionException, FileNotFoundException {
     try {
       launchServer();
     } catch (IOException e) {
@@ -106,7 +114,7 @@ public class RestWaiter implements WaiterInterface {
    * @throws SDKException
    */
   @Override
-  public void unSubscribe() throws SDKException {
+  public void unSubscribe() throws SDKException, FileNotFoundException {
     if (ee == null) throw new NullPointerException("EventEndpoint is null");
     this.requestor.getEventAgent().requestDelete(unsubscriptionId);
     stopServer();
@@ -138,7 +146,9 @@ public class RestWaiter implements WaiterInterface {
   }
 
   private void launchServer() throws IOException {
-    server = HttpServer.create(new InetSocketAddress(0), 1);
+
+    int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "0"));
+    server = HttpServer.create(new InetSocketAddress(port), 1);
     myHandler = new MyHandler();
     server.createContext("/" + name, myHandler);
     server.setExecutor(null);

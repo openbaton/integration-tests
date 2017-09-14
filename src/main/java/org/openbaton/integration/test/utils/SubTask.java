@@ -31,6 +31,16 @@ public abstract class SubTask implements Callable<Object> {
   private int maxIntegrationTestTime;
   public Object param;
 
+  public String getProjectId() {
+    return projectId;
+  }
+
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
+
+  protected String projectId;
+
   public SubTask() {
     this.successors = new LinkedList<>();
     this.f = new LinkedList<>();

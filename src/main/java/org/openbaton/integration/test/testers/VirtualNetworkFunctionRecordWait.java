@@ -24,6 +24,7 @@ import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -37,8 +38,9 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   private String name = VirtualNetworkFunctionRecordWait.class.getSimpleName();
   private String vnfrType;
 
-  public VirtualNetworkFunctionRecordWait(Properties properties) {
+  public VirtualNetworkFunctionRecordWait(Properties properties) throws FileNotFoundException {
     super(properties, VirtualNetworkFunctionRecordWait.class, "", "");
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 
   @Override
@@ -47,7 +49,8 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   }
 
   @Override
-  protected Object doWork() throws SDKException, InterruptedException, IntegrationTestException {
+  protected Object doWork()
+      throws SDKException, InterruptedException, IntegrationTestException, FileNotFoundException {
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
     EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
