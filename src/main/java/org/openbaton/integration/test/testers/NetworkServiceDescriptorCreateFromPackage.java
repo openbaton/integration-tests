@@ -64,8 +64,6 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
       obtained = vnfdAgent.findAll();
     } catch (SDKException e) {
       log.error("Error trying to get all VNFDs.");
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
     }
     String id = "";
     for (VirtualNetworkFunctionDescriptor vnfd : obtained) {
