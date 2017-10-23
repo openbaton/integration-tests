@@ -714,338 +714,254 @@
   ],
   "vnf_dependency":[
     {
-      "source" : {
-        "name": "vnf-dummy-1"
-      },
-      "target":{
-        "name": "vnf-dummy-2"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-3"
-      },
-      "target":{
-        "name": "vnf-dummy-2"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-4"
-      },
-      "target":{
-        "name": "vnf-dummy-6"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-4"
-      },
-      "target":{
-        "name": "vnf-dummy-3"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-6"
-      },
-      "target":{
-        "name": "vnf-dummy-2"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-4"
-      },
-      "target":{
-        "name": "vnf-dummy-1"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-6"
-      },
-      "target":{
-        "name": "vnf-dummy-5"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },{
-      "source" : {
-        "name": "vnf-dummy-5"
-      },
-      "target":{
-        "name": "vnf-dummy-4"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-7"
-      },
-      "target":{
-        "name": "vnf-dummy-1"
-      },
-      "parameters":[
-        "param1", "param3"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-7"
-      },
-      "target":{
-        "name": "vnf-dummy-4"
-      },
-      "parameters":[
-        "param1", "param2", "param3"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-7"
-      },
-      "target":{
-        "name": "vnf-dummy-6"
-      },
-      "parameters":[
-        "param2", "param3"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-8"
-      },
-      "target":{
-        "name": "vnf-dummy-6"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-6"
-      },
-      "target":{
-        "name": "vnf-dummy-8"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-5"
-      },
-      "target":{
-        "name": "vnf-dummy-8"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-8"
-      },
-      "target":{
-        "name": "vnf-dummy-1"
-      },
-      "parameters":[
-        "param3", "param4"
-      ]
-    },
-    {
-      "source" : {
-        "name": "vnf-dummy-9"
-      },
-      "target":{
-        "name": "vnf-dummy-5"
-      },
-      "parameters":[
+      "parameters": [
+        "param1",
         "param2"
-      ]
+      ],
+      "source": "vnf-dummy-1",
+      "target": "vnf-dummy-2"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-8"
-      },
-      "target":{
-        "name": "vnf-dummy-9"
-      },
-      "parameters":[
-        "param1", "param2", "param3", "param4"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-3",
+      "target": "vnf-dummy-2"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-2"
-      },
-      "target":{
-        "name": "vnf-dummy-9"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-4",
+      "target": "vnf-dummy-6"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-10"
-      },
-      "target":{
-        "name": "vnf-dummy-9"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-4",
+      "target": "vnf-dummy-3"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-10"
-      },
-      "target":{
-        "name": "vnf-dummy-8"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-6",
+      "target": "vnf-dummy-2"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-10"
-      },
-      "target":{
-        "name": "vnf-dummy-7"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-4",
+      "target": "vnf-dummy-1"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-10"
-      },
-      "target":{
-        "name": "vnf-dummy-2"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-6",
+      "target": "vnf-dummy-5"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-1"
-      },
-      "target":{
-        "name": "vnf-dummy-10"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-5",
+      "target": "vnf-dummy-4"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-2"
-      },
-      "target":{
-        "name": "vnf-dummy-10"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param3"
+      ],
+      "source": "vnf-dummy-7",
+      "target": "vnf-dummy-1"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-5"
-      },
-      "target":{
-        "name": "vnf-dummy-10"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2",
+        "param3"
+      ],
+      "source": "vnf-dummy-7",
+      "target": "vnf-dummy-4"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-1"
-      },
-      "target":{
-        "name": "vnf-dummy-11"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param2",
+        "param3"
+      ],
+      "source": "vnf-dummy-7",
+      "target": "vnf-dummy-6"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-3"
-      },
-      "target":{
-        "name": "vnf-dummy-11"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-8",
+      "target": "vnf-dummy-6"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-5"
-      },
-      "target":{
-        "name": "vnf-dummy-11"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-6",
+      "target": "vnf-dummy-8"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-11"
-      },
-      "target":{
-        "name": "vnf-dummy-2"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-5",
+      "target": "vnf-dummy-8"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-11"
-      },
-      "target":{
-        "name": "vnf-dummy-4"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param3",
+        "param4"
+      ],
+      "source": "vnf-dummy-8",
+      "target": "vnf-dummy-1"
     },
     {
-      "source" : {
-        "name": "vnf-dummy-11"
-      },
-      "target":{
-        "name": "vnf-dummy-6"
-      },
-      "parameters":[
-        "param1", "param2"
-      ]
+      "parameters": [
+        "param2"
+      ],
+      "source": "vnf-dummy-9",
+      "target": "vnf-dummy-5"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2",
+        "param3",
+        "param4"
+      ],
+      "source": "vnf-dummy-8",
+      "target": "vnf-dummy-9"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-2",
+      "target": "vnf-dummy-9"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-10",
+      "target": "vnf-dummy-9"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-10",
+      "target": "vnf-dummy-8"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-10",
+      "target": "vnf-dummy-7"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-10",
+      "target": "vnf-dummy-2"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-1",
+      "target": "vnf-dummy-10"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-2",
+      "target": "vnf-dummy-10"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-5",
+      "target": "vnf-dummy-10"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-1",
+      "target": "vnf-dummy-11"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-3",
+      "target": "vnf-dummy-11"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-5",
+      "target": "vnf-dummy-11"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-11",
+      "target": "vnf-dummy-2"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-11",
+      "target": "vnf-dummy-4"
+    },
+    {
+      "parameters": [
+        "param1",
+        "param2"
+      ],
+      "source": "vnf-dummy-11",
+      "target": "vnf-dummy-6"
     }
   ]
 }

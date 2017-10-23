@@ -136,12 +136,8 @@
     ],
     "vnf_dependency":[
         {
-            "source":{
-                "name":"ncatserver"
-            },
-            "target":{
-                "name":"ncatclient"
-            },
+            "source":"ncatserver",
+            "target": "ncatclient",
             "parameters":[
                 "private"
             ]

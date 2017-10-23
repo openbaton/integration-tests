@@ -113,7 +113,12 @@
         }
       ],
       "type":"client",
-      "endpoint":"dummy"
+      "endpoint":"dummy",
+      "requires": {
+        "iperf-server":{
+          "parameters": ["private"]
+        }
+      }
     }
   ],
   "vld":[
@@ -121,13 +126,5 @@
       "name":"private"
     }
   ],
-  "vnf_dependency":[
-    {
-      "source": "iperf-server",
-      "target": "iperf-client",
-      "parameters":[
-        "private"
-      ]
-    }
-  ]
+  "vnf_dependency":[ ]
 }
