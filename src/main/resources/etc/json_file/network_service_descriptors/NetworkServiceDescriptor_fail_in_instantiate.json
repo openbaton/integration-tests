@@ -4,7 +4,7 @@
     "version":"0.1-ALPHA",
     "vnfd":[
         {
-            "name":"iperfserver",
+            "name":"iperf-server",
             "vendor":"fokus",
             "version":"0.1",
             "type":"server",
@@ -63,7 +63,7 @@
             "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         },
         {
-            "name":"iperfclient",
+            "name":"iperf-client",
             "vendor":"fokus",
             "version":"0.1",
             "type":"client",
@@ -141,12 +141,8 @@
     ],
     "vnf_dependency":[
         {
-            "source":{
-                "name":"iperfserver"
-            },
-            "target":{
-                "name":"iperfclient"
-            },
+            "source": "iperf-server",
+            "target": "iperf-client",
             "parameters":[
                 "private"
             ]
