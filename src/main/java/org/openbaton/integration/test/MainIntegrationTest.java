@@ -15,6 +15,7 @@
  */
 package org.openbaton.integration.test;
 
+import dnl.utils.text.table.TextTable;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
@@ -61,10 +62,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
@@ -130,8 +128,6 @@ public class MainIntegrationTest {
   }
 
   public static void main(String[] args) throws Exception {
-
-    System.out.println(log.getClass());
     Properties properties = null;
     try {
       properties = loadProperties();
@@ -167,6 +163,11 @@ public class MainIntegrationTest {
         fileNames.add(name);
       }
       for (String arg : clArgs) {
+        if (arg.equals("clean")) {
+          log.info("Execute clean up of existing descriptors and records");
+          clearOrchestrator();
+          System.exit(0);
+        }
         if (!fileNames.contains(arg)) {
           log.warn("The argument " + arg + " does not specify an existing test scenario.");
         }
@@ -231,6 +232,7 @@ public class MainIntegrationTest {
     itm.setLogger(log);
     long startTime, stopTime;
     boolean allTestsPassed = true;
+    Map<String, String> results = new HashMap<>();
     boolean executedTests =
         false; // shows that there was at least one test executed by the integration test
     for (URL url : iniFileURLs) {
@@ -256,9 +258,11 @@ public class MainIntegrationTest {
                     TimeUnit.MILLISECONDS.toSeconds(stopTime)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
                 + "\n");
+        results.put(name, "SUCCESS");
       } else {
         log.error("Test: " + name + " completed with errors :(\n");
         allTestsPassed = false;
+        results.put(name, "FAILED");
       }
       if (clearAfterTest) {
         clearOrchestrator();
@@ -268,11 +272,13 @@ public class MainIntegrationTest {
       log.warn("No tests were executed.");
       System.exit(1);
     }
+    log.info("Final results of the execution of the tests: \n");
+    String[] columns = {"Scenario Name", "Result"};
+    Utils.getResultsTable(columns, results).printTable();
+    System.out.println();
     if (allTestsPassed) {
-      log.info("All tests passed successfully.");
       System.exit(0);
     } else {
-      log.info("Some tests failed.");
       System.exit(99);
     }
   }

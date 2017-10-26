@@ -17,6 +17,7 @@ package org.openbaton.integration.test.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dnl.utils.text.table.TextTable;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -38,10 +39,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by lto on 24/06/15.
@@ -254,5 +252,17 @@ public class Utils {
     }
     log.warn("Did not find a user named " + userName);
     return null;
+  }
+
+  public static TextTable getResultsTable(String[] columns, Map<String, String> content) {
+    String[][] results = new String[content.size()][2];
+    int count = 0;
+    for (Map.Entry<String, String> entry : content.entrySet()) {
+      results[count][0] = entry.getKey();
+      results[count][1] = entry.getValue();
+      count++;
+    }
+    TextTable tt = new TextTable(columns, results);
+    return tt;
   }
 }
