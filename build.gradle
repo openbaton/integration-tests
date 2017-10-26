@@ -94,6 +94,8 @@ dependencies {
 
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.httpcomponents:httpclient:4.5.2'
+    // lib needed for printing tests results
+    compile group: 'com.massisframework', name: 'j-text-utils', version: '0.3.4'
 
 }
 

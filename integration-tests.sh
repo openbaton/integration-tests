@@ -4,7 +4,7 @@ function usage
 {
     echo "./integration-tests.sh [list] [help] [clean|compile|start|sc] [scenario_1.ini ... scenario_n.ini]"
     echo ""
-    echo "clean               clean the project build"
+    echo "build-clean         clean the project build"
     echo "compile             compile the integration-test project"
     echo "help                prints this help; if passed as an argument all other arguments will be ignored"
     echo "list                lists all available test scenarios; if passed as an argument clean, compile, start and sc arguments will be ignored"
@@ -54,7 +54,7 @@ args=("$@")
 
 for i in `seq 0 ${#args}`; do
   case "${args[$i]}" in
-    clean) 
+    build-clean)
       cleann=true
       args[$i]="";;
     compile) 
