@@ -30,7 +30,7 @@ import java.util.Properties;
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
   public NetworkServiceRecordDelete(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecord.class, "", "/ns-records");
+    super(properties, NetworkServiceRecord.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

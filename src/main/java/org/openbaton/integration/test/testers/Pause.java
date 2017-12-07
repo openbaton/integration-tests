@@ -33,7 +33,7 @@ public class Pause extends Tester {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public Pause(Properties properties) {
-    super(properties, Pause.class, "", "");
+    super(properties, Pause.class, "");
   }
 
   @Override

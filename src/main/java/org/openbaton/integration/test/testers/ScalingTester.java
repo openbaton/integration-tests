@@ -46,7 +46,7 @@ public class ScalingTester extends Tester {
   private int vnfcCount = 0;
 
   public ScalingTester(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleOut.class, "", "");
+    super(properties, ScaleOut.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

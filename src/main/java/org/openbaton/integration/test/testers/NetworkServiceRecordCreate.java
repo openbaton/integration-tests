@@ -36,7 +36,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public NetworkServiceRecordCreate(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecord.class, "", "/ns-records");
+    super(properties, NetworkServiceRecord.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

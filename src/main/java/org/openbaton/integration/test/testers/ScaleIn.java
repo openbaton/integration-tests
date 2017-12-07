@@ -38,7 +38,7 @@ public class ScaleIn extends Tester {
   private String vnfrType = "";
 
   public ScaleIn(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleIn.class, "", "");
+    super(properties, ScaleIn.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

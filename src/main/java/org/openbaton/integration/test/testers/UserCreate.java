@@ -47,7 +47,7 @@ public class UserCreate extends Tester<User> {
   private Properties properties = null;
 
   public UserCreate(Properties p) throws FileNotFoundException {
-    super(p, User.class, "", "/users");
+    super(p, User.class, "");
     properties = p;
     this.setAbstractRestAgent(requestor.getUserAgent());
   }

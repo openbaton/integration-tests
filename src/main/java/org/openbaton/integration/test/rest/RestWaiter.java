@@ -147,7 +147,7 @@ public class RestWaiter implements WaiterInterface {
 
   private void launchServer() throws IOException {
 
-    int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "0"));
+    int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "8181"));
     server = HttpServer.create(new InetSocketAddress(port), 1);
     myHandler = new MyHandler();
     server.createContext("/" + name, myHandler);

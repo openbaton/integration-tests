@@ -35,7 +35,7 @@ public class PackageUpload extends Tester<VNFPackage> {
   private String nfvoUrl = "";
 
   public PackageUpload(Properties p) throws FileNotFoundException {
-    super(p, VNFPackage.class, EXTERNAL_PATH_NAME, "/vnf-packages");
+    super(p, VNFPackage.class, EXTERNAL_PATH_NAME);
     nfvoUrl =
         "http://"
             + p.getProperty("nfvo-ip")

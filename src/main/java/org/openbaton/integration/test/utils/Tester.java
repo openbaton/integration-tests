@@ -48,12 +48,11 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   protected static final Logger log = LoggerFactory.getLogger(Tester.class);
 
   /**
-   *
-   * @param properties: IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
-   * @param aClass: example VimInstance.class
-   * @param filePath: example "/etc/json_file/vim_instances/vim-instance.json"
+   * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   * @param aClass : example VimInstance.class
+   * @param filePath : example "/etc/json_file/vim_instances/vim-instance.json"
    */
-  public Tester(Properties properties, Class<T> aClass, String filePath, String basePath) {
+  public Tester(Properties properties, Class<T> aClass, String filePath) {
     this.FILE_NAME = filePath;
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();

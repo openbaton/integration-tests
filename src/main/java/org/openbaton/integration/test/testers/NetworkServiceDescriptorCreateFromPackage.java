@@ -51,7 +51,7 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
     Set<VirtualNetworkFunctionDescriptor> vnfds = nsd.getVnfd();
     for (VirtualNetworkFunctionDescriptor vnfd : vnfds) {
       vnfd.setId(getVnfdIdByType(vnfd.getType()));
-      vnfd.setType(null);
+      vnfd.setType(vnfd.getType());
     }
     return nsd;
   }

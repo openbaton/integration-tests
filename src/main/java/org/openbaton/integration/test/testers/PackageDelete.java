@@ -34,7 +34,7 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   private String packageName = "";
 
   public PackageDelete(Properties properties) throws FileNotFoundException {
-    super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+    super(properties, VirtualNetworkFunctionDescriptor.class, "");
     this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 

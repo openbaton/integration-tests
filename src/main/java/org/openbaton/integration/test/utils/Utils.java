@@ -27,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
+import org.openbaton.integration.test.MainIntegrationTest;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ import java.util.*;
 public class Utils {
 
   private static final String PROPERTIES_FILE = "/integration-tests.properties";
+  private final static String SCENARIO_PATH = "/integration-test-scenarios/";
+
   private static Logger log = LoggerFactory.getLogger(Utils.class);
 
   public static Properties getProperties() throws IOException {
@@ -213,6 +216,72 @@ public class Utils {
       }
     }
     return bearerToken;
+  }
+
+  public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
+    int i = 0;
+    while (!available(nfvoIp, nfvoPort)) {
+      i++;
+      try {
+        Thread.sleep(3000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (i > 40) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
+    String scenarioPath = properties.getProperty("integration-test-scenarios", Utils.SCENARIO_PATH);
+    // scenario files stored on the host machine
+    LinkedList<URL> externalFiles = new LinkedList<>();
+    if (scenarioPath != null) {
+      externalFiles = getExternalFilesAsURL(scenarioPath);
+    }
+
+    // scenario files already included in this project
+    LinkedList<URL> internalFiles = getFilesAsURL(scenarioPath + "*.ini");
+
+    LinkedList<URL> urlsToAdd = new LinkedList<>();
+    for (URL externalUrl : externalFiles) {
+      boolean foundInternalEquivalent = false;
+      for (URL internalUrl : internalFiles) {
+        String[] splittedExternal = externalUrl.toString().split("/");
+        String externalName = splittedExternal[splittedExternal.length - 1];
+        String[] splittedInternal = internalUrl.toString().split("/");
+        String internalName = splittedInternal[splittedInternal.length - 1];
+        if (internalName.equals(externalName)) {
+          foundInternalEquivalent = true;
+          internalFiles.remove(internalUrl);
+          urlsToAdd.add(externalUrl);
+          break;
+        }
+      }
+      if (!foundInternalEquivalent) {
+        urlsToAdd.add(externalUrl);
+      }
+    }
+    internalFiles.addAll(urlsToAdd);
+    return internalFiles;
+  }
+
+  public static String findProjectId(
+      String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
+      throws SDKException, ClassNotFoundException, FileNotFoundException {
+
+    // TODO make the project nullable
+    NFVORequestor requestor =
+        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, "default", nfvoIp, nfvoPort, "1");
+    List<Project> projects = requestor.getProjectAgent().findAll();
+    for (Project p : projects) {
+      if (p.getName().equals("default")) {
+        return p.getId();
+      }
+    }
+    return projects.get(0).getId();
   }
 
   private class ParseComError implements Serializable {

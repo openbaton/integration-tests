@@ -34,7 +34,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public NetworkServiceRecordGetLatest(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordGetLatest.class, "", "");
+    super(properties, NetworkServiceRecordGetLatest.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

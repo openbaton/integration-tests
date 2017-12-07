@@ -24,12 +24,19 @@ import java.util.concurrent.*;
  */
 public abstract class SubTask implements Callable<Object> {
 
-  private ExecutorService executorService;
+  public Object param;
   protected List<SubTask> successors;
+  protected String projectId;
+  private ExecutorService executorService;
   private SubTask successorRemover;
   private List<Future> f;
   private int maxIntegrationTestTime;
-  public Object param;
+
+  public SubTask() {
+    this.successors = new LinkedList<>();
+    this.f = new LinkedList<>();
+    successorRemover = null;
+  }
 
   public String getProjectId() {
     return projectId;
@@ -39,20 +46,12 @@ public abstract class SubTask implements Callable<Object> {
     this.projectId = projectId;
   }
 
-  protected String projectId;
-
-  public SubTask() {
-    this.successors = new LinkedList<>();
-    this.f = new LinkedList<>();
-    successorRemover = null;
+  public Object getParam() {
+    return param;
   }
 
   public void setParam(Object param) {
     this.param = param;
-  }
-
-  public Object getParam() {
-    return param;
   }
 
   public void setMaxIntegrationTestTime(int maxIntegrationTestTime) {

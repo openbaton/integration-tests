@@ -37,7 +37,7 @@ public class VirtualNetworkFunctionDescriptorDelete
   private String vnfdName = "";
 
   public VirtualNetworkFunctionDescriptorDelete(Properties p) throws FileNotFoundException {
-    super(p, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
+    super(p, VirtualNetworkFunctionDescriptor.class, "");
     this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 

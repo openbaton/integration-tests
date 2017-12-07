@@ -44,7 +44,7 @@ public abstract class Waiter extends Tester {
   private Action action;
 
   public Waiter(Properties properties, Class aClass, String filePath, String basePath) {
-    super(properties, aClass, filePath, basePath);
+    super(properties, aClass, filePath);
   }
 
   /**

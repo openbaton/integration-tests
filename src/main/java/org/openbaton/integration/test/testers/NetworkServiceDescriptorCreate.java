@@ -49,7 +49,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
       false; // if the creating of the NSD is expected to fail this field should be set to true
 
   public NetworkServiceDescriptorCreate(Properties p) throws FileNotFoundException {
-    super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD, "/ns-descriptors");
+    super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD);
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 

@@ -54,7 +54,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public VimInstanceCreate(Properties properties) throws FileNotFoundException {
-    super(properties, VimInstance.class, LOCAL_PATH_NAME, "/datacenters");
+    super(properties, VimInstance.class, LOCAL_PATH_NAME);
     this.properties = properties;
     this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }

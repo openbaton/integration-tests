@@ -45,7 +45,7 @@ public class ScaleOut extends Tester {
   private String floatingIp = "random";
 
   public ScaleOut(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleOut.class, "", "");
+    super(properties, ScaleOut.class, "");
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
