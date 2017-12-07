@@ -60,6 +60,8 @@ public abstract class IntegrationTestManager {
     this.log = log;
   }
 
+  protected abstract void configureSubTask(SubTask subTask, Profile.Section currentSection);
+
   private SubTask loadInstance(Properties properties, Profile.Section currentChild) {
     String nameClass = currentChild.get("class-name");
     SubTask instance = null;
@@ -103,8 +105,6 @@ public abstract class IntegrationTestManager {
     }
     return instance;
   }
-
-  protected abstract void configureSubTask(SubTask subTask, Profile.Section currentSection);
 
   private SubTask loadTesters(Properties properties, Profile.Section root) {
     /**Get some global properties**/

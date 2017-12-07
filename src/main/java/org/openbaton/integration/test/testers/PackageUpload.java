@@ -32,16 +32,9 @@ import java.util.Properties;
 public class PackageUpload extends Tester<VNFPackage> {
   private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-tests/vnf-packages/";
   private String packageName = "";
-  private String nfvoUrl = "";
 
   public PackageUpload(Properties p) throws FileNotFoundException {
     super(p, VNFPackage.class, EXTERNAL_PATH_NAME);
-    nfvoUrl =
-        "http://"
-            + p.getProperty("nfvo-ip")
-            + ":"
-            + p.getProperty("nfvo-port")
-            + "/api/v1/vnf-packages/";
     this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 

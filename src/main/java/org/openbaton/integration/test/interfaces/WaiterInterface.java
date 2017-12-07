@@ -17,7 +17,6 @@ package org.openbaton.integration.test.interfaces;
 
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
-import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.sdk.api.exception.SDKException;
 

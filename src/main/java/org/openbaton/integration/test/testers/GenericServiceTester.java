@@ -45,7 +45,7 @@ public class GenericServiceTester extends Tester {
   private static final String EXTERNAL_PATH_NAME_SCRIPTS =
       "/etc/openbaton/integration-tests/scripts/";
 
-  private List<File> scripts = new LinkedList<File>();
+  private List<File> scripts = new LinkedList<>();
   private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
   private String vnfrType = "";
   private String virtualLink = "";
@@ -109,15 +109,11 @@ public class GenericServiceTester extends Tester {
 
     while (floatingIpIt.hasNext()) {
       String floatingIp = floatingIpIt.next();
-      Iterator<File> scriptIterator = scripts.iterator();
-      while (scriptIterator.hasNext()) {
-        File script = scriptIterator.next();
+      for (File script : scripts) {
         String scriptContent = getContentOfScript(script.getPath());
         List<String> preScripts = getPreScripts(scriptContent);
         if (preScripts.size() == 0) preScripts.add("");
-        Iterator<String> preScriptIt = preScripts.iterator();
-        while (preScriptIt.hasNext()) {
-          String preScript = preScriptIt.next();
+        for (String preScript : preScripts) {
           log.info(
               "Executing script "
                   + script.getName()
@@ -200,8 +196,7 @@ public class GenericServiceTester extends Tester {
   private String getContentOfScript(String script) throws IOException {
     byte[] encoded = new byte[0];
     encoded = Files.readAllBytes(Paths.get(script));
-    String content = new String(encoded, StandardCharsets.UTF_8);
-    return content;
+    return new String(encoded, StandardCharsets.UTF_8);
   }
 
   /**
@@ -221,9 +216,7 @@ public class GenericServiceTester extends Tester {
    * @param nsr
    */
   private void fillVnfrVnfc(NetworkServiceRecord nsr) {
-    Iterator<VirtualNetworkFunctionRecord> vnfrIt = nsr.getVnfr().iterator();
-    while (vnfrIt.hasNext()) {
-      VirtualNetworkFunctionRecord vnfr = vnfrIt.next();
+    for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
       List<VNFCRepresentation> representationList = new LinkedList<>();
       Configuration conf = vnfr.getConfigurations();
       Map<String, String> confMap = new HashMap<>();

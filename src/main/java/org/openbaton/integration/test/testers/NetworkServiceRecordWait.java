@@ -16,7 +16,6 @@
 package org.openbaton.integration.test.testers;
 
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
-import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
@@ -53,7 +52,7 @@ public class NetworkServiceRecordWait extends Waiter {
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
+    EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setNetworkServiceId(nsr.getId());
     //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
 

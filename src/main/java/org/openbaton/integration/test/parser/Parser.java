@@ -81,10 +81,8 @@ public class Parser {
     if (elementValue instanceof JsonPrimitive) {
       JsonPrimitive jsonPrimitive = (JsonPrimitive) elementValue;
       if (jsonPrimitive.isString())
-        if (jsonPrimitive.getAsString().startsWith("<::")
-            && jsonPrimitive.getAsString().endsWith("::>")) {
-          return true;
-        }
+        return jsonPrimitive.getAsString().startsWith("<::")
+            && jsonPrimitive.getAsString().endsWith("::>");
     }
     return false;
   }

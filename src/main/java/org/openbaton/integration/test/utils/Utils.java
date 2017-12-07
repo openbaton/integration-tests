@@ -27,7 +27,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
-import org.openbaton.integration.test.MainIntegrationTest;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
@@ -331,7 +330,6 @@ public class Utils {
       results[count][1] = entry.getValue();
       count++;
     }
-    TextTable tt = new TextTable(columns, results);
-    return tt;
+    return new TextTable(columns, results);
   }
 }

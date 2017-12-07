@@ -34,7 +34,6 @@ import java.util.Properties;
  */
 public abstract class Tester<T extends Serializable> extends SubTask {
   protected Properties properties;
-  private String FILE_NAME;
   protected final Class<T> aClass;
   protected String sshPrivateKeyFilePath;
 
@@ -53,7 +52,6 @@ public abstract class Tester<T extends Serializable> extends SubTask {
    * @param filePath : example "/etc/json_file/vim_instances/vim-instance.json"
    */
   public Tester(Properties properties, Class<T> aClass, String filePath) {
-    this.FILE_NAME = filePath;
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
     this.properties = properties;

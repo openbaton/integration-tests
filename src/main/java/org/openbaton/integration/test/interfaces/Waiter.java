@@ -62,11 +62,11 @@ public abstract class Waiter extends Tester {
     waiter.subscribe(eventEndpoint);
   }
 
-  protected EventEndpoint createEventEndpoint(String name, EndpointType type) {
+  protected EventEndpoint createEventEndpoint(String name) {
     EventEndpoint eventEndpoint = new EventEndpoint();
     eventEndpoint.setEvent(getAction());
     eventEndpoint.setName(name);
-    eventEndpoint.setType(type);
+    eventEndpoint.setType(EndpointType.REST);
     return eventEndpoint;
   }
 

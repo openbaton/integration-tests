@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
 
-  private static Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
+  private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
   private static String nfvoPort;
   private static String nfvoUsr;

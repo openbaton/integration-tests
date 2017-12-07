@@ -70,7 +70,7 @@ public class ScaleOut extends Tester {
         try {
           System.out.println(mapper.toJson(vnfc));
           // TODO choose the right vim instance
-          agent.createVNFCInstance(nsr.getId(), vnfr.getId(), vnfc, new ArrayList<String>());
+          agent.createVNFCInstance(nsr.getId(), vnfr.getId(), vnfc, new ArrayList<>());
         } catch (SDKException e) {
           log.warn("Exception while triggering the scale out: " + e.getMessage());
         }

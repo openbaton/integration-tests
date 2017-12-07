@@ -16,7 +16,6 @@
 package org.openbaton.integration.test.testers;
 
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
-import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
@@ -49,7 +48,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
   protected Object doWork()
       throws SubscriptionException, SDKException, InterruptedException, FileNotFoundException {
 
-    EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
+    EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setEvent(getAction());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     //The eventEndpoint param of EventEndpoint will be set in the RestWaiter

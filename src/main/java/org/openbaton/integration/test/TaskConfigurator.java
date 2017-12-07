@@ -8,8 +8,6 @@ import org.openbaton.integration.test.utils.SubTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 public class TaskConfigurator {
 
   private static Logger log = LoggerFactory.getLogger(TaskConfigurator.class);
