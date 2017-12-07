@@ -51,7 +51,6 @@ public class MainTest {
             }
           }
         };
-    itm.setLogger(log);
     long startTime = System.currentTimeMillis();
     boolean result = false;
     try {

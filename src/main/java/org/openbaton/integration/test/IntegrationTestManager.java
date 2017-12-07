@@ -19,6 +19,7 @@ import org.ini4j.Ini;
 import org.ini4j.Profile;
 import org.openbaton.integration.test.utils.SubTask;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +34,7 @@ import java.util.Properties;
 public abstract class IntegrationTestManager {
   private int maxIntegrationTestTime;
   private int maxConcurrentSuccessors;
-  private Logger log = null;
+  private Logger log = LoggerFactory.getLogger(IntegrationTestManager.class);
   private String classPath;
 
   public IntegrationTestManager(String classPath) {
@@ -54,10 +55,6 @@ public abstract class IntegrationTestManager {
       return false;
     }
     return rootSubTask.awaitTermination();
-  }
-
-  public void setLogger(Logger log) {
-    this.log = log;
   }
 
   protected abstract void configureSubTask(SubTask subTask, Profile.Section currentSection);

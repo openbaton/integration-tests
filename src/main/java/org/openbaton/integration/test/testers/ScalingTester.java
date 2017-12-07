@@ -60,7 +60,6 @@ public class ScalingTester extends Tester {
     log.info("Start ScalingTester");
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;
@@ -112,7 +111,6 @@ public class ScalingTester extends Tester {
   private int getNumberOfVNFCInstances(String nsrId, String vnfrId)
       throws IOException, SDKException, IntegrationTestException {
     int num = 0;
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
 
@@ -123,7 +121,6 @@ public class ScalingTester extends Tester {
   }
 
   private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
     return vnfr.getStatus();

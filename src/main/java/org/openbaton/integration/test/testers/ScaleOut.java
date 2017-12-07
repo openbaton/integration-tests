@@ -59,7 +59,6 @@ public class ScaleOut extends Tester {
     log.info("Start ScaleOut on VNFR type " + vnfrType);
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     boolean found = false;
     for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {

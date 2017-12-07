@@ -91,7 +91,7 @@ public class RestWaiter implements WaiterInterface {
     if (eventEndpoint != null) {
       String localIp = "";
       try {
-        localIp = Utils.getProperties().getProperty("local-ip");
+        localIp = this.properties.getProperty("local-ip");
         if (localIp.equals(""))
           throw new SubscriptionException("local-ip is empty. Please set it in the properties.");
       } catch (Exception e) {

@@ -52,7 +52,6 @@ public class ScaleIn extends Tester {
     log.info("Start ScaleIn on VNFR type " + vnfrType);
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;

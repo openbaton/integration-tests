@@ -63,6 +63,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
+  private static final String PROPERTIES_FILE = "/integration-tests.properties";
+  private final static String SCENARIO_PATH = "/integration-test-scenarios/";
 
   private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
@@ -73,24 +75,6 @@ public class MainIntegrationTest {
   private static boolean sslEnabled;
   private static boolean clearAfterTest = false;
 
-  private static Properties loadProperties()
-      throws IOException, SDKException, ClassNotFoundException {
-    Properties properties = Utils.getProperties();
-    nfvoIp = properties.getProperty("nfvo-ip");
-    nfvoPort = properties.getProperty("nfvo-port");
-    nfvoUsr = properties.getProperty("nfvo-usr");
-    nfvoPwd = properties.getProperty("nfvo-pwd");
-    projectId = properties.getProperty("nfvo-project-id", null);
-    sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
-    if (projectId == null) {
-      projectId = Utils.findProjectId(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd, sslEnabled);
-      properties.setProperty("nfvo-project-id", projectId);
-    }
-    String clear = properties.getProperty("clear-after-test");
-    clearAfterTest = Boolean.parseBoolean(clear);
-    return properties;
-  }
-
   public static void main(String[] args) throws Exception {
     Properties properties = null;
     try {
@@ -99,33 +83,14 @@ public class MainIntegrationTest {
       e.printStackTrace();
     }
 
-    List<String> clArgs = Arrays.asList(args);
-
-    /******************************
-     * Running NFVO *
-     ******************************/
-    if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)) {
-      log.error("After 120 sec the Nfvo is not started yet. Is there an error?");
-      System.exit(1);
-    }
-
-    log.info("Nfvo is started");
-
-    /******************************
-     * Now create the VIM *
-     ******************************/
     log.debug("Properties: " + properties);
 
-    List<URL> iniFileURLs = Utils.loadFileIni(properties);
+    // Checking command line arguments
+    List<String> clArgs = Arrays.asList(args);
+    List<URL> iniFileURLs = Utils.loadFileIni(properties, SCENARIO_PATH);
+    List<String> fileNames = Utils.getFileNames(iniFileURLs);
 
-    List<String> fileNames = new LinkedList<>();
-    for (URL url : iniFileURLs) {
-      String[] splittedUrl = url.toString().split("/");
-      String name = splittedUrl[splittedUrl.length - 1];
-      fileNames.add(name);
-    }
-
-    // check if arguments are wrong
+    // Check if arguments are wrong
     if (clArgs.size() > 0) {
       for (String arg : clArgs) {
         if (arg.equals("clean")) {
@@ -138,6 +103,14 @@ public class MainIntegrationTest {
         }
       }
     }
+
+    // Checking if the NFVO is running
+    if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)) {
+      log.error("After 120 sec the Nfvo is not started yet. Is there an error?");
+      System.exit(1);
+    }
+
+    log.info("NFVO is reachable at " + nfvoIp + ":" + nfvoPort + ". Loading tests");
 
     IntegrationTestManager itm =
         new IntegrationTestManager("org.openbaton.integration.test.testers") {
@@ -215,7 +188,7 @@ public class MainIntegrationTest {
             }
           }
         };
-    itm.setLogger(log);
+
     long startTime, stopTime;
     boolean allTestsPassed = true;
     Map<String, String> results = new HashMap<>();
@@ -267,6 +240,32 @@ public class MainIntegrationTest {
     } else {
       System.exit(99);
     }
+  }
+
+  /**
+   *
+   * Load properties from configuration file
+   *
+   * @return
+   * @throws IOException
+   * @throws SDKException
+   * @throws ClassNotFoundException
+   */
+  private static Properties loadProperties()
+      throws IOException, SDKException, ClassNotFoundException {
+    Properties properties = Utils.getProperties(PROPERTIES_FILE);
+    nfvoIp = properties.getProperty("nfvo-ip");
+    nfvoPort = properties.getProperty("nfvo-port");
+    nfvoUsr = properties.getProperty("nfvo-usr");
+    nfvoPwd = properties.getProperty("nfvo-pwd");
+    projectId = properties.getProperty("nfvo-project-id", null);
+    sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
+    if (projectId == null) {
+      projectId = Utils.findProjectId(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd, sslEnabled);
+      properties.setProperty("nfvo-project-id", projectId);
+    }
+    clearAfterTest = Boolean.parseBoolean(properties.getProperty("clear-after-test"));
+    return properties;
   }
 
   /**

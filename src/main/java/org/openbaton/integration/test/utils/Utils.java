@@ -46,14 +46,11 @@ import java.util.*;
  */
 public class Utils {
 
-  private static final String PROPERTIES_FILE = "/integration-tests.properties";
-  private final static String SCENARIO_PATH = "/integration-test-scenarios/";
-
   private static Logger log = LoggerFactory.getLogger(Utils.class);
 
-  public static Properties getProperties() throws IOException {
+  public static Properties getProperties(String propertiesFile) throws IOException {
     Properties properties = new Properties();
-    properties.load(Utils.class.getResourceAsStream(PROPERTIES_FILE));
+    properties.load(Utils.class.getResourceAsStream(propertiesFile));
     if (properties.getProperty("external-properties-file") != null) {
       File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
       if (externalPropertiesFile.exists()) {
@@ -233,8 +230,9 @@ public class Utils {
     return true;
   }
 
-  public static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
-    String scenarioPath = properties.getProperty("integration-test-scenarios", Utils.SCENARIO_PATH);
+  public static List<URL> loadFileIni(Properties properties, String defaultScenarioPath)
+      throws FileNotFoundException {
+    String scenarioPath = properties.getProperty("integration-test-scenarios", defaultScenarioPath);
     // scenario files stored on the host machine
     LinkedList<URL> externalFiles = new LinkedList<>();
     if (scenarioPath != null) {
@@ -269,7 +267,7 @@ public class Utils {
 
   public static String findProjectId(
       String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
-      throws SDKException, ClassNotFoundException, FileNotFoundException {
+      throws SDKException, FileNotFoundException {
 
     // TODO make the project nullable
     NFVORequestor requestor =
@@ -281,6 +279,16 @@ public class Utils {
       }
     }
     return projects.get(0).getId();
+  }
+
+  public static List<String> getFileNames(List<URL> iniFileURLs) {
+    List<String> fileNames = new LinkedList<>();
+    for (URL url : iniFileURLs) {
+      String[] splittedUrl = url.toString().split("/");
+      String name = splittedUrl[splittedUrl.length - 1];
+      fileNames.add(name);
+    }
+    return fileNames;
   }
 
   private class ParseComError implements Serializable {
