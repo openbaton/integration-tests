@@ -15,6 +15,10 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -22,14 +26,7 @@ import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-/**
- * Created by tbr on 30.11.15.
- */
+/** Created by tbr on 30.11.15. */
 
 /**
  * With the help of this class it is possible to upload a NSD based on a previously uploaded

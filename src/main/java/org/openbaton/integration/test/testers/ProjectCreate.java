@@ -15,19 +15,18 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 02.08.16.
- * <p>
- * Class used to create a new project.
+ *
+ * <p>Class used to create a new project.
  */
 public class ProjectCreate extends Tester<Project> {
 

@@ -15,6 +15,8 @@
  */
 package org.openbaton.integration.test.interfaces;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EndpointType;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
@@ -23,13 +25,10 @@ import org.openbaton.integration.test.rest.RestWaiter;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by mob on 31.07.15.
  *
- * An abstract class that should be extended by Tester classes with the intention to implement a
+ * <p>An abstract class that should be extended by Tester classes with the intention to implement a
  * Tester that waits for a specific event.
  */
 public abstract class Waiter extends Tester {
@@ -40,6 +39,7 @@ public abstract class Waiter extends Tester {
    * @param basePath
    */
   private int timeout;
+
   private WaiterInterface waiter;
   private Action action;
 

@@ -15,6 +15,10 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -24,15 +28,10 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by lto on 24/06/15.
  *
- * Tester to create a NetworkServiceDescriptor.
+ * <p>Tester to create a NetworkServiceDescriptor.
  */
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor> {
   private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);

@@ -15,6 +15,11 @@
  */
 package org.openbaton.integration.test.example1;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.ini4j.Profile;
 import org.openbaton.integration.test.IntegrationTestManager;
 import org.openbaton.integration.test.example1.Tasks.Task3;
@@ -22,15 +27,7 @@ import org.openbaton.integration.test.utils.SubTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
-/**
- * Created by mob on 18.08.15.
- */
+/** Created by mob on 18.08.15. */
 public class MainTest {
 
   public static void main(String[] args) {

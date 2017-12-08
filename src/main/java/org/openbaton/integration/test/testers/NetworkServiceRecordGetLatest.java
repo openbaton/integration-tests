@@ -15,18 +15,17 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by tbr on 15.02.16.
  *
- * Class used to get the latest version of a NetworkServiceRecord from the NFVO.
+ * <p>Class used to get the latest version of a NetworkServiceRecord from the NFVO.
  */
 public class NetworkServiceRecordGetLatest extends Tester {
 

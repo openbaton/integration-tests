@@ -15,6 +15,8 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,12 +24,7 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
-/**
- * Class used to create a new NetworkServiceRecord from a NetworkServiceDescriptor.
- */
+/** Class used to create a new NetworkServiceRecord from a NetworkServiceDescriptor. */
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
   private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);

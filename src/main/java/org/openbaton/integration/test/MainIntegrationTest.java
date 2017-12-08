@@ -15,6 +15,11 @@
  */
 package org.openbaton.integration.test;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
@@ -56,14 +61,6 @@ import org.openbaton.sdk.api.rest.VimInstanceAgent;
 import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
   private static final String EXTERNAL_PATH = "/etc/openbaton/integration-tests";
@@ -250,7 +247,6 @@ public class MainIntegrationTest {
   }
 
   /**
-   *
    * Load properties from configuration file
    *
    * @return
@@ -265,12 +261,11 @@ public class MainIntegrationTest {
     // CHecking whether external properties file exists
     if (checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE)) {
       propertiesFile = EXTERNAL_PATH + PROPERTIES_FILE;
-    }
-    else {
+    } else {
       propertiesFile = PROPERTIES_FILE;
     }
 
-    log.info("Reading properties from "+propertiesFile);
+    log.info("Reading properties from " + propertiesFile);
     Properties properties = Utils.getProperties(propertiesFile);
     properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip", "localhost"));
     properties.setProperty("nfvo-port", properties.getProperty("nfvo-port", "8080"));
@@ -317,9 +312,7 @@ public class MainIntegrationTest {
     return false;
   }
 
-  /**
-   * This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator.
-   */
+  /** This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator. */
   private static void clearOrchestrator() {
     try {
       NFVORequestor requestor =

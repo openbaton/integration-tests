@@ -15,19 +15,18 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 30.11.15.
  *
- * Class used to upload a VNFPackage to the NFVO. Class used to upload a VNFPackage to the NFVO.
+ * <p>Class used to upload a VNFPackage to the NFVO. Class used to upload a VNFPackage to the NFVO.
  */
 public class PackageUpload extends Tester<VNFPackage> {
   private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-tests/vnf-packages/";

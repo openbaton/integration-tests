@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Created by tbr on 02.12.15.
  *
- * Used by the GenericServiceTester class.
+ * <p>Used by the GenericServiceTester class.
  */
 public class VNFCRepresentation {
 

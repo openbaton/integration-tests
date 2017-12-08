@@ -15,21 +15,20 @@
  */
 package org.openbaton.integration.test;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.Properties;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
 import org.openbaton.integration.test.utils.SubTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.Properties;
-
 /**
  * Created by mob on 18.08.15.
  *
- * This class loads the test scenario from an .ini file.
+ * <p>This class loads the test scenario from an .ini file.
  */
 public abstract class IntegrationTestManager {
   private int maxIntegrationTestTime;
@@ -104,13 +103,13 @@ public abstract class IntegrationTestManager {
   }
 
   private SubTask loadTesters(Properties properties, Profile.Section root) {
-    /**Get some global properties**/
+    /** Get some global properties* */
     maxIntegrationTestTime = Integer.parseInt(root.get("max-integration-test-time", "600"));
     maxConcurrentSuccessors = Integer.parseInt(root.get("max-concurrent-successors", "10"));
 
     log("maxIntegrationTestTime = " + maxIntegrationTestTime, "info");
     log("maxConcurrentSuccessors = " + maxConcurrentSuccessors, "info");
-    /****************************/
+    /** ************************* */
     return loadEntity(properties, root.getChild(root.childrenNames()[0]));
   }
 

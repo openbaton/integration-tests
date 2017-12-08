@@ -15,6 +15,13 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.openbaton.catalogue.mano.common.Ip;
 import org.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -25,19 +32,11 @@ import org.openbaton.catalogue.nfvo.ConfigurationParameter;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by tbr on 25.11.15.
  *
- * This Tester can run shell scripts on the virtual machines created by the service and check in the
- * scripts if everything works as expected.
+ * <p>This Tester can run shell scripts on the virtual machines created by the service and check in
+ * the scripts if everything works as expected.
  */
 public class GenericServiceTester extends Tester {
 
@@ -200,7 +199,6 @@ public class GenericServiceTester extends Tester {
   }
 
   /**
-   *
    * @param text
    * @param variable
    * @return true if the String variable is present in the given String text

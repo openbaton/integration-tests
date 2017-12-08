@@ -15,9 +15,7 @@
  */
 package org.openbaton.integration.test.exceptions;
 
-/**
- * Created by lto on 24/06/15.
- */
+/** Created by lto on 24/06/15. */
 public class IntegrationTestException extends Exception {
 
   public IntegrationTestException() {

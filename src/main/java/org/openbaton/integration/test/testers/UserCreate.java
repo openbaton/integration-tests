@@ -15,6 +15,8 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.*;
 import org.openbaton.catalogue.security.Role;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -22,13 +24,10 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to create a new user.
+ * <p>Class used to create a new user.
  */
 public class UserCreate extends Tester<User> {
 

@@ -15,13 +15,10 @@
  */
 package org.openbaton.integration.test.example1.Tasks;
 
+import java.util.Properties;
 import org.openbaton.integration.test.utils.SubTask;
 
-import java.util.Properties;
-
-/**
- * Created by mob on 18.08.15.
- */
+/** Created by mob on 18.08.15. */
 public class Task3 extends SubTask {
   private double specificParameter;
   private Properties properties;

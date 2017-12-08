@@ -15,6 +15,8 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,14 +24,10 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to delete a User.
- *
+ * <p>Class used to delete a User.
  */
 public class UserDelete extends Tester<User> {
 

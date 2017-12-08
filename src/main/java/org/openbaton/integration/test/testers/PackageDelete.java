@@ -15,20 +15,19 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Properties;
-
 /**
  * Created by tbr on 01.12.15.
  *
- * Class used to delete a VNFPackage.
+ * <p>Class used to delete a VNFPackage.
  */
 public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   private String packageName = "";

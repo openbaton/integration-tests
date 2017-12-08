@@ -16,9 +16,6 @@
 package org.openbaton.integration.test.parser;
 
 import com.google.gson.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,13 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by mob on 27.07.15.
  *
- * The Parser is used to obtain a new json file from a json file passed as a parameter to the method
- * randomize. The new file has different values accordingly to the Parser configuration file.
- *
+ * <p>The Parser is used to obtain a new json file from a json file passed as a parameter to the
+ * method randomize. The new file has different values accordingly to the Parser configuration file.
  */
 public class Parser {
 
@@ -44,11 +42,10 @@ public class Parser {
   /**
    * This method takes as input: json: the old json file we want to modify
    *
-   * Output: A new json file with some changed parameters accordingly to the Parser configuration
+   * <p>Output: A new json file with some changed parameters accordingly to the Parser configuration
    * file
-   *
    */
-  public synchronized static String randomize(String json, String path) throws IOException {
+  public static synchronized String randomize(String json, String path) throws IOException {
     if (json == null || path == null) throw new NullPointerException("json or path is null!");
     properties = new Properties();
     properties.load(new FileInputStream(new File(path)));

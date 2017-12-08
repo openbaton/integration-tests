@@ -17,20 +17,19 @@ package org.openbaton.integration.test.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by lto on 15/07/15.
  *
- * Abstract class that represents the tasks defined in the .ini files.
+ * <p>Abstract class that represents the tasks defined in the .ini files.
  */
 public abstract class Tester<T extends Serializable> extends SubTask {
   protected Properties properties;

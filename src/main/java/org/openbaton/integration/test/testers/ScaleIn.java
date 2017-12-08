@@ -15,23 +15,18 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
+/** Created by tbr on 15.01.16. */
 
-/**
- * Created by tbr on 15.01.16.
- */
-
-/**
- * This class triggers one scale in on a specified VNFR.
- */
+/** This class triggers one scale in on a specified VNFR. */
 public class ScaleIn extends Tester {
 
   private String vnfrType = "";

@@ -15,17 +15,16 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by mob on 28.07.15.
  *
- * Class used to delete a networkServiceRecord.
+ * <p>Class used to delete a networkServiceRecord.
  */
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 

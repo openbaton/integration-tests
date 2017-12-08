@@ -18,6 +18,12 @@ package org.openbaton.integration.test.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dnl.utils.text.table.TextTable;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -34,16 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-/**
- * Created by lto on 24/06/15.
- */
+/** Created by lto on 24/06/15. */
 public class Utils {
 
   private static Logger log = LoggerFactory.getLogger(Utils.class);

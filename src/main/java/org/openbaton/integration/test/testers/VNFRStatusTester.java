@@ -15,20 +15,19 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.Status;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by tbr on 25.01.16.
  *
- * Class used to check if a VirtualNetworkFunctionRecord's status is correct.
+ * <p>Class used to check if a VirtualNetworkFunctionRecord's status is correct.
  */
 public class VNFRStatusTester extends Tester {
   private String vnfrType = "";

@@ -15,20 +15,19 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import java.util.Set;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-import java.util.Set;
-
 /**
  * Created by tbr on 31.05.16.
  *
- * This Tester expects a NSD object from it's preceding task and tries to delete the VNFDs of this
- * NSD, filtered by vnfd name and type.
+ * <p>This Tester expects a NSD object from it's preceding task and tries to delete the VNFDs of
+ * this NSD, filtered by vnfd name and type.
  */
 public class VirtualNetworkFunctionDescriptorDelete
     extends Tester<VirtualNetworkFunctionDescriptor> {

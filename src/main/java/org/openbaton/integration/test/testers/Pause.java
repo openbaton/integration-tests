@@ -15,15 +15,14 @@
  */
 package org.openbaton.integration.test.testers;
 
-import org.openbaton.integration.test.utils.Tester;
-
 import java.io.Serializable;
 import java.util.Properties;
+import org.openbaton.integration.test.utils.Tester;
 
 /**
  * Created by tbr on 12.02.16.
  *
- * Class used to pause the execution of the integration tests for a specific time.
+ * <p>Class used to pause the execution of the integration tests for a specific time.
  */
 public class Pause extends Tester {
 

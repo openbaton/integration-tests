@@ -15,6 +15,8 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,14 +24,11 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by mob on 04.08.15.
  *
- * Class used to delete a VimInstance. It can be specified which user should delete the VimInstance
- * and in which project he should try to attempt it.
+ * <p>Class used to delete a VimInstance. It can be specified which user should delete the
+ * VimInstance and in which project he should try to attempt it.
  */
 public class VimInstanceDelete extends Tester<VimInstance> {
 

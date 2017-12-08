@@ -15,6 +15,12 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 import org.openbaton.catalogue.mano.descriptor.VNFComponent;
 import org.openbaton.catalogue.mano.descriptor.VNFDConnectionPoint;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -23,20 +29,9 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+/** Created by tbr on 11.01.16. */
 
-/**
- * Created by tbr on 11.01.16.
- */
-
-/**
- * This class triggers one scale out on a specified VNFR.
- */
+/** This class triggers one scale out on a specified VNFR. */
 public class ScaleOut extends Tester {
 
   private String vnfrType = "";

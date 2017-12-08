@@ -19,9 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-/**
- * Created by mob on 24.07.15.
- */
+/** Created by mob on 24.07.15. */
 public abstract class SubTask implements Callable<Object> {
 
   public Object param;

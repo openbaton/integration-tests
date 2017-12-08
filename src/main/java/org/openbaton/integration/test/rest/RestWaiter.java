@@ -20,15 +20,6 @@ import com.google.gson.JsonElement;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.openbaton.catalogue.nfvo.Action;
-import org.openbaton.catalogue.nfvo.EventEndpoint;
-import org.openbaton.integration.test.exceptions.SubscriptionException;
-import org.openbaton.integration.test.interfaces.WaiterInterface;
-import org.openbaton.integration.test.utils.Utils;
-import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
-import org.slf4j.Logger;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.Properties;
@@ -36,11 +27,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.openbaton.catalogue.nfvo.Action;
+import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.SubscriptionException;
+import org.openbaton.integration.test.interfaces.WaiterInterface;
+import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.exception.SDKException;
+import org.slf4j.Logger;
 
 /**
  * Created by mob on 31.07.15.
  *
- * Implementation of the WaiterInterface class using the NFVO's REST API.
+ * <p>Implementation of the WaiterInterface class using the NFVO's REST API.
  */
 public class RestWaiter implements WaiterInterface {
 
