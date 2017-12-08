@@ -57,21 +57,28 @@ import org.openbaton.sdk.api.rest.VirtualNetworkFunctionDescriptorAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainIntegrationTest {
+  private static final String EXTERNAL_PATH = "/etc/openbaton/integration-tests";
   private static final String PROPERTIES_FILE = "/integration-tests.properties";
-  private final static String SCENARIO_PATH = "/integration-test-scenarios/";
+  private static final String SCENARIOS_PATH = "/integration-test-scenarios/";
+  private static final String NSD_PATH = "/network-service-descriptors/";
+  private static final String VIM_PATH = "/vim-instances/";
+  private static final String SCRIPTS_PATH = "/scripts/";
 
   private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
   private static String nfvoPort;
   private static String nfvoUsr;
   private static String nfvoPwd;
-  private static String projectId;
+  private static String projectName;
   private static boolean sslEnabled;
   private static boolean clearAfterTest = false;
 
@@ -116,7 +123,7 @@ public class MainIntegrationTest {
         new IntegrationTestManager("org.openbaton.integration.test.testers") {
           @Override
           protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
-            subTask.setProjectId(projectId);
+            subTask.setProjectId(projectName);
             if (subTask instanceof VimInstanceCreate) {
               TaskConfigurator.configureVimInstanceCreate(subTask, currentSection);
             }
@@ -253,18 +260,47 @@ public class MainIntegrationTest {
    */
   private static Properties loadProperties()
       throws IOException, SDKException, ClassNotFoundException {
-    Properties properties = Utils.getProperties(PROPERTIES_FILE);
+    private static final String LOCAL_PATH_NAME_NSD = "/etc/json_file/network_service_descriptors/";
+    private static final String EXTERNAL_PATH_NAME_NSD =
+            "/etc/openbaton/integration-tests/network-service-descriptors/";
+    private static final String EXTERNAL_PATH_NAME_PARSER_NSD =
+            "/etc/openbaton/integration-tests/parser-properties/nsd.properties";
+    private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
+    private static final String EXTERNAL_PATH_NAME =
+            "/etc/openbaton/integration-tests/vim-instances/";
+    private static final String EXTERNAL_PATH_NAME_PARSER_VIM =
+            "/etc/openbaton/integration-tests/parser-properties/vim.properties";
+    private String fileName;
+
+    String propertiesFile;
+    // CHecking whether external properties file exists
+    File f = new File(EXTERNAL_PATH + PROPERTIES_FILE);
+    if (f != null && f.exists()) {
+      log.info("Reading properties from the external properties file: "+EXTERNAL_PATH+PROPERTIES_FILE);
+      propertiesFile = EXTERNAL_PATH+PROPERTIES_FILE;
+    } else {
+      propertiesFile = PROPERTIES_FILE;
+    }
+    Properties properties = Utils.getProperties(propertiesFile);
+    properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip","localhost"));
+    properties.setProperty("nfvo-port", properties.getProperty("nfvo-port","8080"));
+    properties.setProperty("nfvo-usr", properties.getProperty("nfvo-usr", "admin"));
+    properties.setProperty("nfvo-pwd", properties.getProperty("nfvo-pwd","openbaton"));
+    properties.setProperty("nfvo-project-name", properties.getProperty("nfvo-project-name", "default"));
+    properties.setProperty("nfvo-ssl-enabled", properties.getProperty("nfvo-ssl-enabled","false"));
+    properties.setProperty("local-ip", properties.getProperty("local-ip", "localhost"));
+    properties.setProperty("rest-waiter-port", properties.getProperty("rest-waiter-port","8181"));
+
+    properties.setProperty("clear-after-test", properties.getProperty("clear-after-test", "true"));
+
     nfvoIp = properties.getProperty("nfvo-ip");
     nfvoPort = properties.getProperty("nfvo-port");
     nfvoUsr = properties.getProperty("nfvo-usr");
     nfvoPwd = properties.getProperty("nfvo-pwd");
-    projectId = properties.getProperty("nfvo-project-id", null);
+    projectName = properties.getProperty("nfvo-project-name");
     sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
-    if (projectId == null) {
-      projectId = Utils.findProjectId(nfvoIp, nfvoPort, nfvoUsr, nfvoPwd, sslEnabled);
-      properties.setProperty("nfvo-project-id", projectId);
-    }
     clearAfterTest = Boolean.parseBoolean(properties.getProperty("clear-after-test"));
+
     return properties;
   }
 
@@ -274,7 +310,7 @@ public class MainIntegrationTest {
   private static void clearOrchestrator() {
     try {
       NFVORequestor requestor =
-          new NFVORequestor(nfvoUsr, nfvoPwd, projectId, sslEnabled, nfvoIp, nfvoPort, "1");
+          new NFVORequestor(nfvoUsr, nfvoPwd, projectName, sslEnabled, nfvoIp, nfvoPort, "1");
       NetworkServiceRecordAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
       List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
       for (NetworkServiceRecord nsr : nsrList) {

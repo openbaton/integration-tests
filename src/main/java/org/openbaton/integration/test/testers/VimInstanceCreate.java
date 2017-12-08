@@ -117,20 +117,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
   @Override
   protected VimInstance prepareObject() {
-    String body = null;
-    File f = new File(EXTERNAL_PATH_NAME + fileName);
-    if (f != null && f.exists()) {
-      try {
-        body = Utils.getStringFromInputStream(new FileInputStream(f));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-    } else {
-      log.debug("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME + fileName);
-      body =
-          Utils.getStringFromInputStream(
-              Tester.class.getResourceAsStream(LOCAL_PATH_NAME + fileName));
-    }
+    String body = getFileContent();
     String vimRandom = null;
     File parserPropertiesFile = new File(EXTERNAL_PATH_NAME_PARSER_VIM);
     if (parserPropertiesFile != null && parserPropertiesFile.exists()) {
@@ -147,6 +134,25 @@ public class VimInstanceCreate extends Tester<VimInstance> {
           "If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
     }
     return mapper.fromJson(body, aClass);
+  }
+
+  private String getFileContent() {
+    String body = null;
+    File f = new File(EXTERNAL_PATH_NAME + fileName);
+    if (f != null && f.exists()) {
+      try {
+        body = Utils.getStringFromInputStream(new FileInputStream(f));
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    } // file does not exists in external folder
+     else {
+      log.debug("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME + fileName);
+      body =
+          Utils.getStringFromInputStream(
+              Tester.class.getResourceAsStream(LOCAL_PATH_NAME + fileName));
+    }
+    return body;
   }
 
   public void setFileName(String fileName) {

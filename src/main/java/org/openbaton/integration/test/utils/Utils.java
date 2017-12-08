@@ -265,21 +265,6 @@ public class Utils {
     return internalFiles;
   }
 
-  public static String findProjectId(
-      String nfvoIp, String nfvoPort, String nfvoUsr, String nfvoPwd, boolean sslEnabled)
-      throws SDKException, FileNotFoundException {
-
-    // TODO make the project nullable
-    NFVORequestor requestor =
-        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, "default", nfvoIp, nfvoPort, "1");
-    List<Project> projects = requestor.getProjectAgent().findAll();
-    for (Project p : projects) {
-      if (p.getName().equals("default")) {
-        return p.getId();
-      }
-    }
-    return projects.get(0).getId();
-  }
 
   public static List<String> getFileNames(List<URL> iniFileURLs) {
     List<String> fileNames = new LinkedList<>();
