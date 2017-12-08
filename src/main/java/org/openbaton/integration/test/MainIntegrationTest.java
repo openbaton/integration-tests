@@ -263,10 +263,14 @@ public class MainIntegrationTest {
 
     String propertiesFile;
     // CHecking whether external properties file exists
-    if (checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE))
+    if (checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE)) {
       propertiesFile = EXTERNAL_PATH + PROPERTIES_FILE;
-    else propertiesFile = PROPERTIES_FILE;
+    }
+    else {
+      propertiesFile = PROPERTIES_FILE;
+    }
 
+    log.info("Reading properties from "+propertiesFile);
     Properties properties = Utils.getProperties(propertiesFile);
     properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip", "localhost"));
     properties.setProperty("nfvo-port", properties.getProperty("nfvo-port", "8080"));
