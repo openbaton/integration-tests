@@ -35,7 +35,7 @@ public class VNFRStatusTester extends Tester {
   private Status status = null;
 
   public VNFRStatusTester(Properties properties) throws FileNotFoundException {
-    super(properties, VNFRStatusTester.class, "");
+    super(properties, VNFRStatusTester.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

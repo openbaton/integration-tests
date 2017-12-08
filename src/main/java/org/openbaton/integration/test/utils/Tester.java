@@ -49,9 +49,8 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    * @param aClass : example VimInstance.class
-   * @param filePath : example "/etc/json_file/vim_instances/vim-instance.json"
    */
-  public Tester(Properties properties, Class<T> aClass, String filePath) {
+  public Tester(Properties properties, Class<T> aClass) {
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
     this.properties = properties;

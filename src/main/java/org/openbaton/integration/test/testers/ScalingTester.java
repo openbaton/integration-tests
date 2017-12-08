@@ -21,7 +21,6 @@ import org.openbaton.catalogue.mano.record.Status;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
@@ -46,7 +45,7 @@ public class ScalingTester extends Tester {
   private int vnfcCount = 0;
 
   public ScalingTester(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleOut.class, "");
+    super(properties, ScaleOut.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

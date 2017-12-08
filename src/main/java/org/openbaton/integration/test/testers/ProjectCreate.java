@@ -41,7 +41,7 @@ public class ProjectCreate extends Tester<Project> {
   private Properties properties = null;
 
   public ProjectCreate(Properties p) throws FileNotFoundException {
-    super(p, Project.class, "");
+    super(p, Project.class);
     properties = p;
     this.setAbstractRestAgent(requestor.getProjectAgent());
   }

@@ -42,7 +42,7 @@ public class ProjectDelete extends Tester<Project> {
   private Properties properties = null;
 
   public ProjectDelete(Properties p) throws FileNotFoundException {
-    super(p, Project.class, "");
+    super(p, Project.class);
     this.properties = p;
     this.setAbstractRestAgent(requestor.getProjectAgent());
   }

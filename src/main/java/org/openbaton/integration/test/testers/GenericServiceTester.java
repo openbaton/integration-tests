@@ -53,7 +53,7 @@ public class GenericServiceTester extends Tester {
   private String vmScriptsPath = "";
 
   public GenericServiceTester(Properties properties) {
-    super(properties, GenericServiceTester.class, LOCAL_PATH_NAME_SCRIPTS);
+    super(properties, GenericServiceTester.class);
   }
 
   @Override

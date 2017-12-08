@@ -94,7 +94,7 @@ public class MainIntegrationTest {
 
     // Checking command line arguments
     List<String> clArgs = Arrays.asList(args);
-    List<URL> iniFileURLs = Utils.loadFileIni(properties, SCENARIO_PATH);
+    List<URL> iniFileURLs = Utils.loadFileIni(properties);
     List<String> fileNames = Utils.getFileNames(iniFileURLs);
 
     // Check if arguments are wrong
@@ -260,37 +260,23 @@ public class MainIntegrationTest {
    */
   private static Properties loadProperties()
       throws IOException, SDKException, ClassNotFoundException {
-    private static final String LOCAL_PATH_NAME_NSD = "/etc/json_file/network_service_descriptors/";
-    private static final String EXTERNAL_PATH_NAME_NSD =
-            "/etc/openbaton/integration-tests/network-service-descriptors/";
-    private static final String EXTERNAL_PATH_NAME_PARSER_NSD =
-            "/etc/openbaton/integration-tests/parser-properties/nsd.properties";
-    private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
-    private static final String EXTERNAL_PATH_NAME =
-            "/etc/openbaton/integration-tests/vim-instances/";
-    private static final String EXTERNAL_PATH_NAME_PARSER_VIM =
-            "/etc/openbaton/integration-tests/parser-properties/vim.properties";
-    private String fileName;
 
     String propertiesFile;
     // CHecking whether external properties file exists
-    File f = new File(EXTERNAL_PATH + PROPERTIES_FILE);
-    if (f != null && f.exists()) {
-      log.info("Reading properties from the external properties file: "+EXTERNAL_PATH+PROPERTIES_FILE);
-      propertiesFile = EXTERNAL_PATH+PROPERTIES_FILE;
-    } else {
-      propertiesFile = PROPERTIES_FILE;
-    }
-    Properties properties = Utils.getProperties(propertiesFile);
-    properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip","localhost"));
-    properties.setProperty("nfvo-port", properties.getProperty("nfvo-port","8080"));
-    properties.setProperty("nfvo-usr", properties.getProperty("nfvo-usr", "admin"));
-    properties.setProperty("nfvo-pwd", properties.getProperty("nfvo-pwd","openbaton"));
-    properties.setProperty("nfvo-project-name", properties.getProperty("nfvo-project-name", "default"));
-    properties.setProperty("nfvo-ssl-enabled", properties.getProperty("nfvo-ssl-enabled","false"));
-    properties.setProperty("local-ip", properties.getProperty("local-ip", "localhost"));
-    properties.setProperty("rest-waiter-port", properties.getProperty("rest-waiter-port","8181"));
+    if (checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE))
+      propertiesFile = EXTERNAL_PATH + PROPERTIES_FILE;
+    else propertiesFile = PROPERTIES_FILE;
 
+    Properties properties = Utils.getProperties(propertiesFile);
+    properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip", "localhost"));
+    properties.setProperty("nfvo-port", properties.getProperty("nfvo-port", "8080"));
+    properties.setProperty("nfvo-usr", properties.getProperty("nfvo-usr", "admin"));
+    properties.setProperty("nfvo-pwd", properties.getProperty("nfvo-pwd", "openbaton"));
+    properties.setProperty(
+        "nfvo-project-name", properties.getProperty("nfvo-project-name", "default"));
+    properties.setProperty("nfvo-ssl-enabled", properties.getProperty("nfvo-ssl-enabled", "false"));
+    properties.setProperty("local-ip", properties.getProperty("local-ip", "localhost"));
+    properties.setProperty("rest-waiter-port", properties.getProperty("rest-waiter-port", "8181"));
     properties.setProperty("clear-after-test", properties.getProperty("clear-after-test", "true"));
 
     nfvoIp = properties.getProperty("nfvo-ip");
@@ -301,7 +287,30 @@ public class MainIntegrationTest {
     sslEnabled = Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled"));
     clearAfterTest = Boolean.parseBoolean(properties.getProperty("clear-after-test"));
 
+    // default folders where scenario, nsd, and script files are placed
+    if (!checkFileExists(properties.getProperty("integration-test-scenarios")))
+      properties.setProperty("integration-test-scenarios", SCENARIOS_PATH);
+
+    if (!checkFileExists(properties.getProperty("nsd-path")))
+      properties.setProperty("nsd-path", NSD_PATH);
+
+    if (!checkFileExists(properties.getProperty("vim-path")))
+      properties.setProperty("vim-path", VIM_PATH);
+
+    if (!checkFileExists(properties.getProperty("scripts-path")))
+      properties.setProperty("scripts-path", SCRIPTS_PATH);
+
     return properties;
+  }
+
+  private static boolean checkFileExists(String filename) {
+    File f = new File(filename);
+    if (f != null && f.exists()) {
+      log.debug("File or folder " + filename + " exists");
+      return true;
+    }
+    log.debug("File or folder " + filename + " does not exist");
+    return false;
   }
 
   /**

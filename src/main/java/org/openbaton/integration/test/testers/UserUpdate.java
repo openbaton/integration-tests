@@ -49,7 +49,7 @@ public class UserUpdate extends Tester<User> {
   private Properties properties = null;
 
   public UserUpdate(Properties p) throws FileNotFoundException {
-    super(p, User.class, "");
+    super(p, User.class);
     properties = p;
     this.setAbstractRestAgent(requestor.getUserAgent());
   }

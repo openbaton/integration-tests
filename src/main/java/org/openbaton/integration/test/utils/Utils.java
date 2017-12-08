@@ -230,9 +230,8 @@ public class Utils {
     return true;
   }
 
-  public static List<URL> loadFileIni(Properties properties, String defaultScenarioPath)
-      throws FileNotFoundException {
-    String scenarioPath = properties.getProperty("integration-test-scenarios", defaultScenarioPath);
+  public static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
+    String scenarioPath = properties.getProperty("integration-test-scenarios");
     // scenario files stored on the host machine
     LinkedList<URL> externalFiles = new LinkedList<>();
     if (scenarioPath != null) {
@@ -264,7 +263,6 @@ public class Utils {
     internalFiles.addAll(urlsToAdd);
     return internalFiles;
   }
-
 
   public static List<String> getFileNames(List<URL> iniFileURLs) {
     List<String> fileNames = new LinkedList<>();

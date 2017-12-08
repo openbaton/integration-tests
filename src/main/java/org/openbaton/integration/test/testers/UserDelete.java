@@ -43,7 +43,7 @@ public class UserDelete extends Tester<User> {
   private Properties properties = null;
 
   public UserDelete(Properties p) throws FileNotFoundException {
-    super(p, User.class, "");
+    super(p, User.class);
     this.properties = p;
     this.setAbstractRestAgent(requestor.getUserAgent());
   }

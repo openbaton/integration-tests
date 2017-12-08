@@ -18,7 +18,6 @@ package org.openbaton.integration.test.testers;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
@@ -38,7 +37,7 @@ public class ScaleIn extends Tester {
   private String vnfrType = "";
 
   public ScaleIn(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleIn.class, "");
+    super(properties, ScaleIn.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

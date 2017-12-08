@@ -34,7 +34,7 @@ public class PackageUpload extends Tester<VNFPackage> {
   private String packageName = "";
 
   public PackageUpload(Properties p) throws FileNotFoundException {
-    super(p, VNFPackage.class, EXTERNAL_PATH_NAME);
+    super(p, VNFPackage.class);
     this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 

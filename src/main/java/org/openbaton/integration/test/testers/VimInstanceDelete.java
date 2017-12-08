@@ -44,7 +44,7 @@ public class VimInstanceDelete extends Tester<VimInstance> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public VimInstanceDelete(Properties properties) throws FileNotFoundException {
-    super(properties, VimInstance.class, "");
+    super(properties, VimInstance.class);
     this.properties = properties;
     this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }

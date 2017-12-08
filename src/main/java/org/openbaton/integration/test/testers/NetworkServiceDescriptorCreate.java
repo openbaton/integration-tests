@@ -18,7 +18,6 @@ package org.openbaton.integration.test.testers;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
-import org.openbaton.integration.test.parser.Parser;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -37,11 +35,6 @@ import java.util.Properties;
  * Tester to create a NetworkServiceDescriptor.
  */
 public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescriptor> {
-  private static final String LOCAL_PATH_NAME_NSD = "/etc/json_file/network_service_descriptors/";
-  private static final String EXTERNAL_PATH_NAME_NSD =
-      "/etc/openbaton/integration-tests/network-service-descriptors/";
-  private static final String EXTERNAL_PATH_NAME_PARSER_NSD =
-      "/etc/openbaton/integration-tests/parser-properties/nsd.properties";
   private static Logger log = LoggerFactory.getLogger(NetworkServiceDescriptor.class);
 
   private String fileName;
@@ -49,7 +42,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
       false; // if the creating of the NSD is expected to fail this field should be set to true
 
   public NetworkServiceDescriptorCreate(Properties p) throws FileNotFoundException {
-    super(p, NetworkServiceDescriptor.class, LOCAL_PATH_NAME_NSD);
+    super(p, NetworkServiceDescriptor.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
@@ -90,37 +83,8 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
   @Override
   protected NetworkServiceDescriptor prepareObject() throws FileNotFoundException {
-    String body = null;
-    File f = new File(EXTERNAL_PATH_NAME_NSD + fileName);
-    if (f != null && f.exists()) {
-      try {
-        body = Utils.getStringFromInputStream(new FileInputStream(f));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-    } else {
-      log.debug(
-          "No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME_NSD + fileName);
-      body =
-          Utils.getStringFromInputStream(
-              Tester.class.getResourceAsStream(LOCAL_PATH_NAME_NSD + fileName));
-    }
-    String nsdRandom = null;
-    File parserPropertiesFile = new File(EXTERNAL_PATH_NAME_PARSER_NSD);
-    if (parserPropertiesFile != null && parserPropertiesFile.exists()) {
-      try {
-        nsdRandom = Parser.randomize(body, EXTERNAL_PATH_NAME_PARSER_NSD);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      log.debug("NetworkServiceDescriptor (old): " + body.trim());
-      log.debug("NetworkServiceDescriptor (random): " + nsdRandom);
-      return mapper.fromJson(nsdRandom, aClass);
-    } else {
-      log.debug(
-          "If you want to use the parser for the NSD, create the file nsd.properties in the path /etc/openbaton/integration-test-parser-properties/");
-    }
+    File f = new File(properties.get("nsd-path") + fileName);
+    String body = Utils.getStringFromInputStream(new FileInputStream(f));
     return mapper.fromJson(body, aClass);
   }
 
