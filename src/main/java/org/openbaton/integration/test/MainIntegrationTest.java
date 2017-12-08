@@ -15,7 +15,6 @@
  */
 package org.openbaton.integration.test;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -259,7 +258,7 @@ public class MainIntegrationTest {
 
     String propertiesFile;
     // CHecking whether external properties file exists
-    if (checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE)) {
+    if (Utils.checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE)) {
       propertiesFile = EXTERNAL_PATH + PROPERTIES_FILE;
     } else {
       propertiesFile = PROPERTIES_FILE;
@@ -287,29 +286,19 @@ public class MainIntegrationTest {
     clearAfterTest = Boolean.parseBoolean(properties.getProperty("clear-after-test"));
 
     // default folders where scenario, nsd, and script files are placed
-    if (!checkFileExists(properties.getProperty("integration-test-scenarios")))
+    if (!Utils.checkFileExists(properties.getProperty("integration-test-scenarios")))
       properties.setProperty("integration-test-scenarios", SCENARIOS_PATH);
 
-    if (!checkFileExists(properties.getProperty("nsd-path")))
+    if (!Utils.checkFileExists(properties.getProperty("nsd-path")))
       properties.setProperty("nsd-path", NSD_PATH);
 
-    if (!checkFileExists(properties.getProperty("vim-path")))
+    if (!Utils.checkFileExists(properties.getProperty("vim-path")))
       properties.setProperty("vim-path", VIM_PATH);
 
-    if (!checkFileExists(properties.getProperty("scripts-path")))
+    if (!Utils.checkFileExists(properties.getProperty("scripts-path")))
       properties.setProperty("scripts-path", SCRIPTS_PATH);
 
     return properties;
-  }
-
-  private static boolean checkFileExists(String filename) {
-    File f = new File(filename);
-    if (f != null && f.exists()) {
-      log.info("File or folder " + filename + " exists");
-      return true;
-    }
-    log.info("File or folder " + filename + " does not exist");
-    return false;
   }
 
   /** This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator. */

@@ -81,8 +81,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
   @Override
   protected NetworkServiceDescriptor prepareObject() throws FileNotFoundException {
     String fileAbsoluteName = properties.getProperty("nsd-path") + fileName;
-    String body =
-        Utils.getStringFromInputStream(this.getClass().getResourceAsStream(fileAbsoluteName));
+    String body = Utils.getStringFromInputStream(fileAbsoluteName);
     return mapper.fromJson(body, aClass);
   }
 

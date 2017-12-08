@@ -15,26 +15,15 @@
  */
 package org.openbaton.integration.test.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import dnl.utils.text.table.TextTable;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -48,7 +37,7 @@ public class Utils {
   public static Properties getProperties(String propertiesFile) throws IOException {
     Properties properties = new Properties();
     log.info("Reading properties from file " + propertiesFile);
-    properties.load(Utils.class.getResourceAsStream(propertiesFile));
+    properties.load(getInputStream(propertiesFile));
     if (properties.getProperty("external-properties-file") != null) {
       File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
       if (externalPropertiesFile.exists()) {
@@ -68,10 +57,12 @@ public class Utils {
     return properties;
   }
 
-  public static String getStringFromInputStream(InputStream stream) {
+  public static String getStringFromInputStream(String fileName) throws FileNotFoundException {
+    InputStream is = getInputStream(fileName);
+
     StringBuilder sb = new StringBuilder();
     try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(stream), 65728);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(is), 65728);
       String line = null;
 
       while ((line = reader.readLine()) != null) {
@@ -84,6 +75,14 @@ public class Utils {
     }
 
     return sb.toString();
+  }
+
+  private static InputStream getInputStream(String fileName) throws FileNotFoundException {
+    InputStream is;
+
+    if (checkFileExists(fileName)) is = new FileInputStream(new File(fileName));
+    else is = Utils.class.getClassLoader().getResourceAsStream(fileName);
+    return is;
   }
 
   public static boolean available(String host, String port) {
@@ -144,74 +143,6 @@ public class Utils {
     return urls;
   }
 
-  // taken from the sdks RestRequest class and slightly modified
-  public static String getAccessToken(
-      String nfvoIp, String nfvoPort, String username, String password)
-      throws IOException, SDKException {
-    HttpClient httpClient = HttpClientBuilder.create().build();
-
-    HttpPost httpPost = new HttpPost("http://" + nfvoIp + ":" + nfvoPort + "/oauth/token");
-
-    httpPost.setHeader(
-        "Authorization",
-        "Basic " + Base64.encodeBase64String("openbatonOSClient:secret".getBytes()));
-    List<BasicNameValuePair> parametersBody = new ArrayList<>();
-    parametersBody.add(new BasicNameValuePair("grant_type", "password"));
-    parametersBody.add(new BasicNameValuePair("username", username));
-    parametersBody.add(new BasicNameValuePair("password", password));
-
-    log.debug("Username is: " + username);
-    log.debug("Password is: " + password);
-
-    httpPost.setEntity(new UrlEncodedFormEntity(parametersBody, StandardCharsets.UTF_8));
-
-    org.apache.http.HttpResponse response = null;
-    log.debug("httpPost is: " + httpPost.toString());
-    response = httpClient.execute(httpPost);
-
-    String responseString = null;
-    responseString = EntityUtils.toString(response.getEntity());
-    int statusCode = response.getStatusLine().getStatusCode();
-    log.trace(statusCode + ": " + responseString);
-
-    if (statusCode != 200) {
-      ParseComError error = new Gson().fromJson(responseString, ParseComError.class);
-      log.error(
-          "Status Code ["
-              + statusCode
-              + "]: Error signing-in ["
-              + error.error
-              + "] - "
-              + error.error_description);
-      throw new SDKException(
-          "Status Code ["
-              + statusCode
-              + "]: Error signing-in ["
-              + error.error
-              + "] - "
-              + error.error_description,
-          new StackTraceElement[0],
-          "");
-    }
-    JsonObject jobj = new Gson().fromJson(responseString, JsonObject.class);
-    log.trace("JsonTokeAccess is: " + jobj.toString());
-    String bearerToken = null;
-    try {
-      String token = jobj.get("value").getAsString();
-      log.trace(token);
-      bearerToken = "Bearer " + token;
-    } catch (NullPointerException e) {
-      String error = jobj.get("error").getAsString();
-      if (error.equals("invalid_grant")) {
-        throw new SDKException(
-            "Error during authentication",
-            e.getStackTrace(),
-            jobj.get("error_description").getAsString());
-      }
-    }
-    return bearerToken;
-  }
-
   public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
     int i = 0;
     while (!available(nfvoIp, nfvoPort)) {
@@ -270,6 +201,16 @@ public class Utils {
       fileNames.add(name);
     }
     return fileNames;
+  }
+
+  public static boolean checkFileExists(String filename) {
+    File f = new File(filename);
+    if (f != null && f.exists()) {
+      log.debug("File or folder " + filename + " exists");
+      return true;
+    }
+    log.debug("File or folder " + filename + " does not exist");
+    return false;
   }
 
   private class ParseComError implements Serializable {

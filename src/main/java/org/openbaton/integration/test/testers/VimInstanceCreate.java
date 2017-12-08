@@ -113,7 +113,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
   private String getFileContent() throws FileNotFoundException {
     String fileAbsoluteName = properties.getProperty("vim-path") + fileName;
-    return Utils.getStringFromInputStream(this.getClass().getResourceAsStream(fileAbsoluteName));
+    return Utils.getStringFromInputStream(fileAbsoluteName);
   }
 
   public void setFileName(String fileName) {
