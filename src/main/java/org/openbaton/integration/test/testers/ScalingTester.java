@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.Status;
@@ -102,6 +103,19 @@ public class ScalingTester extends Tester {
       log.warn("Could not retrieve the updated NSR. This may cause errors in following tasks");
 
     return nsrUpdated;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfrType = currentSection.get("vnf-type");
+    String vnfcCount = currentSection.get("vnfc-count");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
+
+    if (vnfcCount != null) {
+      this.setVnfcCount(vnfcCount);
+    }
   }
 
   private int getNumberOfVNFCInstances(String nsrId, String vnfrId)

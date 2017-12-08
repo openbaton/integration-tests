@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.utils.Tester;
@@ -64,6 +65,14 @@ public class ScaleIn extends Tester {
 
     log.debug("--- Triggered ScaleIn on VNFR of type " + vnfrType);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfrType = currentSection.get("vnf-type");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
   }
 
   public void setVnfrType(String vnfrType) {

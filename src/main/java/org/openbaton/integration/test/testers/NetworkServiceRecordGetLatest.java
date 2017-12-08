@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
@@ -56,4 +57,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
     log.debug("The latest NSR is: \n" + nsr);
     return nsr;
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 }

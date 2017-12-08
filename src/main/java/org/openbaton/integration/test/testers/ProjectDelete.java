@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -87,6 +88,14 @@ public class ProjectDelete extends Tester<Project> {
           "The deletion of project " + projectToDelete + " was expected to fail but it did not.");
     log.info("Successfully deleted project " + projectToDelete);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setProjectToDelete(currentSection.get("project-name"));
   }
 
   public boolean isExpectedToFail() {

@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Role;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -122,6 +123,20 @@ public class UserUpdate extends Tester<User> {
     log.info("Successfully updated user " + oldUserName);
     log.debug(oldUserName + " was updated to " + user.toString());
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setNewUserName(currentSection.get("user-name-new"));
+    this.setNewUserPwd(currentSection.get("user-password-new"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setUserIsAdmin(currentSection.get("user-is-admin"));
+    this.setUserProjects(currentSection.get("user-projects"));
+    this.setGuestProjects(currentSection.get("guest-projects"));
+    this.setEnabled(currentSection.get("enabled"));
+    this.setOldUserName(currentSection.get("user-name-old"));
   }
 
   public boolean isExpectedToFail() {

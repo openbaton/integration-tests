@@ -20,7 +20,7 @@ import com.google.gson.GsonBuilder;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
-import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
@@ -32,18 +32,18 @@ import org.slf4j.LoggerFactory;
  * <p>Abstract class that represents the tasks defined in the .ini files.
  */
 public abstract class Tester<T extends Serializable> extends SubTask {
+  protected static final Logger log = LoggerFactory.getLogger(Tester.class);
+
   protected Properties properties;
   protected final Class<T> aClass;
   protected String sshPrivateKeyFilePath;
+  private AbstractRestAgent abstractRestAgent;
 
   public void setAbstractRestAgent(AbstractRestAgent abstractRestAgent) {
     this.abstractRestAgent = abstractRestAgent;
   }
 
-  private AbstractRestAgent abstractRestAgent;
-  protected NFVORequestor requestor;
   protected Gson mapper;
-  protected static final Logger log = LoggerFactory.getLogger(Tester.class);
 
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
@@ -57,38 +57,21 @@ public abstract class Tester<T extends Serializable> extends SubTask {
         properties.getProperty(
             "ssh-private-key-file-path", "/etc/openbaton/integration-test/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
-    try {
-      requestor =
-          new NFVORequestor(
-              properties.getProperty("nfvo-usr"),
-              properties.getProperty("nfvo-pwd"),
-              Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
-              properties.getProperty("nfvo-project-name"),
-              properties.getProperty("nfvo-ip"),
-              properties.getProperty("nfvo-port"),
-              "1");
-    } catch (SDKException e) {
-      e.printStackTrace();
-      log.error("It was not possible to connect to the NFVO");
-    }
+
     this.aClass = aClass;
   }
 
-  public T create() throws SDKException, FileNotFoundException {
+  public T create() throws SDKException, FileNotFoundException, IntegrationTestException {
     T expected = prepareObject();
-    if (expected == null) throw new NullPointerException();
+    if (expected == null) throw new IntegrationTestException("Expected object was not created");
     T obtained;
     obtained = (T) abstractRestAgent.create(expected);
-
     log.trace("Received: " + obtained.toString());
-
     return obtained;
   }
 
   public void delete(String id) throws SDKException {
-
     abstractRestAgent.delete(id);
-
     log.debug("Deleted: " + id);
   }
 

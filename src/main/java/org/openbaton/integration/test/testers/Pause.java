@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.integration.test.utils.Tester;
 
 /**
@@ -46,6 +47,19 @@ public class Pause extends Tester {
     Thread.sleep(duration);
     log.debug("Paused for " + duration + " milliseconds");
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String d = currentSection.get("duration");
+    try {
+      int duration = Integer.parseInt(d);
+      this.setDuration(duration);
+    } catch (NumberFormatException e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+      System.exit(42);
+    }
   }
 
   public void setDuration(int duration) {

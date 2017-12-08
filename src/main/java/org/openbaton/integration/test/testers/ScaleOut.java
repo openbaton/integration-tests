@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.VNFComponent;
 import org.openbaton.catalogue.mano.descriptor.VNFDConnectionPoint;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -73,6 +74,24 @@ public class ScaleOut extends Tester {
     if (!found) log.warn("did not find a VNFR of type " + vnfrType);
 
     return nsr;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfrType = currentSection.get("vnf-type");
+    String virtualLink = currentSection.get("virtual-link");
+    String floatingIp = currentSection.get("floating-ip");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
+
+    if (virtualLink != null) {
+      this.setVirtualLink(virtualLink);
+    }
+
+    if (floatingIp != null) {
+      this.setFloatingIp(floatingIp);
+    }
   }
 
   private VNFComponent createVNFComponent() {

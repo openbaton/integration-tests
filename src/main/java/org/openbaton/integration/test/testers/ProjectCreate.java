@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -93,6 +94,14 @@ public class ProjectCreate extends Tester<Project> {
 
     log.info("Successfully created the new project " + projectName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setProjectName(currentSection.get("project-name"));
   }
 
   public boolean isExpectedToFail() {

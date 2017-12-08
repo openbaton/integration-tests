@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
@@ -58,6 +59,11 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
     }
     log.debug("--- Successfully deleted the package " + packageName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setPackageName(currentSection.get("package-name"));
   }
 
   public void setPackageName(String packageName) {

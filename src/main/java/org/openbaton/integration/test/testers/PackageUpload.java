@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -62,6 +63,11 @@ public class PackageUpload extends Tester<VNFPackage> {
 
     log.debug("--- Successfully stored VNFPackage " + packageName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setPackageName(currentSection.get("package-name"));
   }
 
   public void setPackageName(String name) {

@@ -19,37 +19,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.catalogue.nfvo.VimInstance;
-import org.openbaton.integration.test.exceptions.IntegrationTestException;
-import org.openbaton.integration.test.testers.GenericServiceTester;
-import org.openbaton.integration.test.testers.NetworkServiceDescriptorCreate;
-import org.openbaton.integration.test.testers.NetworkServiceDescriptorDelete;
-import org.openbaton.integration.test.testers.NetworkServiceDescriptorWait;
-import org.openbaton.integration.test.testers.NetworkServiceRecordCreate;
-import org.openbaton.integration.test.testers.NetworkServiceRecordDelete;
-import org.openbaton.integration.test.testers.NetworkServiceRecordWait;
-import org.openbaton.integration.test.testers.PackageDelete;
-import org.openbaton.integration.test.testers.PackageUpload;
-import org.openbaton.integration.test.testers.Pause;
-import org.openbaton.integration.test.testers.ProjectCreate;
-import org.openbaton.integration.test.testers.ProjectDelete;
-import org.openbaton.integration.test.testers.ScaleIn;
-import org.openbaton.integration.test.testers.ScaleOut;
-import org.openbaton.integration.test.testers.ScalingTester;
-import org.openbaton.integration.test.testers.UserCreate;
-import org.openbaton.integration.test.testers.UserDelete;
-import org.openbaton.integration.test.testers.UserUpdate;
-import org.openbaton.integration.test.testers.VNFRStatusTester;
-import org.openbaton.integration.test.testers.VimInstanceCreate;
-import org.openbaton.integration.test.testers.VimInstanceDelete;
-import org.openbaton.integration.test.testers.VirtualNetworkFunctionDescriptorDelete;
-import org.openbaton.integration.test.testers.VirtualNetworkFunctionRecordWait;
-import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -84,113 +58,48 @@ public class MainIntegrationTest {
       properties = loadProperties();
     } catch (IOException e) {
       e.printStackTrace();
+      log.error(e.getMessage());
+      System.exit(42);
     }
 
-    log.debug("Properties: " + properties);
-
-    // Checking command line arguments
-    List<String> clArgs = Arrays.asList(args);
-    List<URL> iniFileURLs = Utils.loadFileIni(properties);
-    List<String> fileNames = Utils.getFileNames(iniFileURLs);
-
-    // Check if arguments are wrong
-    if (clArgs.size() > 0) {
-      for (String arg : clArgs) {
-        if (arg.equals("clean")) {
-          log.info("Execute clean up of existing descriptors/records and exit");
-          clearOrchestrator();
-          System.exit(0);
-        }
-        if (!fileNames.contains(arg)) {
-          log.warn("The argument " + arg + " does not specify an existing test scenario.");
-        }
-      }
-    }
+    log.debug("Current properties set: " + properties);
 
     // Checking if the NFVO is running
     if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)) {
-      log.error("After 120 sec the Nfvo is not started yet. Is there an error?");
+      log.error("After 120 sec the NFVO is not started yet. Is there an error?");
       System.exit(1);
+    }
+
+    NFVORequestor requestor =
+        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
+
+    if (args.length > 0 && args[0].equals("clean")) {
+      log.info("Executing clean up of existing descriptors/records ");
+      clearOrchestrator(requestor);
+      System.exit(0);
+    }
+    // Checking command line arguments
+    List<String> clArgs = Arrays.asList(args);
+    List<URL> iniFileURLs = Utils.loadFileIni(properties);
+
+    // Check if arguments passed are correct
+    if (clArgs.size() > 0) {
+      List<String> fileNames = Utils.getFileNames(iniFileURLs);
+      for (String arg : clArgs) {
+        if (!fileNames.contains(arg)) {
+          log.warn(
+              "The scenario name passed as argument "
+                  + arg
+                  + "  does not refer to any existing scenarios in integration-test-scenarios folder");
+        }
+      }
     }
 
     log.info("NFVO is reachable at " + nfvoIp + ":" + nfvoPort + ". Loading tests");
 
     IntegrationTestManager itm =
-        new IntegrationTestManager("org.openbaton.integration.test.testers") {
-          @Override
-          protected void configureSubTask(SubTask subTask, Profile.Section currentSection) {
-            subTask.setProjectId(projectName);
-            if (subTask instanceof VimInstanceCreate) {
-              TaskConfigurator.configureVimInstanceCreate(subTask, currentSection);
-            }
-            if (subTask instanceof VimInstanceDelete) {
-              TaskConfigurator.configureVimInstanceDelete(subTask, currentSection);
-            } else if (subTask instanceof NetworkServiceDescriptorCreate) {
-              TaskConfigurator.configureNetworkServiceDescriptorCreate(subTask, currentSection);
-            } else if (subTask instanceof NetworkServiceDescriptorDelete) {
-              TaskConfigurator.configureNetworkServiceDescriptorDelete(subTask, currentSection);
-            } else if (subTask instanceof VirtualNetworkFunctionDescriptorDelete) {
-              TaskConfigurator.configureVirtualNetworkFunctionDescriptorDelete(
-                  subTask, currentSection);
-            } else if (subTask instanceof NetworkServiceDescriptorWait) {
-              try {
-                TaskConfigurator.configureNetworkServiceDescriptorWait(subTask, currentSection);
-              } catch (IntegrationTestException e) {
-                log.error(e.getMessage());
-                System.exit(42);
-              }
-            } else if (subTask instanceof NetworkServiceRecordDelete) {
-              TaskConfigurator.configureNetworkServiceRecordDelete(subTask, currentSection);
-            } else if (subTask instanceof NetworkServiceRecordCreate) {
-              TaskConfigurator.configureNetworkServiceRecordCreate(subTask, currentSection);
-            } else if (subTask instanceof NetworkServiceRecordWait) {
-              try {
-                TaskConfigurator.configureNetworkServiceRecordWait(subTask, currentSection);
-              } catch (IntegrationTestException e) {
-                log.error(e.getMessage());
-                System.exit(42);
-              }
-            } else if (subTask instanceof VirtualNetworkFunctionRecordWait) {
-              try {
-                TaskConfigurator.configureVirtualNetworkFunctionRecordWait(subTask, currentSection);
-              } catch (IntegrationTestException e) {
-                log.error(e.getMessage());
-                System.exit(42);
-              }
-            } else if (subTask instanceof GenericServiceTester) {
-              TaskConfigurator.configureGenericServiceTester(subTask, currentSection);
-            } else if (subTask instanceof ScaleOut) {
-              TaskConfigurator.configureScaleOut(subTask, currentSection);
-            } else if (subTask instanceof ScaleIn) {
-              TaskConfigurator.configureScaleIn(subTask, currentSection);
-            } else if (subTask instanceof ScalingTester) {
-              TaskConfigurator.configureScalingTester(subTask, currentSection);
-            } else if (subTask instanceof PackageUpload) {
-              TaskConfigurator.configurePackageUpload(subTask, currentSection);
-            } else if (subTask instanceof PackageDelete) {
-              TaskConfigurator.configurePackageDelete(subTask, currentSection);
-            } else if (subTask instanceof VNFRStatusTester) {
-              TaskConfigurator.configureVnfrStatusTester(subTask, currentSection);
-            } else if (subTask instanceof Pause) {
-              try {
-                TaskConfigurator.configurePause(subTask, currentSection);
-              } catch (IntegrationTestException e) {
-                log.error(e.getMessage());
-                System.exit(42);
-              }
-            } else if (subTask instanceof UserCreate) {
-              TaskConfigurator.configureUserCreate(subTask, currentSection);
-            } else if (subTask instanceof UserDelete) {
-              TaskConfigurator.configureUserDelete(subTask, currentSection);
-            } else if (subTask instanceof UserUpdate) {
-              TaskConfigurator.configureUserUpdate(subTask, currentSection);
-            } else if (subTask instanceof ProjectCreate) {
-              TaskConfigurator.configureProjectCreate(subTask, currentSection);
-            } else if (subTask instanceof ProjectDelete) {
-              TaskConfigurator.configureProjectDelete(subTask, currentSection);
-            }
-          }
-        };
+        new IntegrationTestManager(
+            "org.openbaton.integration.test.testers", requestor, projectName);
 
     long startTime, stopTime;
     boolean allTestsPassed = true;
@@ -227,7 +136,7 @@ public class MainIntegrationTest {
         results.put(name, "FAILED");
       }
       if (clearAfterTest) {
-        clearOrchestrator();
+        clearOrchestrator(requestor);
       }
     }
     if (!executedTests) {
@@ -263,8 +172,8 @@ public class MainIntegrationTest {
     } else {
       propertiesFile = PROPERTIES_FILE;
     }
+    log.debug("Found properties file: " + propertiesFile);
 
-    log.info("Reading properties from " + propertiesFile);
     Properties properties = Utils.getProperties(propertiesFile);
     properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip", "localhost"));
     properties.setProperty("nfvo-port", properties.getProperty("nfvo-port", "8080"));
@@ -301,11 +210,13 @@ public class MainIntegrationTest {
     return properties;
   }
 
-  /** This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator. */
-  private static void clearOrchestrator() {
+  /**
+   * This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator.
+   *
+   * @param requestor
+   */
+  private static void clearOrchestrator(NFVORequestor requestor) {
     try {
-      NFVORequestor requestor =
-          new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
       NetworkServiceRecordAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
       List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
       for (NetworkServiceRecord nsr : nsrList) {

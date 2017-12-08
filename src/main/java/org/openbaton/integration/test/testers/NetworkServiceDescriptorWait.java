@@ -18,8 +18,11 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -92,5 +95,22 @@ public class NetworkServiceDescriptorWait extends Waiter {
       throw e;
     }
     return nsd.getId();
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+    String action = currentSection.get("action");
+    if (action == null || action.isEmpty()) {
+      try {
+        throw new IntegrationTestException("action for VirtualNetworkFunctionRecordWait not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    this.setAction(Action.valueOf(action));
   }
 }

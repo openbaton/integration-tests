@@ -18,6 +18,8 @@ package org.openbaton.integration.test.utils;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
+import org.ini4j.Profile;
+import org.openbaton.sdk.NFVORequestor;
 
 /** Created by mob on 24.07.15. */
 public abstract class SubTask implements Callable<Object> {
@@ -29,6 +31,7 @@ public abstract class SubTask implements Callable<Object> {
   private SubTask successorRemover;
   private List<Future> f;
   private int maxIntegrationTestTime;
+  protected NFVORequestor requestor;
 
   public SubTask() {
     this.successors = new LinkedList<>();
@@ -136,5 +139,15 @@ public abstract class SubTask implements Callable<Object> {
       // Preserve interrupt status
       Thread.currentThread().interrupt();
     }
+  }
+
+  public abstract void configureSubTask(Profile.Section currentSection);
+
+  public NFVORequestor getRequestor() {
+    return requestor;
+  }
+
+  public void setRequestor(NFVORequestor requestor) {
+    this.requestor = requestor;
   }
 }

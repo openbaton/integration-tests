@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
@@ -41,6 +42,9 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
   protected Object doWork() throws SDKException, FileNotFoundException {
     return create();
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 
   @Override
   public NetworkServiceRecord create() throws SDKException, FileNotFoundException {

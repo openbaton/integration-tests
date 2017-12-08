@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -76,6 +77,12 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) received;
     log.debug("Stored NSD with id: " + nsd.getId());
     return received;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setFileName(currentSection.get("name-file"));
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
   }
 
   @Override

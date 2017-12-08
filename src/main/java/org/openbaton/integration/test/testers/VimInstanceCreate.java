@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -77,7 +78,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
                 properties.getProperty("nfvo-port"),
                 "1");
         VimInstance expected = prepareObject();
-        if (expected == null) throw new NullPointerException();
+        if (expected == null) throw new IntegrationTestException();
         result = vimAgent.create(expected);
       } else {
         log.info("Upload vim instance " + fileName);
@@ -103,6 +104,15 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
     log.debug("--- upload of vim instance " + fileName + " successful");
     return result;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setFileName(currentSection.get("name-file"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setAsUserPassword(currentSection.get("as-user-password"));
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setInProject(currentSection.get("in-project"));
   }
 
   @Override

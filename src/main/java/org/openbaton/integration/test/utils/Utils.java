@@ -38,23 +38,15 @@ public class Utils {
     Properties properties = new Properties();
     log.info("Reading properties from file " + propertiesFile);
     properties.load(getInputStream(propertiesFile));
-    if (properties.getProperty("external-properties-file") != null) {
-      File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
-      if (externalPropertiesFile.exists()) {
-        log.debug(
-            "Loading properties from external-properties-file: "
-                + properties.getProperty("external-properties-file"));
-        InputStream is = new FileInputStream(externalPropertiesFile);
-        properties.load(is);
-      } else {
-        log.debug(
-            "external-properties-file: "
-                + properties.getProperty("external-properties-file")
-                + " doesn't exist");
-      }
-    }
-    log.debug("Loaded properties: " + properties);
     return properties;
+  }
+
+  private static InputStream getInputStream(String fileName) throws FileNotFoundException {
+    if (checkFileExists(fileName)) {
+      return new FileInputStream(new File(fileName));
+    } else {
+      return Utils.class.getClassLoader().getResourceAsStream(fileName);
+    }
   }
 
   public static String getStringFromInputStream(String fileName) throws FileNotFoundException {
@@ -77,14 +69,6 @@ public class Utils {
     return sb.toString();
   }
 
-  private static InputStream getInputStream(String fileName) throws FileNotFoundException {
-    InputStream is;
-
-    if (checkFileExists(fileName)) is = new FileInputStream(new File(fileName));
-    else is = Utils.class.getClassLoader().getResourceAsStream(fileName);
-    return is;
-  }
-
   public static boolean available(String host, String port) {
     try {
       Socket s = new Socket(host, Integer.parseInt(port));
@@ -98,23 +82,31 @@ public class Utils {
     }
   }
 
-  public static LinkedList<URL> getFilesAsURL(String location) {
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    Resource[] resources = {};
-    try {
-      resources = resolver.getResources(location);
-    } catch (IOException e) {
-      log.error(e.getMessage(), e);
-    }
-    LinkedList<URL> urls = new LinkedList<>();
-    for (Resource resource : resources) {
+  public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
+    int i = 0;
+    while (!available(nfvoIp, nfvoPort)) {
+      i++;
       try {
-        urls.add(resource.getURL());
-      } catch (IOException e) {
+        Thread.sleep(3000);
+      } catch (InterruptedException e) {
         e.printStackTrace();
       }
+      if (i > 40) {
+        return false;
+      }
     }
-    return urls;
+    return true;
+  }
+
+  public static List<URL> loadFileIni(Properties properties) throws IOException {
+    String scenarioPath = properties.getProperty("integration-test-scenarios");
+    // scenario files stored on the host machine
+    log.info("Loading files from " + scenarioPath);
+    LinkedList<URL> externalFiles = new LinkedList<>();
+    if (scenarioPath != null) {
+      externalFiles = getExternalFilesAsURL(scenarioPath);
+    }
+    return externalFiles;
   }
 
   /*
@@ -143,54 +135,19 @@ public class Utils {
     return urls;
   }
 
-  public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
-    int i = 0;
-    while (!available(nfvoIp, nfvoPort)) {
-      i++;
+  public static LinkedList<URL> getFilesAsURL(String location) throws IOException {
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    Resource[] resources = resolver.getResources(location);
+
+    LinkedList<URL> urls = new LinkedList<>();
+    for (Resource resource : resources) {
       try {
-        Thread.sleep(3000);
-      } catch (InterruptedException e) {
+        urls.add(resource.getURL());
+      } catch (IOException e) {
         e.printStackTrace();
       }
-      if (i > 40) {
-        return false;
-      }
     }
-    return true;
-  }
-
-  public static List<URL> loadFileIni(Properties properties) throws FileNotFoundException {
-    String scenarioPath = properties.getProperty("integration-test-scenarios");
-    // scenario files stored on the host machine
-    LinkedList<URL> externalFiles = new LinkedList<>();
-    if (scenarioPath != null) {
-      externalFiles = getExternalFilesAsURL(scenarioPath);
-    }
-
-    // scenario files already included in this project
-    LinkedList<URL> internalFiles = getFilesAsURL(scenarioPath + "*.ini");
-
-    LinkedList<URL> urlsToAdd = new LinkedList<>();
-    for (URL externalUrl : externalFiles) {
-      boolean foundInternalEquivalent = false;
-      for (URL internalUrl : internalFiles) {
-        String[] splittedExternal = externalUrl.toString().split("/");
-        String externalName = splittedExternal[splittedExternal.length - 1];
-        String[] splittedInternal = internalUrl.toString().split("/");
-        String internalName = splittedInternal[splittedInternal.length - 1];
-        if (internalName.equals(externalName)) {
-          foundInternalEquivalent = true;
-          internalFiles.remove(internalUrl);
-          urlsToAdd.add(externalUrl);
-          break;
-        }
-      }
-      if (!foundInternalEquivalent) {
-        urlsToAdd.add(externalUrl);
-      }
-    }
-    internalFiles.addAll(urlsToAdd);
-    return internalFiles;
+    return urls;
   }
 
   public static List<String> getFileNames(List<URL> iniFileURLs) {

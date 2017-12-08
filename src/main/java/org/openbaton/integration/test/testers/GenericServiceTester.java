@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.common.Ip;
 import org.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -183,6 +184,39 @@ public class GenericServiceTester extends Tester {
       }
     }
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    Boolean stop = false;
+    String vnfrType = currentSection.get("vnf-type");
+    String vmScriptsPath = currentSection.get("vm-scripts-path");
+    String user = currentSection.get("user-name");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
+
+    if (vmScriptsPath != null) {
+      this.setVmScriptsPath(vmScriptsPath);
+    }
+
+    String netName = currentSection.get("net-name");
+    if (netName != null) {
+      this.setVirtualLink(netName);
+    }
+
+    if (user != null) {
+      this.setUserName(user);
+    }
+
+    for (int i = 1; !stop; i++) {
+      String scriptName = currentSection.get("script-" + i);
+      if (scriptName == null || scriptName.isEmpty()) {
+        stop = true;
+        continue;
+      }
+      this.addScript(scriptName);
+    }
   }
 
   /**

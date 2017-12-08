@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.Status;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
@@ -85,6 +86,19 @@ public class VNFRStatusTester extends Tester {
 
     log.debug("--- VNFRStatusTester finished successfully");
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String status = currentSection.get("status");
+    if (status != null) {
+      this.setStatus(status);
+    }
+
+    String vnfrType = currentSection.get("vnf-type");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
   }
 
   public void setVnfrType(String vnfrType) {

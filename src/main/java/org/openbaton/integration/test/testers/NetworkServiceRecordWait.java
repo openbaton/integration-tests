@@ -18,7 +18,9 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
@@ -103,5 +105,22 @@ public class NetworkServiceRecordWait extends Waiter {
     }
     nsr = mapper.fromJson(getPayload(), NetworkServiceRecord.class);
     return nsr;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+    String action = currentSection.get("action");
+    if (action == null) {
+      try {
+        throw new IntegrationTestException("action for NetworkServiceRecordWait not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    this.setAction(Action.valueOf(action));
   }
 }

@@ -17,6 +17,7 @@ package org.openbaton.integration.test.testers;
 
 import java.io.FileNotFoundException;
 import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -51,4 +52,7 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     log.debug("--- deleted NSR " + nsr.getName() + " with id " + nsr.getId());
     return nsr;
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 }
