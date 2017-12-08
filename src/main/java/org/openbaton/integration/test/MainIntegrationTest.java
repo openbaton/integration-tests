@@ -305,10 +305,10 @@ public class MainIntegrationTest {
   private static boolean checkFileExists(String filename) {
     File f = new File(filename);
     if (f != null && f.exists()) {
-      log.debug("File or folder " + filename + " exists");
+      log.info("File or folder " + filename + " exists");
       return true;
     }
-    log.debug("File or folder " + filename + " does not exist");
+    log.info("File or folder " + filename + " does not exist");
     return false;
   }
 
@@ -316,7 +316,7 @@ public class MainIntegrationTest {
   private static void clearOrchestrator() {
     try {
       NFVORequestor requestor =
-          new NFVORequestor(nfvoUsr, nfvoPwd, projectName, sslEnabled, nfvoIp, nfvoPort, "1");
+          new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
       NetworkServiceRecordAgent nsrAgent = requestor.getNetworkServiceRecordAgent();
       List<NetworkServiceRecord> nsrList = nsrAgent.findAll();
       for (NetworkServiceRecord nsr : nsrList) {

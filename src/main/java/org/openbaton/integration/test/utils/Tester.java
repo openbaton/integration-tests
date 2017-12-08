@@ -57,15 +57,20 @@ public abstract class Tester<T extends Serializable> extends SubTask {
         properties.getProperty(
             "ssh-private-key-file-path", "/etc/openbaton/integration-test/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
-    requestor =
-        new NFVORequestor(
-            properties.getProperty("nfvo-usr"),
-            properties.getProperty("nfvo-pwd"),
-            properties.getProperty("nfvo-project-id"),
-            Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
-            properties.getProperty("nfvo-ip"),
-            properties.getProperty("nfvo-port"),
-            "1");
+    try {
+      requestor =
+          new NFVORequestor(
+              properties.getProperty("nfvo-usr"),
+              properties.getProperty("nfvo-pwd"),
+              Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
+              properties.getProperty("nfvo-project-name"),
+              properties.getProperty("nfvo-ip"),
+              properties.getProperty("nfvo-port"),
+              "1");
+    } catch (SDKException e) {
+      e.printStackTrace();
+      log.error("It was not possible to connect to the NFVO");
+    }
     this.aClass = aClass;
   }
 

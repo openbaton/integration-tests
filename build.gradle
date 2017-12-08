@@ -19,8 +19,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
-        classpath("se.transmode.gradle:gradle-docker:1.2")
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE'
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
@@ -43,25 +43,7 @@ release {
 
 
 project.ext {
-    //------------------------------------------------//
-    /**
-     * Spring Related Variables
-     */
-    springVersion = '4.2.0.RELEASE'
-    springBootVersion = '1.5.8.RELEASE'
-    //------------------------------------------------//
-    //------------------------------------------------//
-    /**
-     * Application Related Version
-     */
-
-    //------------------------------------------------//
-    //------------------------------------------------//
-    /**
-     * gradle Related Vars
-     */
     mainClass = theMainClass = 'org.openbaton.integration.test.MainIntegrationTest'
-    //------------------------------------------------//
 }
 
 repositories {
@@ -83,19 +65,14 @@ apply from: 'gradle/gradle/packaging.openbaton-integration-tests.docker.gradle'
 
 dependencies {
 
-    compile 'ch.qos.logback:logback-classic:1.1.3'
-    compile 'mysql:mysql-connector-java:5.1.36'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'org.ini4j:ini4j:0.5.4'
-    compile 'com.google.code.gson:gson:2.6.2'
-
-    compile 'org.springframework:spring-core:' + springVersion
-
     compile 'org.openbaton:sdk:5.0.0'
 
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.httpcomponents:httpclient:4.5.2'
     // lib needed for printing tests results
-    compile group: 'com.massisframework', name: 'j-text-utils', version: '0.3.4'
+    compile 'com.massisframework:j-text-utils:0.3.4'
 
 }
 

@@ -37,7 +37,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   private String vnfrType;
 
   public VirtualNetworkFunctionRecordWait(Properties properties) throws FileNotFoundException {
-    super(properties, VirtualNetworkFunctionRecordWait.class, "", "");
+    super(properties, VirtualNetworkFunctionRecordWait.class);
     this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 

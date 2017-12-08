@@ -35,7 +35,7 @@ public class NetworkServiceRecordWait extends Waiter {
   private String name = NetworkServiceRecordWait.class.getSimpleName();
 
   public NetworkServiceRecordWait(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordWait.class, "", "");
+    super(properties, NetworkServiceRecordWait.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 

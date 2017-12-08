@@ -15,8 +15,6 @@
  */
 package org.openbaton.integration.test.testers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.openbaton.catalogue.nfvo.VimInstance;
@@ -114,9 +112,8 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   }
 
   private String getFileContent() throws FileNotFoundException {
-    File f = new File(properties.getProperty("vim-path") + fileName);
-    String body = Utils.getStringFromInputStream(new FileInputStream(f));
-    return body;
+    String fileAbsoluteName = properties.getProperty("vim-path") + fileName;
+    return Utils.getStringFromInputStream(this.getClass().getResourceAsStream(fileAbsoluteName));
   }
 
   public void setFileName(String fileName) {

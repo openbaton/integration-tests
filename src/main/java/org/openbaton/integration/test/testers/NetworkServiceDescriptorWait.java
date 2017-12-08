@@ -34,7 +34,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
   private static final String name = "NetworkServiceDescriptorWait";
 
   public NetworkServiceDescriptorWait(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordWait.class, "", "");
+    super(properties, NetworkServiceRecordWait.class);
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 

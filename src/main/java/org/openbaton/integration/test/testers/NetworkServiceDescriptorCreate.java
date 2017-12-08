@@ -15,8 +15,6 @@
  */
 package org.openbaton.integration.test.testers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
@@ -82,8 +80,9 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
   @Override
   protected NetworkServiceDescriptor prepareObject() throws FileNotFoundException {
-    File f = new File(properties.get("nsd-path") + fileName);
-    String body = Utils.getStringFromInputStream(new FileInputStream(f));
+    String fileAbsoluteName = properties.getProperty("nsd-path") + fileName;
+    String body =
+        Utils.getStringFromInputStream(this.getClass().getResourceAsStream(fileAbsoluteName));
     return mapper.fromJson(body, aClass);
   }
 

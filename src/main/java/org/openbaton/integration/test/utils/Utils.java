@@ -47,6 +47,7 @@ public class Utils {
 
   public static Properties getProperties(String propertiesFile) throws IOException {
     Properties properties = new Properties();
+    log.info("Reading properties from file " + propertiesFile);
     properties.load(Utils.class.getResourceAsStream(propertiesFile));
     if (properties.getProperty("external-properties-file") != null) {
       File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
