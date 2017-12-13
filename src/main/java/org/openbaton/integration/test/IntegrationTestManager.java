@@ -75,10 +75,10 @@ public class IntegrationTestManager {
 
   private SubTask loadEntity(Properties properties, Profile.Section currentChild) {
     SubTask instance = loadInstance(properties, currentChild);
-    instance.setRequestor(requestor);
-    instance.setProjectId(projectId);
     if (instance == null) throw new NullPointerException("Instance is null");
     //If there are specific properties for a type of a tester in the configuration file (.ini)
+    instance.setProjectId(projectId);
+    instance.setRequestor(requestor);
     instance.configureSubTask(currentChild);
     String successorRemover = getSuccessorRemover(currentChild);
     instance.setMaxIntegrationTestTime(maxIntegrationTestTime);
@@ -99,6 +99,7 @@ public class IntegrationTestManager {
 
   private SubTask loadInstance(Properties properties, Profile.Section currentChild) {
     String nameClass = currentChild.get("class-name");
+    log.debug("class-name: " + nameClass);
     SubTask instance = null;
     try {
       String classNamePath = classPath + "." + nameClass;

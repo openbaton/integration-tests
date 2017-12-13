@@ -38,7 +38,6 @@ public class VirtualNetworkFunctionDescriptorDelete
 
   public VirtualNetworkFunctionDescriptorDelete(Properties p) throws FileNotFoundException {
     super(p, VirtualNetworkFunctionDescriptor.class);
-    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 
   @Override
@@ -48,7 +47,7 @@ public class VirtualNetworkFunctionDescriptorDelete
 
   @Override
   protected Object doWork() throws Exception {
-
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     Set<VirtualNetworkFunctionDescriptor> vnfds = nsd.getVnfd();
 

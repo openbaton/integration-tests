@@ -41,12 +41,12 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
 
   public NetworkServiceDescriptorCreate(Properties p) throws FileNotFoundException {
     super(p, NetworkServiceDescriptor.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     log.info("Upload NSD " + fileName);
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
     Object received = null;
     VimInstance vimInstance = (VimInstance) param;
     try {

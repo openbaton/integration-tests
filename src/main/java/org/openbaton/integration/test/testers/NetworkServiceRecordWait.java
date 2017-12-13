@@ -38,7 +38,6 @@ public class NetworkServiceRecordWait extends Waiter {
 
   public NetworkServiceRecordWait(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordWait.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -52,6 +51,7 @@ public class NetworkServiceRecordWait extends Waiter {
           FileNotFoundException {
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
 
     EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setNetworkServiceId(nsr.getId());

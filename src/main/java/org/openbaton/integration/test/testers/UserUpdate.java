@@ -51,7 +51,6 @@ public class UserUpdate extends Tester<User> {
   public UserUpdate(Properties p) throws FileNotFoundException {
     super(p, User.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -61,6 +60,8 @@ public class UserUpdate extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to update user " + oldUserName + " while logged in as " + asUser);
     else log.info("Try to update user " + oldUserName);

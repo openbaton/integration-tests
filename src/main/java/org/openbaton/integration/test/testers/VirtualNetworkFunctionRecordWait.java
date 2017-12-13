@@ -40,7 +40,6 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
 
   public VirtualNetworkFunctionRecordWait(Properties properties) throws FileNotFoundException {
     super(properties, VirtualNetworkFunctionRecordWait.class);
-    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
   }
 
   @Override
@@ -51,6 +50,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   @Override
   protected Object doWork()
       throws SDKException, InterruptedException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
     EventEndpoint eventEndpoint = createEventEndpoint(name);

@@ -22,6 +22,7 @@ import org.openbaton.catalogue.nfvo.VimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
+import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
@@ -43,10 +44,9 @@ public class VimInstanceDelete extends Tester<VimInstance> {
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public VimInstanceDelete(Properties properties) throws FileNotFoundException {
+  public VimInstanceDelete(Properties properties) {
     super(properties, VimInstance.class);
     this.properties = properties;
-    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override
@@ -55,7 +55,8 @@ public class VimInstanceDelete extends Tester<VimInstance> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, IntegrationTestException {
+  protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
     VimInstance vi = (VimInstance) param;
     if (asUser == null || "".equals(asUser)) log.info("Delete vim instance " + vi.getName());
 

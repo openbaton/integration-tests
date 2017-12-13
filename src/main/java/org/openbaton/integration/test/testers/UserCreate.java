@@ -49,7 +49,6 @@ public class UserCreate extends Tester<User> {
   public UserCreate(Properties p) throws FileNotFoundException {
     super(p, User.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -59,6 +58,7 @@ public class UserCreate extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
     if (asUser != null && !"".equals(asUser))
       log.info("Try to create a new user " + newUserName + " while logged in as " + asUser);
     else log.info("Try to create a new user " + newUserName);

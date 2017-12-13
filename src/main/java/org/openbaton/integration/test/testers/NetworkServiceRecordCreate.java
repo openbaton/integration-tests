@@ -35,7 +35,6 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
    */
   public NetworkServiceRecordCreate(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecord.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -48,7 +47,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
   @Override
   public NetworkServiceRecord create() throws SDKException, FileNotFoundException {
-
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
     log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());
     NetworkServiceRecord networkServiceRecord = null;

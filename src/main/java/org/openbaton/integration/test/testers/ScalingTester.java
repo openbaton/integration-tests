@@ -44,7 +44,6 @@ public class ScalingTester extends Tester {
 
   public ScalingTester(Properties properties) throws FileNotFoundException {
     super(properties, ScaleOut.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -55,6 +54,7 @@ public class ScalingTester extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start ScalingTester");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();

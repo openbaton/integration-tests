@@ -34,7 +34,6 @@ public class ScaleIn extends Tester {
 
   public ScaleIn(Properties properties) throws FileNotFoundException {
     super(properties, ScaleIn.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -45,6 +44,7 @@ public class ScaleIn extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start ScaleIn on VNFR type " + vnfrType);
+    //this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();

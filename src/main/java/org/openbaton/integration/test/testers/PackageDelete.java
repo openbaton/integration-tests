@@ -35,7 +35,6 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
 
   public PackageDelete(Properties properties) throws FileNotFoundException {
     super(properties, VirtualNetworkFunctionDescriptor.class);
-    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override
@@ -46,6 +45,8 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   @Override
   protected Object doWork() throws Exception {
     log.info("Delete VNFPackage " + packageName);
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
+
     VNFPackageAgent agent = requestor.getVNFPackageAgent();
 
     try {

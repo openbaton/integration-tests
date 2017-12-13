@@ -35,7 +35,6 @@ public class NetworkServiceRecordGetLatest extends Tester {
    */
   public NetworkServiceRecordGetLatest(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordGetLatest.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -46,6 +45,8 @@ public class NetworkServiceRecordGetLatest extends Tester {
   @Override
   protected Object doWork() throws Exception {
     NetworkServiceRecord nsr = (NetworkServiceRecord) param;
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+
     if (nsr == null) {
       log.error(
           "The passed NSR is null. This task needs to be placed behind a task that passes a NSR.");

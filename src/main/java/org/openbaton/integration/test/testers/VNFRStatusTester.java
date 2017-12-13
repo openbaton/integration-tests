@@ -36,7 +36,6 @@ public class VNFRStatusTester extends Tester {
 
   public VNFRStatusTester(Properties properties) throws FileNotFoundException {
     super(properties, VNFRStatusTester.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -47,8 +46,8 @@ public class VNFRStatusTester extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start VNFRStatusTester on VNFR type " + vnfrType);
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
-
     if (status == null)
       throw new IntegrationTestException(
           "Status to test is not declared. Specify it in the .ini file.");

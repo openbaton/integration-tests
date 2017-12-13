@@ -38,7 +38,6 @@ public class NetworkServiceDescriptorWait extends Waiter {
 
   public NetworkServiceDescriptorWait(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecordWait.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
@@ -49,7 +48,7 @@ public class NetworkServiceDescriptorWait extends Waiter {
   @Override
   protected Object doWork()
       throws SubscriptionException, SDKException, InterruptedException, FileNotFoundException {
-
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
     EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setEvent(getAction());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;

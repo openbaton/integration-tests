@@ -31,7 +31,6 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
   public NetworkServiceRecordDelete(Properties properties) throws FileNotFoundException {
     super(properties, NetworkServiceRecord.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -40,9 +39,10 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
   }
 
   @Override
-  protected Object doWork() throws SDKException {
+  protected Object doWork() throws SDKException, FileNotFoundException {
     NetworkServiceRecord nsr = (NetworkServiceRecord) param;
     log.info("Delete NSR " + nsr.getName() + " with id " + nsr.getId());
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     try {
       delete(nsr.getId());
     } catch (SDKException sdkEx) {

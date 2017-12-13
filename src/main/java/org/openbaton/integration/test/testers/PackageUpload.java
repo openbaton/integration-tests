@@ -35,7 +35,6 @@ public class PackageUpload extends Tester<VNFPackage> {
 
   public PackageUpload(Properties p) throws FileNotFoundException {
     super(p, VNFPackage.class);
-    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
   }
 
   @Override
@@ -46,6 +45,7 @@ public class PackageUpload extends Tester<VNFPackage> {
   @Override
   protected Object doWork() throws Exception {
     log.info("Upload VNFPackage " + packageName);
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
 
     File f = new File(EXTERNAL_PATH_NAME + packageName);
     if (f == null || !f.exists()) {

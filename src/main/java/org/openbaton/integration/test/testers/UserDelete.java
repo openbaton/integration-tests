@@ -44,7 +44,6 @@ public class UserDelete extends Tester<User> {
   public UserDelete(Properties p) throws FileNotFoundException {
     super(p, User.class);
     this.properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -54,6 +53,8 @@ public class UserDelete extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete user " + userToDelete + " while logged in as " + asUser);
     else log.info("Try to delete user " + userToDelete);

@@ -44,7 +44,6 @@ public class ProjectDelete extends Tester<Project> {
   public ProjectDelete(Properties p) throws FileNotFoundException {
     super(p, Project.class);
     this.properties = p;
-    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override
@@ -54,6 +53,8 @@ public class ProjectDelete extends Tester<Project> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getProjectAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete project " + projectToDelete + " while logged in as " + asUser);
     else log.info("Try to delete project " + projectToDelete);

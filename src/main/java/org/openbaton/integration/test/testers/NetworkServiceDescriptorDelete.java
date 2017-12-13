@@ -31,7 +31,6 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
   /** @param p : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port */
   public NetworkServiceDescriptorDelete(Properties p) throws FileNotFoundException {
     super(p, NetworkServiceDescriptor.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
   }
 
   @Override
@@ -40,7 +39,8 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
   }
 
   @Override
-  protected Object doWork() throws SDKException {
+  protected Object doWork() throws SDKException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     log.info("Delete NSD " + nsd.getName());
     try {

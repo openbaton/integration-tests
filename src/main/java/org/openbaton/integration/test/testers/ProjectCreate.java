@@ -43,7 +43,6 @@ public class ProjectCreate extends Tester<Project> {
   public ProjectCreate(Properties p) throws FileNotFoundException {
     super(p, Project.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override
@@ -53,6 +52,7 @@ public class ProjectCreate extends Tester<Project> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getProjectAgent());
     if (asUser != null && !"".equals(asUser)) {
       log.info("Try to create a new project " + projectName + " while logged in as " + asUser);
     } else {

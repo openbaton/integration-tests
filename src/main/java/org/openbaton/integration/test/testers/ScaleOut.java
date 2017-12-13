@@ -41,7 +41,6 @@ public class ScaleOut extends Tester {
 
   public ScaleOut(Properties properties) throws FileNotFoundException {
     super(properties, ScaleOut.class);
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
   }
 
   @Override
@@ -52,9 +51,8 @@ public class ScaleOut extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start ScaleOut on VNFR type " + vnfrType);
-    NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
-
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
+    NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
     boolean found = false;
     for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
       if (vnfr.getType().equals(vnfrType)) {
