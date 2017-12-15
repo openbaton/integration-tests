@@ -50,7 +50,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
     log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());
-    NetworkServiceRecord networkServiceRecord = null;
+    NetworkServiceRecord networkServiceRecord;
     try {
       networkServiceRecord =
           this.requestor.getNetworkServiceRecordAgent().create(nsd.getId(), null, null, null);

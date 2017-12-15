@@ -48,7 +48,7 @@ public class RestWaiter implements WaiterInterface {
   private Logger log;
   private final Lock lock = new ReentrantLock();
   private final Condition eventOccurred = lock.newCondition();
-  private NFVORequestor requestor = null;
+  private NFVORequestor requestor;
   private Gson mapper;
   private EventEndpoint ee;
   private String unsubscriptionId;
@@ -87,7 +87,7 @@ public class RestWaiter implements WaiterInterface {
       throw new SubscriptionException("Problems during the launch of the server", e);
     }
     if (eventEndpoint != null) {
-      String localIp = "";
+      String localIp;
       try {
         localIp = this.properties.getProperty("local-ip");
         if (localIp.equals(""))
@@ -98,8 +98,7 @@ public class RestWaiter implements WaiterInterface {
       }
       String url = "http://" + localIp + ":" + server.getAddress().getPort() + "/" + name;
       eventEndpoint.setEndpoint(url);
-      EventEndpoint response = null;
-      response = this.requestor.getEventAgent().create(eventEndpoint);
+      EventEndpoint response = this.requestor.getEventAgent().create(eventEndpoint);
       if (response == null) throw new NullPointerException("Response is null");
       unsubscriptionId = response.getId();
     } else throw new NullPointerException("EventEndpoint is null");

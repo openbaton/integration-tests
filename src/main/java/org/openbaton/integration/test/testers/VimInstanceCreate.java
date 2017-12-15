@@ -39,7 +39,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
       asUser; // if another user than specified in the integration-tests.properties file should try to create the user
   private String asUserPassword;
   private String inProject; // specifies the project in which to create the vim instance
-  private Properties properties = null;
+  private Properties properties;
 
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
@@ -123,7 +123,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
 
   private String getFileContent() throws FileNotFoundException {
     String fileAbsoluteName = properties.getProperty("vim-path") + fileName;
-    return Utils.getStringFromInputStream(fileAbsoluteName);
+    return Utils.getContent(fileAbsoluteName);
   }
 
   public void setFileName(String fileName) {

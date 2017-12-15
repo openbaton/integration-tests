@@ -69,11 +69,10 @@ public class NetworkServiceDescriptorCreateFromPackage extends NetworkServiceDes
         return id;
       }
     }
-    if (id.equals(""))
-      log.warn(
-          "Did not find a VNFD of type "
-              + type
-              + ". Hence the NSD that you want to create from package will contain a VNFD with an empty ID and probably cause problems.");
+    log.warn(
+        "Did not find a VNFD of type "
+            + type
+            + ". Hence the NSD that you want to create from package will contain a VNFD with an empty ID and probably cause problems.");
     return id;
   }
 }

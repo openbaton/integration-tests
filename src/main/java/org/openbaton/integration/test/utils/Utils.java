@@ -26,8 +26,6 @@ import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /** Created by lto on 24/06/15. */
 public class Utils {
@@ -50,14 +48,12 @@ public class Utils {
     }
   }
 
-  public static String getStringFromInputStream(String fileName) throws FileNotFoundException {
+  public static String getContent(String fileName) throws FileNotFoundException {
     InputStream is = getInputStream(fileName);
-
     StringBuilder sb = new StringBuilder();
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(is), 65728);
-      String line = null;
-
+      String line;
       while ((line = reader.readLine()) != null) {
         sb.append(line);
       }
@@ -66,7 +62,6 @@ public class Utils {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     return sb.toString();
   }
 
@@ -99,22 +94,15 @@ public class Utils {
     return true;
   }
 
-  public static List<URL> loadFileIni(Properties properties) throws IOException {
-    String scenarioPath = properties.getProperty("integration-test-scenarios");
-    // scenario files stored on the host machine
-    log.info("Loading files from " + scenarioPath);
-    LinkedList<URL> externalFiles = new LinkedList<>();
-    if (scenarioPath != null) {
-      externalFiles = getExternalFilesAsURL(scenarioPath);
-    }
-    return externalFiles;
-  }
-
   /*
    * Get .ini files from an external directory.
    */
-  public static LinkedList<URL> getExternalFilesAsURL(String location) {
+  public static LinkedList<URL> getURLFileList(String location) {
     File dir = new File(location);
+    if (!dir.exists()) dir = new File(Utils.class.getClassLoader().getResource(location).getFile());
+    log.trace("Found dir " + dir.getName());
+    log.trace("Found dir " + dir.listFiles());
+
     File[] iniFiles =
         dir.listFiles(
             new FilenameFilter() {
@@ -126,26 +114,12 @@ public class Utils {
     LinkedList<URL> urls = new LinkedList<>();
     if (iniFiles == null) return urls;
     for (File f : iniFiles) {
+      log.trace("Found file " + f.getName());
       try {
         urls.add(f.toURI().toURL());
       } catch (MalformedURLException e) {
         log.error(
             "Could not add file " + f.getName() + " because its URL is not formatted correctly.");
-      }
-    }
-    return urls;
-  }
-
-  public static LinkedList<URL> getFilesAsURL(String location) throws IOException {
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    Resource[] resources = resolver.getResources(location);
-
-    LinkedList<URL> urls = new LinkedList<>();
-    for (Resource resource : resources) {
-      try {
-        urls.add(resource.getURL());
-      } catch (IOException e) {
-        e.printStackTrace();
       }
     }
     return urls;
@@ -163,17 +137,12 @@ public class Utils {
 
   public static boolean checkFileExists(String filename) {
     File f = new File(filename);
-    if (f != null && f.exists()) {
+    if (f.exists()) {
       log.debug("File or folder " + filename + " exists");
       return true;
     }
     log.debug("File or folder " + filename + " does not exist");
     return false;
-  }
-
-  private class ParseComError implements Serializable {
-    String error_description;
-    String error;
   }
 
   public static String getProjectIdByName(NFVORequestor requestor, String projectName) {
@@ -183,6 +152,7 @@ public class Utils {
     } catch (Exception e) {
       log.warn("Could not connect to NFVO and retrieve the project id of project " + projectName);
     }
+
     for (Project project : projectList) {
       if (project.getName().equals(projectName)) return project.getId();
     }

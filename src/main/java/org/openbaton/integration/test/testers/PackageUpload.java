@@ -48,7 +48,7 @@ public class PackageUpload extends Tester<VNFPackage> {
     this.setAbstractRestAgent(requestor.getVNFPackageAgent());
 
     File f = new File(EXTERNAL_PATH_NAME + packageName);
-    if (f == null || !f.exists()) {
+    if (!f.exists()) {
       log.error("No package: " + f.getName() + " found!");
       throw new Exception("No package: " + f.getName() + " found!");
     }

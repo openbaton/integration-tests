@@ -197,7 +197,8 @@ public class MainIntegrationTest {
 
     // Checking command line arguments
     List<String> clArgs = Arrays.asList(args);
-    List<URL> iniFileURLs = Utils.loadFileIni(properties);
+    List<URL> iniFileURLs =
+        Utils.getURLFileList(properties.getProperty("integration-test-scenarios"));
 
     // Check if arguments passed are correct
     if (clArgs.size() > 0) {
@@ -207,7 +208,7 @@ public class MainIntegrationTest {
           log.warn(
               "The scenario name passed as argument "
                   + arg
-                  + "  does not refer to any existing scenarios in integration-test-scenarios folder");
+                  + " does not refer to any existing scenarios in integration-test-scenarios folder");
         }
       }
     }

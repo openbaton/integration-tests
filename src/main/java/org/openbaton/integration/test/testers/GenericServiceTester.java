@@ -227,8 +227,7 @@ public class GenericServiceTester extends Tester {
    * @throws IOException
    */
   private String getContentOfScript(String script) throws IOException {
-    byte[] encoded = new byte[0];
-    encoded = Files.readAllBytes(Paths.get(script));
+    byte[] encoded = Files.readAllBytes(Paths.get(script));
     return new String(encoded, StandardCharsets.UTF_8);
   }
 
@@ -341,7 +340,7 @@ public class GenericServiceTester extends Tester {
       String prescript = "";
       noMoreElements = true;
       for (String varName : variableValuesMap.keySet()) {
-        String value = "";
+        String value;
         if (variableValuesMap.get(varName).size() > 1) {
           value = variableValuesMap.get(varName).poll();
           noMoreElements = false;

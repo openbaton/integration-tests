@@ -39,7 +39,7 @@ public class ProjectDelete extends Tester<Project> {
   private String userPassword;
   private String projectToDelete;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public ProjectDelete(Properties p) throws FileNotFoundException {
     super(p, Project.class);

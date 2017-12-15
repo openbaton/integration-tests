@@ -44,7 +44,7 @@ public class UserCreate extends Tester<User> {
   private List<String> guestProjects = new LinkedList<>();
   private boolean enabled;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public UserCreate(Properties p) throws FileNotFoundException {
     super(p, User.class);

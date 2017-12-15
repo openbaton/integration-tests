@@ -39,7 +39,7 @@ public class UserDelete extends Tester<User> {
   private String userPassword;
   private String userToDelete;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public UserDelete(Properties p) throws FileNotFoundException {
     super(p, User.class);

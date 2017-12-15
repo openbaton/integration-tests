@@ -38,7 +38,7 @@ public class ProjectCreate extends Tester<Project> {
   private String userPassword;
   private String projectName;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public ProjectCreate(Properties p) throws FileNotFoundException {
     super(p, Project.class);
