@@ -41,10 +41,6 @@ import org.openbaton.integration.test.utils.VNFCRepresentation;
  */
 public class GenericServiceTester extends Tester {
 
-  private static final String LOCAL_PATH_NAME_SCRIPTS = "/etc/scripts/";
-  private static final String EXTERNAL_PATH_NAME_SCRIPTS =
-      "/etc/openbaton/integration-tests/scripts/";
-
   private List<File> scripts = new LinkedList<>();
   private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
   private String vnfrType = "";
@@ -356,13 +352,11 @@ public class GenericServiceTester extends Tester {
   }
 
   public void addScript(String scriptName) {
-    File f = new File(EXTERNAL_PATH_NAME_SCRIPTS + scriptName);
+    File f = new File(properties.getProperty("scripts-path") + scriptName);
     if (!f.exists()) {
-      log.debug(
-          "The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
-      log.debug("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
       InputStream is =
-          GenericServiceTester.class.getResourceAsStream(LOCAL_PATH_NAME_SCRIPTS + scriptName);
+          GenericServiceTester.class
+              .getResourceAsStream(properties.getProperty("scripts-path") + scriptName);
       File t = null;
       try {
         t = new File("/tmp/" + scriptName);

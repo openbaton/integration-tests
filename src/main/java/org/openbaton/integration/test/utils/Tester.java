@@ -55,7 +55,7 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     this.properties = properties;
     this.sshPrivateKeyFilePath =
         properties.getProperty(
-            "ssh-private-key-file-path", "/etc/openbaton/integration-test/integration-test.key");
+            "ssh-private-key-file-path", "/etc/openbaton/integration-tests/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
 
     this.aClass = aClass;

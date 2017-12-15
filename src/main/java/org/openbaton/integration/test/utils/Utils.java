@@ -46,7 +46,10 @@ public class Utils {
       return new FileInputStream(new File(fileName));
     } else {
       log.debug("Loading file " + fileName + " from classpath");
-      return Utils.class.getClassLoader().getResourceAsStream(fileName);
+      InputStream is = Utils.class.getClassLoader().getResourceAsStream(fileName);
+      if (is == null)
+        throw new FileNotFoundException("File " + fileName + "was not found in the classpath");
+      return is;
     }
   }
 
