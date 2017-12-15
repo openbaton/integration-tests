@@ -33,9 +33,10 @@ import org.slf4j.LoggerFactory;
  * <p>This class loads the test scenario from an .ini file.
  */
 public class IntegrationTestManager {
+  private Logger log = LoggerFactory.getLogger(IntegrationTestManager.class);
+
   private int maxIntegrationTestTime;
   private int maxConcurrentSuccessors;
-  private Logger log = LoggerFactory.getLogger(IntegrationTestManager.class);
   private String classPath;
   private NFVORequestor requestor;
   private String projectId;
@@ -63,13 +64,12 @@ public class IntegrationTestManager {
   }
 
   private SubTask loadTesters(Properties properties, Profile.Section root) {
-    /** Get some global properties* */
+    // Get some global properties
     maxIntegrationTestTime = Integer.parseInt(root.get("max-integration-test-time", "600"));
     maxConcurrentSuccessors = Integer.parseInt(root.get("max-concurrent-successors", "10"));
 
     log("maxIntegrationTestTime = " + maxIntegrationTestTime, "info");
     log("maxConcurrentSuccessors = " + maxConcurrentSuccessors, "info");
-    /** ************************* */
     return loadEntity(properties, root.getChild(root.childrenNames()[0]));
   }
 
@@ -80,9 +80,10 @@ public class IntegrationTestManager {
     instance.setProjectId(projectId);
     instance.setRequestor(requestor);
     instance.configureSubTask(currentChild);
-    String successorRemover = getSuccessorRemover(currentChild);
     instance.setMaxIntegrationTestTime(maxIntegrationTestTime);
     instance.setMaxConcurrentSuccessors(maxConcurrentSuccessors);
+
+    String successorRemover = getSuccessorRemover(currentChild);
 
     for (String subChild : currentChild.childrenNames()) {
       int numInstances =

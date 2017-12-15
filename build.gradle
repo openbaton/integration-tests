@@ -34,7 +34,7 @@ apply plugin: 'docker'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 
 release {
     versionPropertyFile = 'gradle.properties'

@@ -45,6 +45,7 @@ public class Utils {
     if (checkFileExists(fileName)) {
       return new FileInputStream(new File(fileName));
     } else {
+      log.debug("Loading file " + fileName + " from classpath");
       return Utils.class.getClassLoader().getResourceAsStream(fileName);
     }
   }

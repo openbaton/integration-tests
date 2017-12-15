@@ -36,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MainIntegrationTest {
-  private static final String EXTERNAL_PATH = "/etc/openbaton/integration-tests";
-  private static final String PROPERTIES_FILE = "/integration-tests.properties";
-  private static final String SCENARIOS_PATH = "/integration-test-scenarios/";
-  private static final String NSD_PATH = "/network-service-descriptors/";
-  private static final String VIM_PATH = "/vim-instances/";
-  private static final String SCRIPTS_PATH = "/scripts/";
+  private static final String EXTERNAL_PATH = "/etc/openbaton/integration-tests/";
+  private static final String PROPERTIES_FILE = "integration-tests.properties";
+  private static final String SCENARIOS_PATH = "integration-test-scenarios/";
+  private static final String NSD_PATH = "network-service-descriptors/";
+  private static final String VIM_PATH = "vim-instances/";
+  private static final String SCRIPTS_PATH = "scripts/";
 
   private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
@@ -51,108 +51,6 @@ public class MainIntegrationTest {
   private static String projectName;
   private static boolean sslEnabled;
   private static boolean clearAfterTest = false;
-
-  public static void main(String[] args) throws Exception {
-    Properties properties = null;
-    try {
-      properties = loadProperties();
-    } catch (IOException e) {
-      e.printStackTrace();
-      log.error(e.getMessage());
-      System.exit(42);
-    }
-
-    log.debug("Current properties set: " + properties);
-
-    // Checking if the NFVO is running
-    if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)) {
-      log.error("After 120 sec the NFVO is not started yet. Is there an error?");
-      System.exit(1);
-    }
-
-    NFVORequestor requestor =
-        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
-
-    if (args.length > 0 && args[0].equals("clean")) {
-      log.info("Executing clean up of existing descriptors/records ");
-      clearOrchestrator(requestor);
-      System.exit(0);
-    }
-    // Checking command line arguments
-    List<String> clArgs = Arrays.asList(args);
-    List<URL> iniFileURLs = Utils.loadFileIni(properties);
-
-    // Check if arguments passed are correct
-    if (clArgs.size() > 0) {
-      List<String> fileNames = Utils.getFileNames(iniFileURLs);
-      for (String arg : clArgs) {
-        if (!fileNames.contains(arg)) {
-          log.warn(
-              "The scenario name passed as argument "
-                  + arg
-                  + "  does not refer to any existing scenarios in integration-test-scenarios folder");
-        }
-      }
-    }
-
-    log.info("NFVO is reachable at " + nfvoIp + ":" + nfvoPort + ". Loading tests");
-
-    IntegrationTestManager itm =
-        new IntegrationTestManager(
-            "org.openbaton.integration.test.testers", requestor, projectName);
-
-    long startTime, stopTime;
-    boolean allTestsPassed = true;
-    Map<String, String> results = new HashMap<>();
-    boolean executedTests =
-        false; // shows that there was at least one test executed by the integration test
-    for (URL url : iniFileURLs) {
-      String[] splittedUrl = url.toString().split("/");
-      String name = splittedUrl[splittedUrl.length - 1];
-      if (clArgs.size() > 0
-          && !clArgs.contains(
-              name)) // if test names are passed through the command line, only these will be executed
-      {
-        continue;
-      }
-      executedTests = true;
-      startTime = System.currentTimeMillis();
-      if (itm.runTestScenario(properties, url, name)) {
-        stopTime = System.currentTimeMillis() - startTime;
-        log.info(
-            "Test: "
-                + name
-                + " finished correctly :) in "
-                + String.format(
-                    "%d min, %d sec",
-                    TimeUnit.MILLISECONDS.toMinutes(stopTime),
-                    TimeUnit.MILLISECONDS.toSeconds(stopTime)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
-                + "\n");
-        results.put(name, "SUCCESS");
-      } else {
-        log.error("Test: " + name + " completed with errors :(\n");
-        allTestsPassed = false;
-        results.put(name, "FAILED");
-      }
-      if (clearAfterTest) {
-        clearOrchestrator(requestor);
-      }
-    }
-    if (!executedTests) {
-      log.warn("No tests were executed.");
-      System.exit(1);
-    }
-    log.info("Final results of the execution of the tests: \n");
-    String[] columns = {"Scenario Name", "Result"};
-    Utils.getResultsTable(columns, results).printTable();
-    System.out.println();
-    if (allTestsPassed) {
-      System.exit(0);
-    } else {
-      System.exit(99);
-    }
-  }
 
   /**
    * Load properties from configuration file
@@ -166,13 +64,13 @@ public class MainIntegrationTest {
       throws IOException, SDKException, ClassNotFoundException {
 
     String propertiesFile;
-    // CHecking whether external properties file exists
+    // Checking whether external properties file exists
     if (Utils.checkFileExists(EXTERNAL_PATH + PROPERTIES_FILE)) {
       propertiesFile = EXTERNAL_PATH + PROPERTIES_FILE;
     } else {
       propertiesFile = PROPERTIES_FILE;
     }
-    log.debug("Found properties file: " + propertiesFile);
+    log.debug("Using properties file: " + propertiesFile);
 
     Properties properties = Utils.getProperties(propertiesFile);
     properties.setProperty("nfvo-ip", properties.getProperty("nfvo-ip", "localhost"));
@@ -270,7 +168,106 @@ public class MainIntegrationTest {
     }
   }
 
-  private static void exit(int i) {
-    System.exit(i);
+  public static void main(String[] args) throws Exception {
+    Properties properties = null;
+    try {
+      properties = loadProperties();
+    } catch (IOException e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+      System.exit(42);
+    }
+
+    log.debug("Current properties set: " + properties);
+
+    // Checking if the NFVO is running
+    if (!Utils.isNfvoStarted(nfvoIp, nfvoPort)) {
+      log.error("After 120 sec the NFVO is not started yet. Is there an error?");
+      System.exit(1);
+    }
+
+    NFVORequestor requestor =
+        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
+
+    if (args.length > 0 && args[0].equals("clean")) {
+      log.info("Executing clean up of existing descriptors/records ");
+      clearOrchestrator(requestor);
+      System.exit(0);
+    }
+
+    // Checking command line arguments
+    List<String> clArgs = Arrays.asList(args);
+    List<URL> iniFileURLs = Utils.loadFileIni(properties);
+
+    // Check if arguments passed are correct
+    if (clArgs.size() > 0) {
+      List<String> fileNames = Utils.getFileNames(iniFileURLs);
+      for (String arg : clArgs) {
+        if (!fileNames.contains(arg)) {
+          log.warn(
+              "The scenario name passed as argument "
+                  + arg
+                  + "  does not refer to any existing scenarios in integration-test-scenarios folder");
+        }
+      }
+    }
+
+    log.info("NFVO is reachable at " + nfvoIp + ":" + nfvoPort + ". Loading tests");
+
+    IntegrationTestManager itm =
+        new IntegrationTestManager(
+            "org.openbaton.integration.test.testers", requestor, projectName);
+
+    long startTime, stopTime;
+    boolean allTestsPassed = true;
+    Map<String, String> results = new HashMap<>();
+    boolean executedTests =
+        false; // shows that there was at least one test executed by the integration test
+    for (URL url : iniFileURLs) {
+      String[] splittedUrl = url.toString().split("/");
+      String name = splittedUrl[splittedUrl.length - 1];
+      if (clArgs.size() > 0
+          && !clArgs.contains(
+              name)) // if test names are passed through the command line, only these will be executed
+      {
+        continue;
+      }
+      executedTests = true;
+      startTime = System.currentTimeMillis();
+      if (itm.runTestScenario(properties, url, name)) {
+        stopTime = System.currentTimeMillis() - startTime;
+        log.info(
+            "Test: "
+                + name
+                + " finished correctly :) in "
+                + String.format(
+                    "%d min, %d sec",
+                    TimeUnit.MILLISECONDS.toMinutes(stopTime),
+                    TimeUnit.MILLISECONDS.toSeconds(stopTime)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
+                + "\n");
+        results.put(name, "SUCCESS");
+      } else {
+        log.error("Test: " + name + " completed with errors :(\n");
+        allTestsPassed = false;
+        results.put(name, "FAILED");
+      }
+      if (clearAfterTest) {
+        clearOrchestrator(requestor);
+      }
+    }
+    if (!executedTests) {
+      log.warn("No tests were executed.");
+      System.exit(1);
+    }
+    log.info("Final results of the execution of the tests: \n");
+    String[] columns = {"Scenario Name", "Result"};
+    Utils.getResultsTable(columns, results).printTable();
+    System.out.println();
+    if (allTestsPassed) {
+      System.exit(0);
+    } else {
+      System.exit(99);
+    }
   }
 }
