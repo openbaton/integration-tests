@@ -26,6 +26,8 @@ import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /** Created by lto on 24/06/15. */
 public class Utils {
@@ -99,9 +101,9 @@ public class Utils {
    */
   public static LinkedList<URL> getURLFileList(String location) {
     File dir = new File(location);
-    if (!dir.exists()) dir = new File(Utils.class.getClassLoader().getResource(location).getFile());
+    if (!dir.exists()) return getURLFileListLocal(location);
     log.trace("Found dir " + dir.getName());
-    log.trace("Found dir " + dir.listFiles());
+    log.trace("Found dir " + dir.getAbsolutePath());
 
     File[] iniFiles =
         dir.listFiles(
@@ -120,6 +122,26 @@ public class Utils {
       } catch (MalformedURLException e) {
         log.error(
             "Could not add file " + f.getName() + " because its URL is not formatted correctly.");
+      }
+    }
+    return urls;
+  }
+
+  public static LinkedList<URL> getURLFileListLocal(String location) {
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    Resource[] resources = {};
+    try {
+      resources = resolver.getResources(location + "*.ini");
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+    LinkedList<URL> urls = new LinkedList<>();
+    for (Resource resource : resources) {
+      log.trace("Found resource " + resource);
+      try {
+        urls.add(resource.getURL());
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     }
     return urls;
