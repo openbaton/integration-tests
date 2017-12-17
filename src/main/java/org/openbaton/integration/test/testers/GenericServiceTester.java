@@ -31,6 +31,7 @@ import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.catalogue.nfvo.Configuration;
 import org.openbaton.catalogue.nfvo.ConfigurationParameter;
 import org.openbaton.integration.test.utils.Tester;
+import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
 
 /**
@@ -211,7 +212,11 @@ public class GenericServiceTester extends Tester {
         stop = true;
         continue;
       }
-      this.addScript(scriptName);
+      try {
+        this.addScript(scriptName);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -351,33 +356,29 @@ public class GenericServiceTester extends Tester {
     return preScripts;
   }
 
-  public void addScript(String scriptName) {
+  public void addScript(String scriptName) throws FileNotFoundException {
     File f = new File(properties.getProperty("scripts-path") + scriptName);
-    if (!f.exists())
-      f = new File(getClass().getClassLoader().getResource(properties.getProperty("scripts-path") + scriptName).getFile());
-//    if (!f.exists()) {
-//      InputStream is =
-//          GenericServiceTester.class
-//              .getResourceAsStream(properties.getProperty("scripts-path") + scriptName);
-//      File t = null;
-//      try {
-//        t = new File("/tmp/" + scriptName);
-//        OutputStream os = new FileOutputStream(t);
-//        byte[] buffer = new byte[1024];
-//        int bytesRead;
-//        while ((bytesRead = is.read(buffer)) != -1) {
-//          os.write(buffer, 0, bytesRead);
-//        }
-//        is.close();
-//        os.flush();
-//        os.close();
-//      } catch (FileNotFoundException e) {
-//        e.printStackTrace();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
-//      f = t;
-//    }
+    if (!f.exists()) {
+      InputStream is = Utils.getInputStream(properties.getProperty("scripts-path") + scriptName);
+      File t = null;
+      try {
+        t = new File("/tmp/" + scriptName);
+        OutputStream os = new FileOutputStream(t);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = is.read(buffer)) != -1) {
+          os.write(buffer, 0, bytesRead);
+        }
+        is.close();
+        os.flush();
+        os.close();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      f = t;
+    }
 
     if (!f.exists()) log.warn(scriptName + " does not exist.");
     else scripts.add(f);

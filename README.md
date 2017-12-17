@@ -2,6 +2,8 @@
   
   Copyright © 2015-2017 [Open Baton](http://openbaton.org). 
   Licensed under [Apache v2 License](http://www.apache.org/licenses/LICENSE-2.0).
+  
+  [![Build Status](https://travis-ci.org/openbaton/integration-tests.svg?branch=master)](https://travis-ci.org/openbaton/integration-tests)
 
 # Integration Tests
 

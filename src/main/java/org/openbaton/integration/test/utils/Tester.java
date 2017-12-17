@@ -62,7 +62,6 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   }
 
   /**
-   *
    * @return
    * @throws SDKException
    * @throws FileNotFoundException
@@ -78,7 +77,6 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   }
 
   /**
-   *
    * @param id
    * @throws SDKException
    */
@@ -88,7 +86,6 @@ public abstract class Tester<T extends Serializable> extends SubTask {
   }
 
   /**
-   *
    * @return
    * @throws FileNotFoundException
    */

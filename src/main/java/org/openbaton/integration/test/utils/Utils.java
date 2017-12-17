@@ -41,7 +41,7 @@ public class Utils {
     return properties;
   }
 
-  private static InputStream getInputStream(String fileName) throws FileNotFoundException {
+  public static InputStream getInputStream(String fileName) throws FileNotFoundException {
     if (checkFileExists(fileName)) {
       return new FileInputStream(new File(fileName));
     } else {
