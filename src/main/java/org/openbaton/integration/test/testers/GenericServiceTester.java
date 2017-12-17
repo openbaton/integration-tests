@@ -353,6 +353,8 @@ public class GenericServiceTester extends Tester {
 
   public void addScript(String scriptName) {
     File f = new File(properties.getProperty("scripts-path") + scriptName);
+    if (!f.exists())
+      f = new File(getClass().getClassLoader().getResource(properties.getProperty("scripts-path") + scriptName).getFile());
 //    if (!f.exists()) {
 //      InputStream is =
 //          GenericServiceTester.class
