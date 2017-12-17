@@ -61,6 +61,13 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     this.aClass = aClass;
   }
 
+  /**
+   *
+   * @return
+   * @throws SDKException
+   * @throws FileNotFoundException
+   * @throws IntegrationTestException
+   */
   public T create() throws SDKException, FileNotFoundException, IntegrationTestException {
     T expected = prepareObject();
     if (expected == null) throw new IntegrationTestException("Expected object was not created");
@@ -70,10 +77,20 @@ public abstract class Tester<T extends Serializable> extends SubTask {
     return obtained;
   }
 
+  /**
+   *
+   * @param id
+   * @throws SDKException
+   */
   public void delete(String id) throws SDKException {
     abstractRestAgent.delete(id);
     log.debug("Deleted: " + id);
   }
 
+  /**
+   *
+   * @return
+   * @throws FileNotFoundException
+   */
   protected abstract T prepareObject() throws FileNotFoundException;
 }

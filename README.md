@@ -1,12 +1,12 @@
   <img src="https://raw.githubusercontent.com/openbaton/openbaton.github.io/master/images/openBaton.png" width="250"/>
   
-  Copyright © 2015-2016 [Open Baton](http://openbaton.org). 
+  Copyright © 2015-2017 [Open Baton](http://openbaton.org). 
   Licensed under [Apache v2 License](http://www.apache.org/licenses/LICENSE-2.0).
 
 # Integration Tests
 
 This project provides integration tests for Open Baton. 
-Eleven tests are run.
+Eleven different tests are provided by default. Extending this set of tests provided is also possible just replicating one of the ones already existing, and providing different descriptors. 
 
 1. scenario-dummy-iperf
 2. scenario-many-dependencies
@@ -61,16 +61,16 @@ Therefore the integration tests will execute some scripts for testing on the vir
 
 ## Technical Requirements
 
-1. A running NFVO with the OpenStack vim driver and Test vim driver. Follow the documentation [here][openbaton-doc] for several installation mechanisms.
-2. A running Generic VNFM
-3. A running Dummy VNFM
-4. OpenStack
+Depending on the test cases selected you will probably need at least: 
+
+1. A running NFVO. Follow the documentation [here][openbaton-doc] for several installation mechanisms.
+2. A running VNFM: either the Dummy or the Generic VNFM (in case of execution of all tesitng scenarios you will need both)
+3. A running VIM driver: either the OpenStack or the test one (in case of execution of all tesitng scenarios you will need both)
+4. OpenStack as VIM in case of scenarios instantiating resources on a VIM openstack-based.
 
 ## How to install and configure the Integration Tests
 
-Assuming that you have properly installed the NFVO and the required plugins for your specific use cases, you will need to install and configure the integration-test project properly. 
-
-First of all, clone the integration-test project to your machine.
+Assuming that you have properly fulfilled the aforementioned technical requirements needed for your specific use cases, you will need to install and configure the integration-test tool. First of all, clone this repository in any path on your host:
 
 ```bash
 git clone https://github.com/openbaton/integration-tests.git
@@ -79,21 +79,27 @@ git clone https://github.com/openbaton/integration-tests.git
 The second step is to configure the properties file properly. You can find an example of the integration-tests.properties file in  *integration-tests/src/main/resources*. 
 Open it and set the property values according to your needs. 
 
-| Field          				| Value       																|
-| -------------   				| -------------:																|
+| Field          			| Value       																|
+| -------------   		    | -------------:																|
 | nfvo-ip  					| The ip of the machine on which the NFVO you want to use is running |
 | nfvo-port					| The port on which the NFVO is running |
 | nfvo-usr					| The username required for logging in the NFVO |
-| nfvo-pwd                                      | The password required for logging in the NFVO |
-| nfvo-project-id                               | The id of the project that the integration tests shall use |
-| nfvo-ssl-enabled				| Set this to *true* if the NFVO uses SSL |
+| nfvo-pwd                  | The password required for logging in the NFVO |
+| nfvo-project-name         | The name of the project that the integration tests shall use |
+| nfvo-ssl-enabled			| Set this to *true* if the NFVO uses SSL |
 | local-ip					| The ip of the machine on which the integration test is running |
-| clear-after-test                              | If set to *true*, the NFVO will be cleared of all the remaining NSRs, NSD, VNFPackages and Vim-Instances left from previous test |
-| integration-test-scenarios                    | Here you can specify a folder in which you can put integration test scenarios. The *.ini* files in this folder overwrite the ones in the projects resource folder |
-| external-properties-file   | If you want to use another file for fetching the properties. It is already preset to */etc/openbaton/integration-tests/integration-tests.properties*. If it does not exist it will not be used. |
+| rest-waiter-port          | Port where the http server will be listening. 0 or null for random |
+| clear-after-test          | If set to *true*, the NFVO will be cleared of all the remaining NSRs, NSD, VNFPackages and Vim-Instances left from previous test |
+| ssh-private-key-file-path | Private key file path used for scp and ssh commands. If null none will be used |
+| integration-test-scenarios | Here you can specify a folder in which you can put integration test scenarios. The *.ini* files in this folder overwrite the ones in the projects resource folder |
+| nsd-path                  | Path to directory with custom network service descriptors |
+| vim-path                  | Path to directory with custom vim json files |
+| scripts-path              | Path to directory with custom script files |
+
 
 In case you plan to use scenarios which are instantiating VMs on OpenStack, you need a keypair.
 Import a key pair in the OpenStack dashboard, give it a name and assign the public key of the host, on which the integration tests will run, to it. 
+
 The next step is to create a vim file. 
 Here is an example where you just have to change some fields. 
 ```json
@@ -170,7 +176,7 @@ Check the [Open Baton Website][openbaton]
 Follow us on Twitter @[openbaton][openbaton-twitter]
 
 ## Licensing and distribution
-Copyright © [2015-2016] Open Baton project
+Copyright © [2015-2017] Open Baton project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 
