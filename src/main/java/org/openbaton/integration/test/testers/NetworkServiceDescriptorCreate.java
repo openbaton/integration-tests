@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
-import org.openbaton.catalogue.nfvo.VimInstance;
+import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
@@ -48,7 +48,7 @@ public class NetworkServiceDescriptorCreate extends Tester<NetworkServiceDescrip
     log.info("Upload NSD " + fileName);
     this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
     Object received = null;
-    VimInstance vimInstance = (VimInstance) param;
+    BaseVimInstance vimInstance = (BaseVimInstance) param;
     try {
       received = create();
     } catch (SDKException sdkEx) {

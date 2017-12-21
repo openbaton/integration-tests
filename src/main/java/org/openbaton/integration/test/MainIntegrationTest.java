@@ -23,7 +23,7 @@ import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.nfvo.VNFPackage;
-import org.openbaton.catalogue.nfvo.VimInstance;
+import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -42,6 +42,7 @@ public class MainIntegrationTest {
   private static final String NSD_PATH = "network-service-descriptors/";
   private static final String VIM_PATH = "vim-instances/";
   private static final String SCRIPTS_PATH = "scripts/";
+  private static final String VNF_PACKAGES_PATH = "vnf-packages/";
 
   private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
@@ -105,6 +106,9 @@ public class MainIntegrationTest {
     if (!Utils.checkFileExists(properties.getProperty("scripts-path")))
       properties.setProperty("scripts-path", SCRIPTS_PATH);
 
+    if (!Utils.checkFileExists(properties.getProperty("scripts-path")))
+      properties.setProperty("vnf-packages-path", VNF_PACKAGES_PATH);
+
     return properties;
   }
 
@@ -153,8 +157,8 @@ public class MainIntegrationTest {
         }
       }
       VimInstanceAgent vimAgent = requestor.getVimInstanceAgent();
-      List<VimInstance> vimList = vimAgent.findAll();
-      for (VimInstance vim : vimList) {
+      List<BaseVimInstance> vimList = vimAgent.findAll();
+      for (BaseVimInstance vim : vimList) {
         try {
           vimAgent.delete(vim.getId());
         } catch (SDKException se) {

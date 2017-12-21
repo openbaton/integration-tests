@@ -18,7 +18,8 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.ini4j.Profile;
-import org.openbaton.catalogue.nfvo.VimInstance;
+import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
+import org.openbaton.catalogue.nfvo.viminstances.GenericVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
@@ -31,7 +32,7 @@ import org.openbaton.sdk.api.rest.VimInstanceAgent;
  * <p>Class used to delete a VimInstance. It can be specified which user should delete the
  * VimInstance and in which project he should try to attempt it.
  */
-public class VimInstanceDelete extends Tester<VimInstance> {
+public class VimInstanceDelete extends Tester<GenericVimInstance> {
 
   private boolean expectedToFail = false;
   private String
@@ -44,19 +45,19 @@ public class VimInstanceDelete extends Tester<VimInstance> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public VimInstanceDelete(Properties properties) {
-    super(properties, VimInstance.class);
+    super(properties, GenericVimInstance.class);
     this.properties = properties;
   }
 
   @Override
-  protected VimInstance prepareObject() {
+  protected GenericVimInstance prepareObject() {
     return null;
   }
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
     this.setAbstractRestAgent(requestor.getVimInstanceAgent());
-    VimInstance vi = (VimInstance) param;
+    BaseVimInstance vi = (BaseVimInstance) param;
     if (asUser == null || "".equals(asUser)) log.info("Delete vim instance " + vi.getName());
 
     try {

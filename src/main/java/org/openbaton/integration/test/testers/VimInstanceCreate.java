@@ -18,7 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.ini4j.Profile;
-import org.openbaton.catalogue.nfvo.VimInstance;
+import org.openbaton.catalogue.nfvo.viminstances.GenericVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
@@ -31,7 +31,7 @@ import org.openbaton.sdk.api.rest.VimInstanceAgent;
  * <p>Class used to create a VimInstance. It can be specified which user should delete the
  * VimInstance and in which project he should try to attempt it.
  */
-public class VimInstanceCreate extends Tester<VimInstance> {
+public class VimInstanceCreate extends Tester<GenericVimInstance> {
 
   private String fileName;
   private boolean expectedToFail = false;
@@ -45,7 +45,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public VimInstanceCreate(Properties properties) {
-    super(properties, VimInstance.class);
+    super(properties, GenericVimInstance.class);
     this.properties = properties;
   }
 
@@ -77,7 +77,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
                 "1");
-        VimInstance expected = prepareObject();
+        GenericVimInstance expected = (GenericVimInstance) prepareObject();
         if (expected == null) throw new IntegrationTestException();
         result = vimAgent.create(expected);
       } else {
@@ -116,7 +116,7 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   }
 
   @Override
-  protected VimInstance prepareObject() throws FileNotFoundException {
+  protected GenericVimInstance prepareObject() throws FileNotFoundException {
     String body = getFileContent();
     return mapper.fromJson(body, aClass);
   }

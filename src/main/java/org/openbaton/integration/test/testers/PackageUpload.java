@@ -30,7 +30,6 @@ import org.openbaton.sdk.api.rest.VNFPackageAgent;
  * <p>Class used to upload a VNFPackage to the NFVO. Class used to upload a VNFPackage to the NFVO.
  */
 public class PackageUpload extends Tester<VNFPackage> {
-  private static final String EXTERNAL_PATH_NAME = "/etc/openbaton/integration-tests/vnf-packages/";
   private String packageName = "";
 
   public PackageUpload(Properties p) throws FileNotFoundException {
@@ -44,24 +43,27 @@ public class PackageUpload extends Tester<VNFPackage> {
 
   @Override
   protected Object doWork() throws Exception {
-    log.info("Upload VNFPackage " + packageName);
+    log.info("Uploading VNF Package(s) " + packageName);
     this.setAbstractRestAgent(requestor.getVNFPackageAgent());
 
-    File f = new File(EXTERNAL_PATH_NAME + packageName);
-    if (!f.exists()) {
-      log.error("No package: " + f.getName() + " found!");
-      throw new Exception("No package: " + f.getName() + " found!");
-    }
+    String[] packages = packageName.split(";");
+    for (String fileName : packages) {
+      log.debug("Uploading VNF Package " + fileName);
+      File f = new File(properties.getProperty("vnf-packages-path") + fileName);
+      if (!f.exists()) {
+        log.error("No VNF Package: " + f.getName() + " found!");
+        throw new Exception("No VNF Package: " + f.getName() + " found!");
+      }
 
-    VNFPackageAgent packageAgent = requestor.getVNFPackageAgent();
-    try {
-      packageAgent.create(EXTERNAL_PATH_NAME + packageName);
-    } catch (SDKException e) {
-      log.error("Could not store VNFPackage " + packageName);
-      throw e;
+      VNFPackageAgent packageAgent = requestor.getVNFPackageAgent();
+      try {
+        packageAgent.create(properties.getProperty("vnf-packages-path") + fileName);
+      } catch (SDKException e) {
+        log.error("Could not store VNF Package " + fileName);
+        throw e;
+      }
+      log.info("--- Successfully stored VNF Package " + fileName);
     }
-
-    log.debug("--- Successfully stored VNFPackage " + packageName);
     return param;
   }
 

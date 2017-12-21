@@ -67,7 +67,7 @@ dependencies {
 
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'org.ini4j:ini4j:0.5.4'
-    compile 'org.openbaton:sdk:5.0.0'
+    compile 'org.openbaton:sdk:5.1.2-SNAPSHOT'
 
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.httpcomponents:httpclient:4.5.2'
