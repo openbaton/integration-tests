@@ -15,6 +15,14 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.common.Ip;
 import org.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -23,29 +31,18 @@ import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.catalogue.nfvo.Configuration;
 import org.openbaton.catalogue.nfvo.ConfigurationParameter;
 import org.openbaton.integration.test.utils.Tester;
+import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.integration.test.utils.VNFCRepresentation;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by tbr on 25.11.15.
  *
- * This Tester can run shell scripts on the virtual machines created by the service and check in the
- * scripts if everything works as expected.
+ * <p>This Tester can run shell scripts on the virtual machines created by the service and check in
+ * the scripts if everything works as expected.
  */
 public class GenericServiceTester extends Tester {
 
-  private static final String LOCAL_PATH_NAME_SCRIPTS = "/etc/scripts/";
-  private static final String EXTERNAL_PATH_NAME_SCRIPTS =
-      "/etc/openbaton/integration-tests/scripts/";
-
-  private List<File> scripts = new LinkedList<File>();
+  private List<File> scripts = new LinkedList<>();
   private Map<String, List<VNFCRepresentation>> vnfrVnfc = new HashMap<>();
   private String vnfrType = "";
   private String virtualLink = "";
@@ -53,7 +50,7 @@ public class GenericServiceTester extends Tester {
   private String vmScriptsPath = "";
 
   public GenericServiceTester(Properties properties) {
-    super(properties, GenericServiceTester.class, LOCAL_PATH_NAME_SCRIPTS, "");
+    super(properties, GenericServiceTester.class);
   }
 
   @Override
@@ -109,15 +106,11 @@ public class GenericServiceTester extends Tester {
 
     while (floatingIpIt.hasNext()) {
       String floatingIp = floatingIpIt.next();
-      Iterator<File> scriptIterator = scripts.iterator();
-      while (scriptIterator.hasNext()) {
-        File script = scriptIterator.next();
+      for (File script : scripts) {
         String scriptContent = getContentOfScript(script.getPath());
         List<String> preScripts = getPreScripts(scriptContent);
         if (preScripts.size() == 0) preScripts.add("");
-        Iterator<String> preScriptIt = preScripts.iterator();
-        while (preScriptIt.hasNext()) {
-          String preScript = preScriptIt.next();
+        for (String preScript : preScripts) {
           log.info(
               "Executing script "
                   + script.getName()
@@ -190,6 +183,43 @@ public class GenericServiceTester extends Tester {
     return param;
   }
 
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    Boolean stop = false;
+    String vnfrType = currentSection.get("vnf-type");
+    String vmScriptsPath = currentSection.get("vm-scripts-path");
+    String user = currentSection.get("user-name");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
+
+    if (vmScriptsPath != null) {
+      this.setVmScriptsPath(vmScriptsPath);
+    }
+
+    String netName = currentSection.get("net-name");
+    if (netName != null) {
+      this.setVirtualLink(netName);
+    }
+
+    if (user != null) {
+      this.setUserName(user);
+    }
+
+    for (int i = 1; !stop; i++) {
+      String scriptName = currentSection.get("script-" + i);
+      if (scriptName == null || scriptName.isEmpty()) {
+        stop = true;
+        continue;
+      }
+      try {
+        this.addScript(scriptName);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   /**
    * Get the content of a script as a String by passing the path to the script file.
    *
@@ -198,14 +228,11 @@ public class GenericServiceTester extends Tester {
    * @throws IOException
    */
   private String getContentOfScript(String script) throws IOException {
-    byte[] encoded = new byte[0];
-    encoded = Files.readAllBytes(Paths.get(script));
-    String content = new String(encoded, StandardCharsets.UTF_8);
-    return content;
+    byte[] encoded = Files.readAllBytes(Paths.get(script));
+    return new String(encoded, StandardCharsets.UTF_8);
   }
 
   /**
-   *
    * @param text
    * @param variable
    * @return true if the String variable is present in the given String text
@@ -221,9 +248,7 @@ public class GenericServiceTester extends Tester {
    * @param nsr
    */
   private void fillVnfrVnfc(NetworkServiceRecord nsr) {
-    Iterator<VirtualNetworkFunctionRecord> vnfrIt = nsr.getVnfr().iterator();
-    while (vnfrIt.hasNext()) {
-      VirtualNetworkFunctionRecord vnfr = vnfrIt.next();
+    for (VirtualNetworkFunctionRecord vnfr : nsr.getVnfr()) {
       List<VNFCRepresentation> representationList = new LinkedList<>();
       Configuration conf = vnfr.getConfigurations();
       Map<String, String> confMap = new HashMap<>();
@@ -316,7 +341,7 @@ public class GenericServiceTester extends Tester {
       String prescript = "";
       noMoreElements = true;
       for (String varName : variableValuesMap.keySet()) {
-        String value = "";
+        String value;
         if (variableValuesMap.get(varName).size() > 1) {
           value = variableValuesMap.get(varName).poll();
           noMoreElements = false;
@@ -331,14 +356,10 @@ public class GenericServiceTester extends Tester {
     return preScripts;
   }
 
-  public void addScript(String scriptName) {
-    File f = new File(EXTERNAL_PATH_NAME_SCRIPTS + scriptName);
+  public void addScript(String scriptName) throws FileNotFoundException {
+    File f = new File(properties.getProperty("scripts-path") + scriptName);
     if (!f.exists()) {
-      log.debug(
-          "The script " + scriptName + " does not exist in " + EXTERNAL_PATH_NAME_SCRIPTS + ".");
-      log.debug("Will use " + scriptName + " in " + LOCAL_PATH_NAME_SCRIPTS + ".");
-      InputStream is =
-          GenericServiceTester.class.getResourceAsStream(LOCAL_PATH_NAME_SCRIPTS + scriptName);
+      InputStream is = Utils.getInputStream(properties.getProperty("scripts-path") + scriptName);
       File t = null;
       try {
         t = new File("/tmp/" + scriptName);
@@ -358,6 +379,7 @@ public class GenericServiceTester extends Tester {
       }
       f = t;
     }
+
     if (!f.exists()) log.warn(scriptName + " does not exist.");
     else scripts.add(f);
   }

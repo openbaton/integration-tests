@@ -15,52 +15,43 @@
  */
 package org.openbaton.integration.test.testers;
 
-import org.openbaton.catalogue.nfvo.VimInstance;
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
+import org.openbaton.catalogue.nfvo.viminstances.GenericVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
-import org.openbaton.integration.test.parser.Parser;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VimInstanceAgent;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-
 /**
  * Created by lto on 24/06/15.
  *
- * Class used to create a VimInstance. It can be specified which user should delete the VimInstance
- * and in which project he should try to attempt it.
+ * <p>Class used to create a VimInstance. It can be specified which user should delete the
+ * VimInstance and in which project he should try to attempt it.
  */
-public class VimInstanceCreate extends Tester<VimInstance> {
+public class VimInstanceCreate extends Tester<GenericVimInstance> {
 
-  private static final String LOCAL_PATH_NAME = "/etc/json_file/vim_instances/";
-  private static final String EXTERNAL_PATH_NAME =
-      "/etc/openbaton/integration-tests/vim-instances/";
-  private static final String EXTERNAL_PATH_NAME_PARSER_VIM =
-      "/etc/openbaton/integration-tests/parser-properties/vim.properties";
   private String fileName;
   private boolean expectedToFail = false;
   private String
       asUser; // if another user than specified in the integration-tests.properties file should try to create the user
   private String asUserPassword;
   private String inProject; // specifies the project in which to create the vim instance
-  private Properties properties = null;
+  private Properties properties;
 
   /**
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
-  public VimInstanceCreate(Properties properties) throws FileNotFoundException {
-    super(properties, VimInstance.class, LOCAL_PATH_NAME, "/datacenters");
+  public VimInstanceCreate(Properties properties) {
+    super(properties, GenericVimInstance.class);
     this.properties = properties;
-    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
   }
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getVimInstanceAgent());
     Object result;
     try {
       if (asUser != null && !"".equals(asUser)) {
@@ -86,8 +77,8 @@ public class VimInstanceCreate extends Tester<VimInstance> {
                 properties.getProperty("nfvo-ip"),
                 properties.getProperty("nfvo-port"),
                 "1");
-        VimInstance expected = prepareObject();
-        if (expected == null) throw new NullPointerException();
+        GenericVimInstance expected = (GenericVimInstance) prepareObject();
+        if (expected == null) throw new IntegrationTestException();
         result = vimAgent.create(expected);
       } else {
         log.info("Upload vim instance " + fileName);
@@ -116,37 +107,23 @@ public class VimInstanceCreate extends Tester<VimInstance> {
   }
 
   @Override
-  protected VimInstance prepareObject() {
-    String body = null;
-    File f = new File(EXTERNAL_PATH_NAME + fileName);
-    if (f != null && f.exists()) {
-      try {
-        body = Utils.getStringFromInputStream(new FileInputStream(f));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-    } else {
-      log.debug("No file: " + f.getName() + " found, we will use " + LOCAL_PATH_NAME + fileName);
-      body =
-          Utils.getStringFromInputStream(
-              Tester.class.getResourceAsStream(LOCAL_PATH_NAME + fileName));
-    }
-    String vimRandom = null;
-    File parserPropertiesFile = new File(EXTERNAL_PATH_NAME_PARSER_VIM);
-    if (parserPropertiesFile != null && parserPropertiesFile.exists()) {
-      try {
-        vimRandom = Parser.randomize(body, EXTERNAL_PATH_NAME_PARSER_VIM);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      log.debug("vim-instance.json (old): " + body);
-      log.debug("vim-instance.json (random): " + vimRandom);
-      return mapper.fromJson(vimRandom, aClass);
-    } else {
-      log.debug(
-          "If you want to use the parser for the VIM, create the file vim.properties in the path /etc/openbaton/integration-test-parser-properties/");
-    }
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setFileName(currentSection.get("name-file"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setAsUserPassword(currentSection.get("as-user-password"));
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setInProject(currentSection.get("in-project"));
+  }
+
+  @Override
+  protected GenericVimInstance prepareObject() throws FileNotFoundException {
+    String body = getFileContent();
     return mapper.fromJson(body, aClass);
+  }
+
+  private String getFileContent() throws FileNotFoundException {
+    String fileAbsoluteName = properties.getProperty("vim-path") + fileName;
+    return Utils.getContent(fileAbsoluteName);
   }
 
   public void setFileName(String fileName) {

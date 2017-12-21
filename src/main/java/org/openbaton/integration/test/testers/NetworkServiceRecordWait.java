@@ -15,30 +15,29 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
-import org.openbaton.catalogue.nfvo.EndpointType;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by mob on 28.07.15.
  *
- * Class used to wait for an event on NetworkServiceRecord level.
+ * <p>Class used to wait for an event on NetworkServiceRecord level.
  */
 public class NetworkServiceRecordWait extends Waiter {
 
   private String name = NetworkServiceRecordWait.class.getSimpleName();
 
   public NetworkServiceRecordWait(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordWait.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, NetworkServiceRecordWait.class);
   }
 
   @Override
@@ -52,8 +51,9 @@ public class NetworkServiceRecordWait extends Waiter {
           FileNotFoundException {
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
 
-    EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
+    EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setNetworkServiceId(nsr.getId());
     //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
 
@@ -105,5 +105,22 @@ public class NetworkServiceRecordWait extends Waiter {
     }
     nsr = mapper.fromJson(getPayload(), NetworkServiceRecord.class);
     return nsr;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+    String action = currentSection.get("action");
+    if (action == null) {
+      try {
+        throw new IntegrationTestException("action for NetworkServiceRecordWait not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    this.setAction(Action.valueOf(action));
   }
 }

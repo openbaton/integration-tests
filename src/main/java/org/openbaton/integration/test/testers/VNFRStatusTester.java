@@ -15,28 +15,27 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.Status;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by tbr on 25.01.16.
  *
- * Class used to check if a VirtualNetworkFunctionRecord's status is correct.
+ * <p>Class used to check if a VirtualNetworkFunctionRecord's status is correct.
  */
 public class VNFRStatusTester extends Tester {
   private String vnfrType = "";
   private Status status = null;
 
   public VNFRStatusTester(Properties properties) throws FileNotFoundException {
-    super(properties, VNFRStatusTester.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, VNFRStatusTester.class);
   }
 
   @Override
@@ -47,8 +46,8 @@ public class VNFRStatusTester extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start VNFRStatusTester on VNFR type " + vnfrType);
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
-
     if (status == null)
       throw new IntegrationTestException(
           "Status to test is not declared. Specify it in the .ini file.");
@@ -86,6 +85,19 @@ public class VNFRStatusTester extends Tester {
 
     log.debug("--- VNFRStatusTester finished successfully");
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String status = currentSection.get("status");
+    if (status != null) {
+      this.setStatus(status);
+    }
+
+    String vnfrType = currentSection.get("vnf-type");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
   }
 
   public void setVnfrType(String vnfrType) {

@@ -15,25 +15,22 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by mob on 29.07.15.
  *
- * Tester used to delete a NetworkServiceDescriptor.
+ * <p>Tester used to delete a NetworkServiceDescriptor.
  */
 public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescriptor> {
-  /**
-   * @param p : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
-   */
+  /** @param p : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port */
   public NetworkServiceDescriptorDelete(Properties p) throws FileNotFoundException {
-    super(p, NetworkServiceDescriptor.class, "", "/ns-descriptors");
-    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
+    super(p, NetworkServiceDescriptor.class);
   }
 
   @Override
@@ -42,7 +39,8 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
   }
 
   @Override
-  protected Object doWork() throws SDKException {
+  protected Object doWork() throws SDKException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     log.info("Delete NSD " + nsd.getName());
     try {
@@ -55,4 +53,7 @@ public class NetworkServiceDescriptorDelete extends Tester<NetworkServiceDescrip
     log.debug(" --- NetworkServiceDescriptorDelete has deleted the nsd:" + nsd.getId());
     return nsd;
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 }

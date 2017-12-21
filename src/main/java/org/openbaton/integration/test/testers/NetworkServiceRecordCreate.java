@@ -15,6 +15,9 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,12 +25,7 @@ import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
-/**
- * Class used to create a new NetworkServiceRecord from a NetworkServiceDescriptor.
- */
+/** Class used to create a new NetworkServiceRecord from a NetworkServiceDescriptor. */
 public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
 
   private static Logger log = LoggerFactory.getLogger(NetworkServiceRecordCreate.class);
@@ -36,8 +34,7 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public NetworkServiceRecordCreate(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecord.class, "", "/ns-records");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, NetworkServiceRecord.class);
   }
 
   @Override
@@ -46,11 +43,14 @@ public class NetworkServiceRecordCreate extends Tester<NetworkServiceRecord> {
   }
 
   @Override
-  public NetworkServiceRecord create() throws SDKException, FileNotFoundException {
+  public void configureSubTask(Profile.Section currentSection) {}
 
+  @Override
+  public NetworkServiceRecord create() throws SDKException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) this.param;
     log.info("Launch NSR from NSD " + nsd.getName() + " with id " + nsd.getId());
-    NetworkServiceRecord networkServiceRecord = null;
+    NetworkServiceRecord networkServiceRecord;
     try {
       networkServiceRecord =
           this.requestor.getNetworkServiceRecordAgent().create(nsd.getId(), null, null, null);

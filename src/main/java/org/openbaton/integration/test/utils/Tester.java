@@ -17,80 +17,77 @@ package org.openbaton.integration.test.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.openbaton.sdk.NFVORequestor;
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by lto on 15/07/15.
  *
- * Abstract class that represents the tasks defined in the .ini files.
+ * <p>Abstract class that represents the tasks defined in the .ini files.
  */
 public abstract class Tester<T extends Serializable> extends SubTask {
+  protected static final Logger log = LoggerFactory.getLogger(Tester.class);
+
   protected Properties properties;
-  private String FILE_NAME;
   protected final Class<T> aClass;
   protected String sshPrivateKeyFilePath;
+  private AbstractRestAgent abstractRestAgent;
 
   public void setAbstractRestAgent(AbstractRestAgent abstractRestAgent) {
     this.abstractRestAgent = abstractRestAgent;
   }
 
-  private AbstractRestAgent abstractRestAgent;
-  protected NFVORequestor requestor;
   protected Gson mapper;
-  protected static final Logger log = LoggerFactory.getLogger(Tester.class);
 
   /**
-   *
-   * @param properties: IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
-   * @param aClass: example VimInstance.class
-   * @param filePath: example "/etc/json_file/vim_instances/vim-instance.json"
+   * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
+   * @param aClass : example VimInstance.class
    */
-  public Tester(Properties properties, Class<T> aClass, String filePath, String basePath) {
-    this.FILE_NAME = filePath;
+  public Tester(Properties properties, Class<T> aClass) {
     GsonBuilder builder = new GsonBuilder();
     mapper = builder.create();
     this.properties = properties;
     this.sshPrivateKeyFilePath =
         properties.getProperty(
-            "ssh-private-key-file-path", "/etc/openbaton/integration-test/integration-test.key");
+            "ssh-private-key-file-path", "/etc/openbaton/integration-tests/integration-test.key");
     //log.debug("using properties: " + properties.getProperty("nfvo-usr") + properties.getProperty("nfvo-pwd") + properties.getProperty("nfvo-ip") + properties.getProperty("nfvo-port") + "1");
-    requestor =
-        new NFVORequestor(
-            properties.getProperty("nfvo-usr"),
-            properties.getProperty("nfvo-pwd"),
-            properties.getProperty("nfvo-project-id"),
-            Boolean.parseBoolean(properties.getProperty("nfvo-ssl-enabled")),
-            properties.getProperty("nfvo-ip"),
-            properties.getProperty("nfvo-port"),
-            "1");
+
     this.aClass = aClass;
   }
 
-  public T create() throws SDKException, FileNotFoundException {
+  /**
+   * @return
+   * @throws SDKException
+   * @throws FileNotFoundException
+   * @throws IntegrationTestException
+   */
+  public T create() throws SDKException, FileNotFoundException, IntegrationTestException {
     T expected = prepareObject();
-    if (expected == null) throw new NullPointerException();
+    if (expected == null) throw new IntegrationTestException("Expected object was not created");
     T obtained;
     obtained = (T) abstractRestAgent.create(expected);
-
     log.trace("Received: " + obtained.toString());
-
     return obtained;
   }
 
+  /**
+   * @param id
+   * @throws SDKException
+   */
   public void delete(String id) throws SDKException {
-
     abstractRestAgent.delete(id);
-
     log.debug("Deleted: " + id);
   }
 
+  /**
+   * @return
+   * @throws FileNotFoundException
+   */
   protected abstract T prepareObject() throws FileNotFoundException;
 }

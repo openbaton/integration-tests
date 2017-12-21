@@ -15,15 +15,15 @@
  */
 package org.openbaton.integration.test.testers;
 
-import org.openbaton.integration.test.utils.Tester;
-
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
+import org.openbaton.integration.test.utils.Tester;
 
 /**
  * Created by tbr on 12.02.16.
  *
- * Class used to pause the execution of the integration tests for a specific time.
+ * <p>Class used to pause the execution of the integration tests for a specific time.
  */
 public class Pause extends Tester {
 
@@ -33,7 +33,7 @@ public class Pause extends Tester {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public Pause(Properties properties) {
-    super(properties, Pause.class, "", "");
+    super(properties, Pause.class);
   }
 
   @Override
@@ -47,6 +47,19 @@ public class Pause extends Tester {
     Thread.sleep(duration);
     log.debug("Paused for " + duration + " milliseconds");
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String d = currentSection.get("duration");
+    try {
+      int duration = Integer.parseInt(d);
+      this.setDuration(duration);
+    } catch (NumberFormatException e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+      System.exit(42);
+    }
   }
 
   public void setDuration(int duration) {

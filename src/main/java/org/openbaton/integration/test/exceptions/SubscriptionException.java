@@ -15,9 +15,7 @@
  */
 package org.openbaton.integration.test.exceptions;
 
-/**
- * Created by mob on 18.09.15.
- */
+/** Created by mob on 18.09.15. */
 public class SubscriptionException extends IntegrationTestException {
   public SubscriptionException() {
     super();

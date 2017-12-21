@@ -15,18 +15,18 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by tbr on 15.02.16.
  *
- * Class used to get the latest version of a NetworkServiceRecord from the NFVO.
+ * <p>Class used to get the latest version of a NetworkServiceRecord from the NFVO.
  */
 public class NetworkServiceRecordGetLatest extends Tester {
 
@@ -34,8 +34,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public NetworkServiceRecordGetLatest(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordGetLatest.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, NetworkServiceRecordGetLatest.class);
   }
 
   @Override
@@ -46,6 +45,8 @@ public class NetworkServiceRecordGetLatest extends Tester {
   @Override
   protected Object doWork() throws Exception {
     NetworkServiceRecord nsr = (NetworkServiceRecord) param;
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+
     if (nsr == null) {
       log.error(
           "The passed NSR is null. This task needs to be placed behind a task that passes a NSR.");
@@ -57,4 +58,7 @@ public class NetworkServiceRecordGetLatest extends Tester {
     log.debug("The latest NSR is: \n" + nsr);
     return nsr;
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 }

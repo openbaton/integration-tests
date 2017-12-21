@@ -15,20 +15,20 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import java.util.Set;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-import java.util.Set;
-
 /**
  * Created by tbr on 31.05.16.
  *
- * This Tester expects a NSD object from it's preceding task and tries to delete the VNFDs of this
- * NSD, filtered by vnfd name and type.
+ * <p>This Tester expects a NSD object from it's preceding task and tries to delete the VNFDs of
+ * this NSD, filtered by vnfd name and type.
  */
 public class VirtualNetworkFunctionDescriptorDelete
     extends Tester<VirtualNetworkFunctionDescriptor> {
@@ -37,8 +37,7 @@ public class VirtualNetworkFunctionDescriptorDelete
   private String vnfdName = "";
 
   public VirtualNetworkFunctionDescriptorDelete(Properties p) throws FileNotFoundException {
-    super(p, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
-    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
+    super(p, VirtualNetworkFunctionDescriptor.class);
   }
 
   @Override
@@ -48,7 +47,7 @@ public class VirtualNetworkFunctionDescriptorDelete
 
   @Override
   protected Object doWork() throws Exception {
-
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     Set<VirtualNetworkFunctionDescriptor> vnfds = nsd.getVnfd();
 
@@ -72,6 +71,18 @@ public class VirtualNetworkFunctionDescriptorDelete
     }
 
     return null;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfdType = currentSection.get("vnf-type");
+    String vnfdName = currentSection.get("vnf-name");
+    if (vnfdType != null) {
+      this.setVnfdType(vnfdType);
+    }
+    if (vnfdName != null) {
+      this.setVnfdName(vnfdName);
+    }
   }
 
   private void deleteVnfd(String id) throws Exception {

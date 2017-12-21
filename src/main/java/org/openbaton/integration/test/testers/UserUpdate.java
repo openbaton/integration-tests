@@ -15,6 +15,9 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.*;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Role;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -23,13 +26,10 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to create a new user.
+ * <p>Class used to create a new user.
  */
 public class UserUpdate extends Tester<User> {
 
@@ -46,12 +46,11 @@ public class UserUpdate extends Tester<User> {
   private List<String> guestProjects = new LinkedList<>();
   private boolean enabled;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public UserUpdate(Properties p) throws FileNotFoundException {
-    super(p, User.class, "", "/users");
+    super(p, User.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -61,6 +60,8 @@ public class UserUpdate extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to update user " + oldUserName + " while logged in as " + asUser);
     else log.info("Try to update user " + oldUserName);
@@ -123,6 +124,20 @@ public class UserUpdate extends Tester<User> {
     log.info("Successfully updated user " + oldUserName);
     log.debug(oldUserName + " was updated to " + user.toString());
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setNewUserName(currentSection.get("user-name-new"));
+    this.setNewUserPwd(currentSection.get("user-password-new"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setUserIsAdmin(currentSection.get("user-is-admin"));
+    this.setUserProjects(currentSection.get("user-projects"));
+    this.setGuestProjects(currentSection.get("guest-projects"));
+    this.setEnabled(currentSection.get("enabled"));
+    this.setOldUserName(currentSection.get("user-name-old"));
   }
 
   public boolean isExpectedToFail() {

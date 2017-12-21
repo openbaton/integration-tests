@@ -15,24 +15,21 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.VirtualDeploymentUnit;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.Status;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Properties;
-
-/**
- * Created by tbr on 20.01.16.
- */
+/** Created by tbr on 20.01.16. */
 
 /**
  * This class tests if the expected number of VNFC-Instances of a VNFR exist and if the VNFR is in
@@ -46,8 +43,7 @@ public class ScalingTester extends Tester {
   private int vnfcCount = 0;
 
   public ScalingTester(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleOut.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, ScaleOut.class);
   }
 
   @Override
@@ -58,9 +54,9 @@ public class ScalingTester extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start ScalingTester");
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;
@@ -109,10 +105,22 @@ public class ScalingTester extends Tester {
     return nsrUpdated;
   }
 
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfrType = currentSection.get("vnf-type");
+    String vnfcCount = currentSection.get("vnfc-count");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
+
+    if (vnfcCount != null) {
+      this.setVnfcCount(vnfcCount);
+    }
+  }
+
   private int getNumberOfVNFCInstances(String nsrId, String vnfrId)
       throws IOException, SDKException, IntegrationTestException {
     int num = 0;
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
 
@@ -123,7 +131,6 @@ public class ScalingTester extends Tester {
   }
 
   private Status getVNFRState(String nsrId, String vnfrId) throws IOException, SDKException {
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
     VirtualNetworkFunctionRecord vnfr = agent.getVirtualNetworkFunctionRecord(nsrId, vnfrId);
     return vnfr.getStatus();

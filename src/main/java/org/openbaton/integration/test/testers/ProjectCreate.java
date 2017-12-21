@@ -15,19 +15,19 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 02.08.16.
- * <p>
- * Class used to create a new project.
+ *
+ * <p>Class used to create a new project.
  */
 public class ProjectCreate extends Tester<Project> {
 
@@ -38,12 +38,11 @@ public class ProjectCreate extends Tester<Project> {
   private String userPassword;
   private String projectName;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public ProjectCreate(Properties p) throws FileNotFoundException {
-    super(p, Project.class, "", "/projects");
+    super(p, Project.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override
@@ -53,6 +52,7 @@ public class ProjectCreate extends Tester<Project> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getProjectAgent());
     if (asUser != null && !"".equals(asUser)) {
       log.info("Try to create a new project " + projectName + " while logged in as " + asUser);
     } else {
@@ -94,6 +94,14 @@ public class ProjectCreate extends Tester<Project> {
 
     log.info("Successfully created the new project " + projectName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setProjectName(currentSection.get("project-name"));
   }
 
   public boolean isExpectedToFail() {

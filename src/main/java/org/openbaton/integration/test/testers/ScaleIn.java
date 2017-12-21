@@ -15,31 +15,25 @@
  */
 package org.openbaton.integration.test.testers;
 
-import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
-import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
-import org.openbaton.integration.test.utils.Tester;
-import org.openbaton.integration.test.utils.Utils;
-import org.openbaton.sdk.api.exception.SDKException;
-import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
-
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.ini4j.Profile;
+import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
+import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
+import org.openbaton.integration.test.utils.Tester;
+import org.openbaton.sdk.api.exception.SDKException;
+import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
 
-/**
- * Created by tbr on 15.01.16.
- */
+/** Created by tbr on 15.01.16. */
 
-/**
- * This class triggers one scale in on a specified VNFR.
- */
+/** This class triggers one scale in on a specified VNFR. */
 public class ScaleIn extends Tester {
 
   private String vnfrType = "";
 
   public ScaleIn(Properties properties) throws FileNotFoundException {
-    super(properties, ScaleIn.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, ScaleIn.class);
   }
 
   @Override
@@ -50,9 +44,9 @@ public class ScaleIn extends Tester {
   @Override
   protected Object doWork() throws Exception {
     log.info("Start ScaleIn on VNFR type " + vnfrType);
+    //this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
 
-    Properties p = Utils.getProperties();
     NetworkServiceRecordAgent agent = requestor.getNetworkServiceRecordAgent();
 
     boolean found = false;
@@ -71,6 +65,14 @@ public class ScaleIn extends Tester {
 
     log.debug("--- Triggered ScaleIn on VNFR of type " + vnfrType);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    String vnfrType = currentSection.get("vnf-type");
+    if (vnfrType != null) {
+      this.setVnfrType(vnfrType);
+    }
   }
 
   public void setVnfrType(String vnfrType) {

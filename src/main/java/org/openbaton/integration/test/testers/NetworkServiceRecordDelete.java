@@ -15,23 +15,22 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by mob on 28.07.15.
  *
- * Class used to delete a networkServiceRecord.
+ * <p>Class used to delete a networkServiceRecord.
  */
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
   public NetworkServiceRecordDelete(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecord.class, "", "/ns-records");
-    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
+    super(properties, NetworkServiceRecord.class);
   }
 
   @Override
@@ -40,9 +39,10 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
   }
 
   @Override
-  protected Object doWork() throws SDKException {
+  protected Object doWork() throws SDKException, FileNotFoundException {
     NetworkServiceRecord nsr = (NetworkServiceRecord) param;
     log.info("Delete NSR " + nsr.getName() + " with id " + nsr.getId());
+    this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());
     try {
       delete(nsr.getId());
     } catch (SDKException sdkEx) {
@@ -52,4 +52,7 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     log.debug("--- deleted NSR " + nsr.getName() + " with id " + nsr.getId());
     return nsr;
   }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {}
 }

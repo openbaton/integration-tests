@@ -15,6 +15,9 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,13 +25,10 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.ProjectAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to delete a project.
+ * <p>Class used to delete a project.
  */
 public class ProjectDelete extends Tester<Project> {
 
@@ -39,12 +39,11 @@ public class ProjectDelete extends Tester<Project> {
   private String userPassword;
   private String projectToDelete;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public ProjectDelete(Properties p) throws FileNotFoundException {
-    super(p, Project.class, "", "/projects");
+    super(p, Project.class);
     this.properties = p;
-    this.setAbstractRestAgent(requestor.getProjectAgent());
   }
 
   @Override
@@ -54,6 +53,8 @@ public class ProjectDelete extends Tester<Project> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getProjectAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete project " + projectToDelete + " while logged in as " + asUser);
     else log.info("Try to delete project " + projectToDelete);
@@ -88,6 +89,14 @@ public class ProjectDelete extends Tester<Project> {
           "The deletion of project " + projectToDelete + " was expected to fail but it did not.");
     log.info("Successfully deleted project " + projectToDelete);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setProjectToDelete(currentSection.get("project-name"));
   }
 
   public boolean isExpectedToFail() {

@@ -15,6 +15,9 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -22,14 +25,10 @@ import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
-import java.io.FileNotFoundException;
-import java.util.Properties;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to delete a User.
- *
+ * <p>Class used to delete a User.
  */
 public class UserDelete extends Tester<User> {
 
@@ -40,12 +39,11 @@ public class UserDelete extends Tester<User> {
   private String userPassword;
   private String userToDelete;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public UserDelete(Properties p) throws FileNotFoundException {
-    super(p, User.class, "", "/users");
+    super(p, User.class);
     this.properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -55,6 +53,8 @@ public class UserDelete extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
+
     if (asUser != null && !"".equals(asUser))
       log.info("Try to delete user " + userToDelete + " while logged in as " + asUser);
     else log.info("Try to delete user " + userToDelete);
@@ -89,6 +89,14 @@ public class UserDelete extends Tester<User> {
           "The deletion of user " + userToDelete + " was expected to fail but it did not.");
     log.info("Successfully deleted user " + userToDelete);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setUserPassword(currentSection.get("as-user-password"));
+    this.setUserToDelete(currentSection.get("user-to-delete"));
   }
 
   public boolean isExpectedToFail() {

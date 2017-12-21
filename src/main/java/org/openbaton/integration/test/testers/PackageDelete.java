@@ -15,27 +15,26 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.VNFPackageAgent;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Properties;
-
 /**
  * Created by tbr on 01.12.15.
  *
- * Class used to delete a VNFPackage.
+ * <p>Class used to delete a VNFPackage.
  */
 public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   private String packageName = "";
 
   public PackageDelete(Properties properties) throws FileNotFoundException {
-    super(properties, VirtualNetworkFunctionDescriptor.class, "", "/vnf-descriptors");
-    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
+    super(properties, VirtualNetworkFunctionDescriptor.class);
   }
 
   @Override
@@ -46,6 +45,8 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
   @Override
   protected Object doWork() throws Exception {
     log.info("Delete VNFPackage " + packageName);
+    this.setAbstractRestAgent(requestor.getVNFPackageAgent());
+
     VNFPackageAgent agent = requestor.getVNFPackageAgent();
 
     try {
@@ -59,6 +60,11 @@ public class PackageDelete extends Tester<VirtualNetworkFunctionDescriptor> {
     }
     log.debug("--- Successfully deleted the package " + packageName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setPackageName(currentSection.get("package-name"));
   }
 
   public void setPackageName(String packageName) {

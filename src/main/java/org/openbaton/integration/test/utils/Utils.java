@@ -15,68 +15,50 @@
  */
 package org.openbaton.integration.test.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import dnl.utils.text.table.TextTable;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.util.*;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-/**
- * Created by lto on 24/06/15.
- */
+/** Created by lto on 24/06/15. */
 public class Utils {
 
-  private static final String PROPERTIES_FILE = "/integration-tests.properties";
   private static Logger log = LoggerFactory.getLogger(Utils.class);
 
-  public static Properties getProperties() throws IOException {
+  public static Properties getProperties(String propertiesFile) throws IOException {
     Properties properties = new Properties();
-    properties.load(Utils.class.getResourceAsStream(PROPERTIES_FILE));
-    if (properties.getProperty("external-properties-file") != null) {
-      File externalPropertiesFile = new File(properties.getProperty("external-properties-file"));
-      if (externalPropertiesFile.exists()) {
-        log.debug(
-            "Loading properties from external-properties-file: "
-                + properties.getProperty("external-properties-file"));
-        InputStream is = new FileInputStream(externalPropertiesFile);
-        properties.load(is);
-      } else {
-        log.debug(
-            "external-properties-file: "
-                + properties.getProperty("external-properties-file")
-                + " doesn't exist");
-      }
-    }
-    log.debug("Loaded properties: " + properties);
+    log.info("Reading properties from file " + propertiesFile);
+    properties.load(getInputStream(propertiesFile));
     return properties;
   }
 
-  public static String getStringFromInputStream(InputStream stream) {
+  public static InputStream getInputStream(String fileName) throws FileNotFoundException {
+    if (checkFileExists(fileName)) {
+      return new FileInputStream(new File(fileName));
+    } else {
+      log.debug("Loading file " + fileName + " from classpath");
+      InputStream is = Utils.class.getClassLoader().getResourceAsStream(fileName);
+      if (is == null)
+        throw new FileNotFoundException("File " + fileName + " was not found in the classpath");
+      return is;
+    }
+  }
+
+  public static String getContent(String fileName) throws FileNotFoundException {
+    InputStream is = getInputStream(fileName);
     StringBuilder sb = new StringBuilder();
     try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(stream), 65728);
-      String line = null;
-
+      BufferedReader reader = new BufferedReader(new InputStreamReader(is), 65728);
+      String line;
       while ((line = reader.readLine()) != null) {
         sb.append(line);
       }
@@ -85,7 +67,6 @@ public class Utils {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     return sb.toString();
   }
 
@@ -102,30 +83,31 @@ public class Utils {
     }
   }
 
-  public static LinkedList<URL> getFilesAsURL(String location) {
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    Resource[] resources = {};
-    try {
-      resources = resolver.getResources(location);
-    } catch (IOException e) {
-      log.error(e.getMessage(), e);
-    }
-    LinkedList<URL> urls = new LinkedList<>();
-    for (Resource resource : resources) {
+  public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
+    int i = 0;
+    while (!available(nfvoIp, nfvoPort)) {
+      i++;
       try {
-        urls.add(resource.getURL());
-      } catch (IOException e) {
+        Thread.sleep(3000);
+      } catch (InterruptedException e) {
         e.printStackTrace();
       }
+      if (i > 40) {
+        return false;
+      }
     }
-    return urls;
+    return true;
   }
 
   /*
    * Get .ini files from an external directory.
    */
-  public static LinkedList<URL> getExternalFilesAsURL(String location) {
+  public static LinkedList<URL> getURLFileList(String location) {
     File dir = new File(location);
+    if (!dir.exists()) return getURLFileListLocal(location);
+    log.trace("Found dir " + dir.getName());
+    log.trace("Found dir " + dir.getAbsolutePath());
+
     File[] iniFiles =
         dir.listFiles(
             new FilenameFilter() {
@@ -137,6 +119,7 @@ public class Utils {
     LinkedList<URL> urls = new LinkedList<>();
     if (iniFiles == null) return urls;
     for (File f : iniFiles) {
+      log.trace("Found file " + f.getName());
       try {
         urls.add(f.toURI().toURL());
       } catch (MalformedURLException e) {
@@ -147,77 +130,44 @@ public class Utils {
     return urls;
   }
 
-  // taken from the sdks RestRequest class and slightly modified
-  public static String getAccessToken(
-      String nfvoIp, String nfvoPort, String username, String password)
-      throws IOException, SDKException {
-    HttpClient httpClient = HttpClientBuilder.create().build();
-
-    HttpPost httpPost = new HttpPost("http://" + nfvoIp + ":" + nfvoPort + "/oauth/token");
-
-    httpPost.setHeader(
-        "Authorization",
-        "Basic " + Base64.encodeBase64String("openbatonOSClient:secret".getBytes()));
-    List<BasicNameValuePair> parametersBody = new ArrayList<>();
-    parametersBody.add(new BasicNameValuePair("grant_type", "password"));
-    parametersBody.add(new BasicNameValuePair("username", username));
-    parametersBody.add(new BasicNameValuePair("password", password));
-
-    log.debug("Username is: " + username);
-    log.debug("Password is: " + password);
-
-    httpPost.setEntity(new UrlEncodedFormEntity(parametersBody, StandardCharsets.UTF_8));
-
-    org.apache.http.HttpResponse response = null;
-    log.debug("httpPost is: " + httpPost.toString());
-    response = httpClient.execute(httpPost);
-
-    String responseString = null;
-    responseString = EntityUtils.toString(response.getEntity());
-    int statusCode = response.getStatusLine().getStatusCode();
-    log.trace(statusCode + ": " + responseString);
-
-    if (statusCode != 200) {
-      ParseComError error = new Gson().fromJson(responseString, ParseComError.class);
-      log.error(
-          "Status Code ["
-              + statusCode
-              + "]: Error signing-in ["
-              + error.error
-              + "] - "
-              + error.error_description);
-      throw new SDKException(
-          "Status Code ["
-              + statusCode
-              + "]: Error signing-in ["
-              + error.error
-              + "] - "
-              + error.error_description,
-          new StackTraceElement[0],
-          "");
-    }
-    JsonObject jobj = new Gson().fromJson(responseString, JsonObject.class);
-    log.trace("JsonTokeAccess is: " + jobj.toString());
-    String bearerToken = null;
+  public static LinkedList<URL> getURLFileListLocal(String location) {
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    Resource[] resources = {};
     try {
-      String token = jobj.get("value").getAsString();
-      log.trace(token);
-      bearerToken = "Bearer " + token;
-    } catch (NullPointerException e) {
-      String error = jobj.get("error").getAsString();
-      if (error.equals("invalid_grant")) {
-        throw new SDKException(
-            "Error during authentication",
-            e.getStackTrace(),
-            jobj.get("error_description").getAsString());
+      resources = resolver.getResources(location + "*.ini");
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+    }
+    LinkedList<URL> urls = new LinkedList<>();
+    for (Resource resource : resources) {
+      log.trace("Found resource " + resource);
+      try {
+        urls.add(resource.getURL());
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     }
-    return bearerToken;
+    return urls;
   }
 
-  private class ParseComError implements Serializable {
-    String error_description;
-    String error;
+  public static List<String> getFileNames(List<URL> iniFileURLs) {
+    List<String> fileNames = new LinkedList<>();
+    for (URL url : iniFileURLs) {
+      String[] splittedUrl = url.toString().split("/");
+      String name = splittedUrl[splittedUrl.length - 1];
+      fileNames.add(name);
+    }
+    return fileNames;
+  }
+
+  public static boolean checkFileExists(String filename) {
+    File f = new File(filename);
+    if (f.exists()) {
+      log.debug("File or folder " + filename + " exists");
+      return true;
+    }
+    log.debug("File or folder " + filename + " does not exist");
+    return false;
   }
 
   public static String getProjectIdByName(NFVORequestor requestor, String projectName) {
@@ -227,6 +177,7 @@ public class Utils {
     } catch (Exception e) {
       log.warn("Could not connect to NFVO and retrieve the project id of project " + projectName);
     }
+
     for (Project project : projectList) {
       if (project.getName().equals(projectName)) return project.getId();
     }
@@ -262,7 +213,6 @@ public class Utils {
       results[count][1] = entry.getValue();
       count++;
     }
-    TextTable tt = new TextTable(columns, results);
-    return tt;
+    return new TextTable(columns, results);
   }
 }

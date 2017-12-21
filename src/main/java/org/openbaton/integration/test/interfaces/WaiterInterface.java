@@ -15,17 +15,13 @@
  */
 package org.openbaton.integration.test.interfaces;
 
+import java.io.FileNotFoundException;
 import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
-import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-
-/**
- * Created by mob on 31.07.15.
- */
+/** Created by mob on 31.07.15. */
 public interface WaiterInterface {
   void subscribe(EventEndpoint endpoint)
       throws SubscriptionException, SDKException, FileNotFoundException;

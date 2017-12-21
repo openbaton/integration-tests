@@ -18,18 +18,26 @@ package org.openbaton.integration.test.utils;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
+import org.ini4j.Profile;
+import org.openbaton.sdk.NFVORequestor;
 
-/**
- * Created by mob on 24.07.15.
- */
+/** Created by mob on 24.07.15. */
 public abstract class SubTask implements Callable<Object> {
 
-  private ExecutorService executorService;
+  public Object param;
   protected List<SubTask> successors;
+  protected String projectId;
+  private ExecutorService executorService;
   private SubTask successorRemover;
   private List<Future> f;
   private int maxIntegrationTestTime;
-  public Object param;
+  protected NFVORequestor requestor;
+
+  public SubTask() {
+    this.successors = new LinkedList<>();
+    this.f = new LinkedList<>();
+    successorRemover = null;
+  }
 
   public String getProjectId() {
     return projectId;
@@ -39,20 +47,12 @@ public abstract class SubTask implements Callable<Object> {
     this.projectId = projectId;
   }
 
-  protected String projectId;
-
-  public SubTask() {
-    this.successors = new LinkedList<>();
-    this.f = new LinkedList<>();
-    successorRemover = null;
+  public Object getParam() {
+    return param;
   }
 
   public void setParam(Object param) {
     this.param = param;
-  }
-
-  public Object getParam() {
-    return param;
   }
 
   public void setMaxIntegrationTestTime(int maxIntegrationTestTime) {
@@ -139,5 +139,15 @@ public abstract class SubTask implements Callable<Object> {
       // Preserve interrupt status
       Thread.currentThread().interrupt();
     }
+  }
+
+  public abstract void configureSubTask(Profile.Section currentSection);
+
+  public NFVORequestor getRequestor() {
+    return requestor;
+  }
+
+  public void setRequestor(NFVORequestor requestor) {
+    this.requestor = requestor;
   }
 }

@@ -15,6 +15,9 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.util.*;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.security.Role;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
@@ -22,13 +25,10 @@ import org.openbaton.integration.test.utils.Tester;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.UserAgent;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-
 /**
  * Created by tbr on 02.08.16.
  *
- * Class used to create a new user.
+ * <p>Class used to create a new user.
  */
 public class UserCreate extends Tester<User> {
 
@@ -44,12 +44,11 @@ public class UserCreate extends Tester<User> {
   private List<String> guestProjects = new LinkedList<>();
   private boolean enabled;
 
-  private Properties properties = null;
+  private Properties properties;
 
   public UserCreate(Properties p) throws FileNotFoundException {
-    super(p, User.class, "", "/users");
+    super(p, User.class);
     properties = p;
-    this.setAbstractRestAgent(requestor.getUserAgent());
   }
 
   @Override
@@ -59,6 +58,7 @@ public class UserCreate extends Tester<User> {
 
   @Override
   protected Object doWork() throws SDKException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getUserAgent());
     if (asUser != null && !"".equals(asUser))
       log.info("Try to create a new user " + newUserName + " while logged in as " + asUser);
     else log.info("Try to create a new user " + newUserName);
@@ -117,6 +117,19 @@ public class UserCreate extends Tester<User> {
 
     log.info("Successfully created the new user " + newUserName);
     return param;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setExpectedToFail(currentSection.get("expected-to-fail"));
+    this.setNewUserName(currentSection.get("new-user-name"));
+    this.setNewUserPwd(currentSection.get("new-user-password"));
+    this.setAsUser(currentSection.get("as-user-name"));
+    this.setAsUserPassword(currentSection.get("as-user-password"));
+    this.setUserIsAdmin(currentSection.get("new-user-is-admin"));
+    this.setUserProjects(currentSection.get("user-projects"));
+    this.setGuestProjects(currentSection.get("guest-projects"));
+    this.setEnabled(currentSection.get("enabled"));
   }
 
   public boolean isExpectedToFail() {

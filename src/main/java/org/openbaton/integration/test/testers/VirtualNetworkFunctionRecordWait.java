@@ -15,23 +15,23 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
 import org.openbaton.catalogue.mano.record.VirtualNetworkFunctionRecord;
-import org.openbaton.catalogue.nfvo.EndpointType;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by mob on 02.10.15.
  *
- * Class used to wait for an event on VirtualNetworkFunctionRecord level.
+ * <p>Class used to wait for an event on VirtualNetworkFunctionRecord level.
  */
 public class VirtualNetworkFunctionRecordWait extends Waiter {
 
@@ -39,8 +39,7 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   private String vnfrType;
 
   public VirtualNetworkFunctionRecordWait(Properties properties) throws FileNotFoundException {
-    super(properties, VirtualNetworkFunctionRecordWait.class, "", "");
-    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
+    super(properties, VirtualNetworkFunctionRecordWait.class);
   }
 
   @Override
@@ -51,9 +50,10 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
   @Override
   protected Object doWork()
       throws SDKException, InterruptedException, IntegrationTestException, FileNotFoundException {
+    this.setAbstractRestAgent(requestor.getVirtualNetworkFunctionDescriptorRestAgent());
 
     NetworkServiceRecord nsr = (NetworkServiceRecord) getParam();
-    EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
+    EventEndpoint eventEndpoint = createEventEndpoint(name);
     String vnfrId = getVnfrIdFromNsr(nsr, getVnfrType());
     eventEndpoint.setVirtualNetworkFunctionId(vnfrId);
     //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
@@ -114,6 +114,34 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
     //-nsr
     //-vnfr received and available invoking getPayload()
     return nsr;
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+    String action = currentSection.get("action");
+    String vnfType = currentSection.get("vnf-type");
+    if (action == null || action.isEmpty()) {
+      try {
+        throw new IntegrationTestException("action for VirtualNetworkFunctionRecordWait not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    if (vnfType == null || vnfType.isEmpty()) {
+      try {
+        throw new IntegrationTestException("vnf-type property not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    this.setAction(Action.valueOf(action));
+    this.setVnfrType(vnfType);
   }
 
   public void setVnfrType(String type) {

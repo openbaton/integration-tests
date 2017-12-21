@@ -15,29 +15,36 @@
  */
 package org.openbaton.integration.test;
 
-import org.ini4j.Ini;
-import org.ini4j.Profile;
-import org.openbaton.integration.test.utils.SubTask;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Properties;
+import org.ini4j.Ini;
+import org.ini4j.Profile;
+import org.openbaton.integration.test.testers.*;
+import org.openbaton.integration.test.utils.SubTask;
+import org.openbaton.sdk.NFVORequestor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by mob on 18.08.15.
  *
- * This class loads the test scenario from an .ini file.
+ * <p>This class loads the test scenario from an .ini file.
  */
-public abstract class IntegrationTestManager {
+public class IntegrationTestManager {
+  private Logger log = LoggerFactory.getLogger(IntegrationTestManager.class);
+
   private int maxIntegrationTestTime;
   private int maxConcurrentSuccessors;
-  private Logger log = null;
   private String classPath;
+  private NFVORequestor requestor;
+  private String projectId;
 
-  public IntegrationTestManager(String classPath) {
+  public IntegrationTestManager(String classPath, NFVORequestor requestor, String projectId) {
     this.classPath = classPath;
+    this.requestor = requestor;
+    this.projectId = projectId;
   }
 
   public boolean runTestScenario(Properties properties, URL iniUrl, String testName)
@@ -56,12 +63,44 @@ public abstract class IntegrationTestManager {
     return rootSubTask.awaitTermination();
   }
 
-  public void setLogger(Logger log) {
-    this.log = log;
+  private SubTask loadTesters(Properties properties, Profile.Section root) {
+    // Get some global properties
+    maxIntegrationTestTime = Integer.parseInt(root.get("max-integration-test-time", "600"));
+    maxConcurrentSuccessors = Integer.parseInt(root.get("max-concurrent-successors", "10"));
+
+    log("maxIntegrationTestTime = " + maxIntegrationTestTime, "info");
+    log("maxConcurrentSuccessors = " + maxConcurrentSuccessors, "info");
+    return loadEntity(properties, root.getChild(root.childrenNames()[0]));
+  }
+
+  private SubTask loadEntity(Properties properties, Profile.Section currentChild) {
+    SubTask instance = loadInstance(properties, currentChild);
+    if (instance == null) throw new NullPointerException("Instance is null");
+    //If there are specific properties for a type of a tester in the configuration file (.ini)
+    instance.setProjectId(projectId);
+    instance.setRequestor(requestor);
+    instance.configureSubTask(currentChild);
+    instance.setMaxIntegrationTestTime(maxIntegrationTestTime);
+    instance.setMaxConcurrentSuccessors(maxConcurrentSuccessors);
+
+    String successorRemover = getSuccessorRemover(currentChild);
+
+    for (String subChild : currentChild.childrenNames()) {
+      int numInstances =
+          Integer.parseInt(currentChild.getChild(subChild).get("num_instances", "1"));
+      if (!successorRemover.equals("false") && successorRemover.equals(subChild)) {
+        instance.setSuccessorRemover(loadEntity(properties, currentChild.getChild(subChild)));
+      } else {
+        for (int i = 0; i < numInstances; i++)
+          instance.addSuccessor(loadEntity(properties, currentChild.getChild(subChild)));
+      }
+    }
+    return instance;
   }
 
   private SubTask loadInstance(Properties properties, Profile.Section currentChild) {
     String nameClass = currentChild.get("class-name");
+    log.debug("class-name: " + nameClass);
     SubTask instance = null;
     try {
       String classNamePath = classPath + "." + nameClass;
@@ -79,42 +118,6 @@ public abstract class IntegrationTestManager {
       log("Problem during class loading: " + e.getMessage(), "error");
     }
     return instance;
-  }
-
-  private SubTask loadEntity(Properties properties, Profile.Section currentChild) {
-
-    SubTask instance = loadInstance(properties, currentChild);
-    if (instance == null) throw new NullPointerException("Instance is null");
-    //If there are specific properties for a type of a tester in the configuration file (.ini)
-    configureSubTask(instance, currentChild);
-    String successorRemover = getSuccessorRemover(currentChild);
-    instance.setMaxIntegrationTestTime(maxIntegrationTestTime);
-    instance.setMaxConcurrentSuccessors(maxConcurrentSuccessors);
-
-    for (String subChild : currentChild.childrenNames()) {
-      int numInstances =
-          Integer.parseInt(currentChild.getChild(subChild).get("num_instances", "1"));
-      if (!successorRemover.equals("false") && successorRemover.equals(subChild)) {
-        instance.setSuccessorRemover(loadEntity(properties, currentChild.getChild(subChild)));
-      } else {
-        for (int i = 0; i < numInstances; i++)
-          instance.addSuccessor(loadEntity(properties, currentChild.getChild(subChild)));
-      }
-    }
-    return instance;
-  }
-
-  protected abstract void configureSubTask(SubTask subTask, Profile.Section currentSection);
-
-  private SubTask loadTesters(Properties properties, Profile.Section root) {
-    /**Get some global properties**/
-    maxIntegrationTestTime = Integer.parseInt(root.get("max-integration-test-time", "600"));
-    maxConcurrentSuccessors = Integer.parseInt(root.get("max-concurrent-successors", "10"));
-
-    log("maxIntegrationTestTime = " + maxIntegrationTestTime, "info");
-    log("maxConcurrentSuccessors = " + maxConcurrentSuccessors, "info");
-    /****************************/
-    return loadEntity(properties, root.getChild(root.childrenNames()[0]));
   }
 
   private String getSuccessorRemover(Profile.Section currentSection) {

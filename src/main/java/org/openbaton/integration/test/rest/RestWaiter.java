@@ -20,15 +20,6 @@ import com.google.gson.JsonElement;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.openbaton.catalogue.nfvo.Action;
-import org.openbaton.catalogue.nfvo.EventEndpoint;
-import org.openbaton.integration.test.exceptions.SubscriptionException;
-import org.openbaton.integration.test.interfaces.WaiterInterface;
-import org.openbaton.integration.test.utils.Utils;
-import org.openbaton.sdk.NFVORequestor;
-import org.openbaton.sdk.api.exception.SDKException;
-import org.slf4j.Logger;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.Properties;
@@ -36,11 +27,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.openbaton.catalogue.nfvo.Action;
+import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.SubscriptionException;
+import org.openbaton.integration.test.interfaces.WaiterInterface;
+import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.exception.SDKException;
+import org.slf4j.Logger;
 
 /**
  * Created by mob on 31.07.15.
  *
- * Implementation of the WaiterInterface class using the NFVO's REST API.
+ * <p>Implementation of the WaiterInterface class using the NFVO's REST API.
  */
 public class RestWaiter implements WaiterInterface {
 
@@ -50,7 +48,7 @@ public class RestWaiter implements WaiterInterface {
   private Logger log;
   private final Lock lock = new ReentrantLock();
   private final Condition eventOccurred = lock.newCondition();
-  private NFVORequestor requestor = null;
+  private NFVORequestor requestor;
   private Gson mapper;
   private EventEndpoint ee;
   private String unsubscriptionId;
@@ -89,9 +87,9 @@ public class RestWaiter implements WaiterInterface {
       throw new SubscriptionException("Problems during the launch of the server", e);
     }
     if (eventEndpoint != null) {
-      String localIp = "";
+      String localIp;
       try {
-        localIp = Utils.getProperties().getProperty("local-ip");
+        localIp = this.properties.getProperty("local-ip");
         if (localIp.equals(""))
           throw new SubscriptionException("local-ip is empty. Please set it in the properties.");
       } catch (Exception e) {
@@ -100,8 +98,7 @@ public class RestWaiter implements WaiterInterface {
       }
       String url = "http://" + localIp + ":" + server.getAddress().getPort() + "/" + name;
       eventEndpoint.setEndpoint(url);
-      EventEndpoint response = null;
-      response = this.requestor.getEventAgent().create(eventEndpoint);
+      EventEndpoint response = this.requestor.getEventAgent().create(eventEndpoint);
       if (response == null) throw new NullPointerException("Response is null");
       unsubscriptionId = response.getId();
     } else throw new NullPointerException("EventEndpoint is null");
@@ -147,7 +144,7 @@ public class RestWaiter implements WaiterInterface {
 
   private void launchServer() throws IOException {
 
-    int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "0"));
+    int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "8181"));
     server = HttpServer.create(new InetSocketAddress(port), 1);
     myHandler = new MyHandler();
     server.createContext("/" + name, myHandler);
@@ -200,7 +197,7 @@ public class RestWaiter implements WaiterInterface {
       return responseStrBuilder.toString();
     }
     //false if the waiting time detectably elapsed before return from the method, else true
-    public boolean await(int timeOut) throws InterruptedException {
+    boolean await(int timeOut) throws InterruptedException {
       lock.lock();
       try {
         return eventOccurred.await(timeOut, TimeUnit.SECONDS);

@@ -15,29 +15,29 @@
  */
 package org.openbaton.integration.test.testers;
 
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.Properties;
+import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
-import org.openbaton.catalogue.nfvo.EndpointType;
+import org.openbaton.catalogue.nfvo.Action;
 import org.openbaton.catalogue.nfvo.EventEndpoint;
+import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.exceptions.SubscriptionException;
 import org.openbaton.integration.test.interfaces.Waiter;
 import org.openbaton.sdk.api.exception.SDKException;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.Properties;
-
 /**
  * Created by mob on 31.07.15.
- * <p/>
- * Class used to wait for an event on NetworkServiceDescriptor level.
+ *
+ * <p>Class used to wait for an event on NetworkServiceDescriptor level.
  */
 public class NetworkServiceDescriptorWait extends Waiter {
 
   private static final String name = "NetworkServiceDescriptorWait";
 
   public NetworkServiceDescriptorWait(Properties properties) throws FileNotFoundException {
-    super(properties, NetworkServiceRecordWait.class, "", "");
-    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
+    super(properties, NetworkServiceRecordWait.class);
   }
 
   @Override
@@ -48,8 +48,8 @@ public class NetworkServiceDescriptorWait extends Waiter {
   @Override
   protected Object doWork()
       throws SubscriptionException, SDKException, InterruptedException, FileNotFoundException {
-
-    EventEndpoint eventEndpoint = createEventEndpoint(name, EndpointType.REST);
+    this.setAbstractRestAgent(requestor.getNetworkServiceDescriptorAgent());
+    EventEndpoint eventEndpoint = createEventEndpoint(name);
     eventEndpoint.setEvent(getAction());
     NetworkServiceDescriptor nsd = (NetworkServiceDescriptor) param;
     //The eventEndpoint param of EventEndpoint will be set in the RestWaiter
@@ -94,5 +94,22 @@ public class NetworkServiceDescriptorWait extends Waiter {
       throw e;
     }
     return nsd.getId();
+  }
+
+  @Override
+  public void configureSubTask(Profile.Section currentSection) {
+    this.setTimeout(Integer.parseInt(currentSection.get("timeout", "5")));
+
+    String action = currentSection.get("action");
+    if (action == null || action.isEmpty()) {
+      try {
+        throw new IntegrationTestException("action for VirtualNetworkFunctionRecordWait not set");
+      } catch (IntegrationTestException e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+        System.exit(42);
+      }
+    }
+    this.setAction(Action.valueOf(action));
   }
 }
