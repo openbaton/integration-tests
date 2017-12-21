@@ -20,7 +20,10 @@ import com.google.gson.GsonBuilder;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Properties;
+import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
+import org.openbaton.nfvo.common.configuration.NfvoGsonDeserializerVimInstance;
+import org.openbaton.nfvo.common.configuration.NfvoGsonSerializerVimInstance;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.util.AbstractRestAgent;
 import org.slf4j.Logger;
@@ -51,7 +54,11 @@ public abstract class Tester<T extends Serializable> extends SubTask {
    */
   public Tester(Properties properties, Class<T> aClass) {
     GsonBuilder builder = new GsonBuilder();
-    mapper = builder.create();
+    mapper =
+        builder
+            .registerTypeAdapter(BaseVimInstance.class, new NfvoGsonDeserializerVimInstance())
+            .registerTypeAdapter(BaseVimInstance.class, new NfvoGsonSerializerVimInstance())
+            .create();
     this.properties = properties;
     this.sshPrivateKeyFilePath =
         properties.getProperty(

@@ -18,6 +18,7 @@ package org.openbaton.integration.test.testers;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.ini4j.Profile;
+import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
 import org.openbaton.catalogue.nfvo.viminstances.GenericVimInstance;
 import org.openbaton.integration.test.exceptions.IntegrationTestException;
 import org.openbaton.integration.test.utils.Tester;
@@ -31,7 +32,7 @@ import org.openbaton.sdk.api.rest.VimInstanceAgent;
  * <p>Class used to create a VimInstance. It can be specified which user should delete the
  * VimInstance and in which project he should try to attempt it.
  */
-public class VimInstanceCreate extends Tester<GenericVimInstance> {
+public class VimInstanceCreate extends Tester<BaseVimInstance> {
 
   private String fileName;
   private boolean expectedToFail = false;
@@ -45,7 +46,7 @@ public class VimInstanceCreate extends Tester<GenericVimInstance> {
    * @param properties : IntegrationTest properties containing: nfvo-usr nfvo-pwd nfvo-ip nfvo-port
    */
   public VimInstanceCreate(Properties properties) {
-    super(properties, GenericVimInstance.class);
+    super(properties, BaseVimInstance.class);
     this.properties = properties;
   }
 
@@ -116,14 +117,9 @@ public class VimInstanceCreate extends Tester<GenericVimInstance> {
   }
 
   @Override
-  protected GenericVimInstance prepareObject() throws FileNotFoundException {
-    String body = getFileContent();
+  protected BaseVimInstance prepareObject() throws FileNotFoundException {
+    String body = Utils.getContent(properties.getProperty("vim-path") + fileName);
     return mapper.fromJson(body, aClass);
-  }
-
-  private String getFileContent() throws FileNotFoundException {
-    String fileAbsoluteName = properties.getProperty("vim-path") + fileName;
-    return Utils.getContent(fileAbsoluteName);
   }
 
   public void setFileName(String fileName) {
