@@ -106,7 +106,7 @@ public class MainIntegrationTest {
     if (!Utils.checkFileExists(properties.getProperty("scripts-path")))
       properties.setProperty("scripts-path", SCRIPTS_PATH);
 
-    if (!Utils.checkFileExists(properties.getProperty("scripts-path")))
+    if (!Utils.checkFileExists(properties.getProperty("vnf-packages-path")))
       properties.setProperty("vnf-packages-path", VNF_PACKAGES_PATH);
 
     return properties;
