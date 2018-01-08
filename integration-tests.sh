@@ -30,13 +30,13 @@ function output_available_scenarios
   done
 }
 
-EXTERNAL_PROPERTIES=`get_property ./src/main/resources/integration-tests.properties "external-properties-file"`
+#EXTERNAL_PROPERTIES=`get_property ./src/main/resources/integration-tests.properties "external-properties-file"`
 
-if [ -f $EXTERNAL_PROPERTIES ]; then
-  SCENARIO_PATH=`get_property $EXTERNAL_PROPERTIES "integration-test-scenarios"`
-else
-  SCENARIO_PATH=`get_property ./src/main/resources/integration-tests.properties "integration-test-scenarios"`
-fi
+#if [ -f $EXTERNAL_PROPERTIES ]; then
+#  SCENARIO_PATH=`get_property $EXTERNAL_PROPERTIES "integration-test-scenarios"`
+#else
+SCENARIO_PATH=`get_property ./src/main/resources/integration-tests.properties "integration-test-scenarios"`
+#fi
 
 if [ -z $SCENARIO_PATH ] || [ ! -d $SCENARIO_PATH ] || [ `ls -1 $SCENARIO_PATH | grep "\.ini$" | wc -l` -eq 0 ]; then
   SCENARIO_PATH='./src/main/resources/integration-test-scenarios/'
