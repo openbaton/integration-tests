@@ -113,7 +113,8 @@ public class VNFCRepresentation {
   }
 
   public Set<String> getAllNetNames() {
-    Set<String> netNames = netIps.keySet();
+    Set<String> netNames = new HashSet<>();
+    netNames.addAll(netIps.keySet());
     for (String net : netFips.keySet()) {
       if (!netNames.contains(net)) netNames.add(net);
     }
