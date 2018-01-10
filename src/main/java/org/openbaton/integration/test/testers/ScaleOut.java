@@ -98,7 +98,8 @@ public class ScaleOut extends Tester {
     VNFDConnectionPoint vnfdConnectionPoint = new VNFDConnectionPoint();
     if (virtualLink.equals("")) log.warn("Virtual link is empty");
     vnfdConnectionPoint.setVirtual_link_reference(virtualLink);
-    vnfdConnectionPoint.setFloatingIp(floatingIp);
+    if(floatingIp!=null)
+      vnfdConnectionPoint.setFloatingIp(floatingIp);
     vnfdConnectionPointSet.add(vnfdConnectionPoint);
     vnfc.setConnection_point(vnfdConnectionPointSet);
     return vnfc;
