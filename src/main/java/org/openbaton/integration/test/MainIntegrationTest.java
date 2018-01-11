@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -26,6 +27,7 @@ import org.openbaton.catalogue.nfvo.VNFPackage;
 import org.openbaton.catalogue.nfvo.viminstances.BaseVimInstance;
 import org.openbaton.integration.test.utils.Utils;
 import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.NfvoRequestorBuilder;
 import org.openbaton.sdk.api.exception.SDKException;
 import org.openbaton.sdk.api.rest.NetworkServiceDescriptorAgent;
 import org.openbaton.sdk.api.rest.NetworkServiceRecordAgent;
@@ -46,7 +48,7 @@ public class MainIntegrationTest {
 
   private static final Logger log = LoggerFactory.getLogger(MainIntegrationTest.class);
   private static String nfvoIp;
-  private static String nfvoPort;
+  private static int nfvoPort;
   private static String nfvoUsr;
   private static String nfvoPwd;
   private static String projectName;
@@ -56,13 +58,11 @@ public class MainIntegrationTest {
   /**
    * Load properties from configuration file
    *
-   * @return
-   * @throws IOException
-   * @throws SDKException
-   * @throws ClassNotFoundException
+   * @return The {@code Properties} object filled
+   * @throws IOException In case of IOException while opening the properties file
    */
   private static Properties loadProperties()
-      throws IOException, SDKException, ClassNotFoundException {
+      throws IOException {
 
     String propertiesFile;
     // Checking whether external properties file exists
@@ -86,7 +86,7 @@ public class MainIntegrationTest {
     properties.setProperty("clear-after-test", properties.getProperty("clear-after-test", "true"));
 
     nfvoIp = properties.getProperty("nfvo-ip");
-    nfvoPort = properties.getProperty("nfvo-port");
+    nfvoPort = Integer.parseInt(properties.getProperty("nfvo-port"));
     nfvoUsr = properties.getProperty("nfvo-usr");
     nfvoPwd = properties.getProperty("nfvo-pwd");
     projectName = properties.getProperty("nfvo-project-name");
@@ -115,7 +115,7 @@ public class MainIntegrationTest {
   /**
    * This method tries to remove every NSD, VNFD, VNFPackage and VIM from the orchestrator.
    *
-   * @param requestor
+   * @param requestor The {@code NFVORequestor} to use
    */
   private static void clearOrchestrator(NFVORequestor requestor) {
     try {
@@ -191,7 +191,14 @@ public class MainIntegrationTest {
     }
 
     NFVORequestor requestor =
-        new NFVORequestor(nfvoUsr, nfvoPwd, sslEnabled, projectName, nfvoIp, nfvoPort, "1");
+        NfvoRequestorBuilder.create()
+            .projectName(projectName)
+            .nfvoIp(nfvoIp)
+            .nfvoPort(nfvoPort)
+            .password(nfvoPwd)
+            .username(nfvoUsr)
+            .sslEnabled(sslEnabled)
+            .build();
 
     if (args.length > 0 && args[0].equals("clean")) {
       log.info("Executing clean up of existing descriptors/records ");
@@ -233,29 +240,31 @@ public class MainIntegrationTest {
       String name = splittedUrl[splittedUrl.length - 1];
       if (clArgs.size() > 0
           && !clArgs.contains(
-              name)) // if test names are passed through the command line, only these will be executed
+          name)) // if test names are passed through the command line, only these will be executed
       {
         continue;
       }
       executedTests = true;
       startTime = System.currentTimeMillis();
-      if (itm.runTestScenario(properties, url, name)) {
-        stopTime = System.currentTimeMillis() - startTime;
-        log.info(
-            "Test: "
-                + name
-                + " finished correctly :) in "
-                + String.format(
-                    "%d min, %d sec",
-                    TimeUnit.MILLISECONDS.toMinutes(stopTime),
-                    TimeUnit.MILLISECONDS.toSeconds(stopTime)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
-                + "\n");
-        results.put(name, "SUCCESS");
-      } else {
-        log.error("Test: " + name + " completed with errors :(\n");
-        allTestsPassed = false;
-        results.put(name, "FAILED");
+      if (!name.contains("stress")) {
+        if (itm.runTestScenario(properties, url, name)) {
+          stopTime = System.currentTimeMillis() - startTime;
+          log.info(
+              "Test: "
+                  + name
+                  + " finished correctly :) in "
+                  + String.format(
+                  "%d min, %d sec",
+                  TimeUnit.MILLISECONDS.toMinutes(stopTime),
+                  TimeUnit.MILLISECONDS.toSeconds(stopTime)
+                      - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
+                  + "\n");
+          results.put(name, "SUCCESS");
+        } else {
+          log.error("Test: " + name + " completed with errors :(\n");
+          allTestsPassed = false;
+          results.put(name, "FAILED");
+        }
       }
       if (clearAfterTest) {
         clearOrchestrator(requestor);

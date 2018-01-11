@@ -24,6 +24,7 @@ import java.util.*;
 import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
+import org.openbaton.sdk.api.exception.SDKException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -62,17 +63,15 @@ public class Utils {
       while ((line = reader.readLine()) != null) {
         sb.append(line);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     } catch (Exception e) {
       e.printStackTrace();
     }
     return sb.toString();
   }
 
-  public static boolean available(String host, String port) {
+  private static boolean available(String host, int port) {
     try {
-      Socket s = new Socket(host, Integer.parseInt(port));
+      Socket s = new Socket(host, port);
       log.info("Server is listening on port " + port + " of " + host);
       s.close();
       return true;
@@ -83,7 +82,7 @@ public class Utils {
     }
   }
 
-  public static boolean isNfvoStarted(String nfvoIp, String nfvoPort) {
+  public static boolean isNfvoStarted(String nfvoIp, int nfvoPort) {
     int i = 0;
     while (!available(nfvoIp, nfvoPort)) {
       i++;
@@ -109,13 +108,7 @@ public class Utils {
     log.trace("Found dir " + dir.getAbsolutePath());
 
     File[] iniFiles =
-        dir.listFiles(
-            new FilenameFilter() {
-              @Override
-              public boolean accept(File dir, String name) {
-                return name.endsWith(".ini");
-              }
-            });
+        dir.listFiles((dir1, name) -> name.endsWith(".ini"));
     LinkedList<URL> urls = new LinkedList<>();
     if (iniFiles == null) return urls;
     for (File f : iniFiles) {
@@ -130,7 +123,7 @@ public class Utils {
     return urls;
   }
 
-  public static LinkedList<URL> getURLFileListLocal(String location) {
+  private static LinkedList<URL> getURLFileListLocal(String location) {
     PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
     Resource[] resources = {};
     try {
@@ -170,39 +163,18 @@ public class Utils {
     return false;
   }
 
-  public static String getProjectIdByName(NFVORequestor requestor, String projectName) {
-    List<Project> projectList = null;
-    try {
-      projectList = requestor.getProjectAgent().findAll();
-    } catch (Exception e) {
-      log.warn("Could not connect to NFVO and retrieve the project id of project " + projectName);
-    }
-
-    for (Project project : projectList) {
-      if (project.getName().equals(projectName)) return project.getId();
-    }
-    log.warn("Did not find a project named " + projectName);
-    return "";
+  public static String getProjectIdByName(NFVORequestor requestor, String projectName) throws SDKException {
+    return requestor.getProjectAgent().findAll().stream().filter(p -> p.getName().equals(projectName)).findFirst().orElseThrow(() -> new SDKException("Did not find a project named " + projectName)).getId();
   }
 
-  public static String getUserIdByName(NFVORequestor requestor, String userName) {
+  public static String getUserIdByName(NFVORequestor requestor, String userName) throws SDKException {
     User u = getUserByName(requestor, userName);
     if (u == null) return "";
     else return u.getId();
   }
 
-  public static User getUserByName(NFVORequestor requestor, String userName) {
-    List<User> userList = null;
-    try {
-      userList = requestor.getUserAgent().findAll();
-    } catch (Exception e) {
-      log.warn("Could not connect to NFVO and retrieve the user id of user " + userName);
-    }
-    for (User user : userList) {
-      if (user.getUsername().equals(userName)) return user;
-    }
-    log.warn("Did not find a user named " + userName);
-    return null;
+  public static User getUserByName(NFVORequestor requestor, String userName) throws SDKException {
+    return requestor.getUserAgent().findAll().stream().filter(u -> u.getUsername().equals(userName)).findFirst().orElseThrow(() -> new SDKException("Did not find a user named " + userName));
   }
 
   public static TextTable getResultsTable(String[] columns, Map<String, String> content) {

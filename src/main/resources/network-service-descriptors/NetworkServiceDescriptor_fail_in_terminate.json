@@ -44,8 +44,7 @@
                                 }
                             ]
                         }
-                    ],
-                    "vimInstanceName":["vim-instance"]
+                    ]
                 }
             ],
             "virtual_link":[
@@ -58,7 +57,6 @@
                     "flavour_key":"m1.small"
                 }
             ],
-            "type":"server",
             "endpoint":"generic",
             "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         },
@@ -120,8 +118,7 @@
                                 }
                             ]
                         }
-                    ],
-                    "vimInstanceName":["vim-instance"]
+                    ]
                 }
             ],
             "virtual_link":[
@@ -134,7 +131,6 @@
                     "flavour_key":"m1.small"
                 }
             ],
-            "type":"client",
             "endpoint":"generic",
             "vnfPackageLocation":"https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git"
         }

@@ -15,21 +15,21 @@
  */
 package org.openbaton.integration.test;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.Properties;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-import org.openbaton.integration.test.testers.*;
 import org.openbaton.integration.test.utils.SubTask;
 import org.openbaton.sdk.NFVORequestor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.Properties;
+
 /**
  * Created by mob on 18.08.15.
- *
+ * <p>
  * <p>This class loads the test scenario from an .ini file.
  */
 public class IntegrationTestManager {
@@ -41,7 +41,7 @@ public class IntegrationTestManager {
   private NFVORequestor requestor;
   private String projectId;
 
-  public IntegrationTestManager(String classPath, NFVORequestor requestor, String projectId) {
+  IntegrationTestManager(String classPath, NFVORequestor requestor, String projectId) {
     this.classPath = classPath;
     this.requestor = requestor;
     this.projectId = projectId;
@@ -106,15 +106,7 @@ public class IntegrationTestManager {
       String classNamePath = classPath + "." + nameClass;
       Class<?> currentClass = MainIntegrationTest.class.getClassLoader().loadClass(classNamePath);
       instance = (SubTask) currentClass.getConstructor(Properties.class).newInstance(properties);
-    } catch (ClassNotFoundException e) {
-      log("Problem during class loading: " + e.getMessage(), "error");
-    } catch (InstantiationException e) {
-      log("Problem during class loading: " + e.getMessage(), "error");
-    } catch (IllegalAccessException e) {
-      log("Problem during class loading: " + e.getMessage(), "error");
-    } catch (NoSuchMethodException e) {
-      log("Problem during class loading: " + e.getMessage(), "error");
-    } catch (InvocationTargetException e) {
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
       log("Problem during class loading: " + e.getMessage(), "error");
     }
     return instance;

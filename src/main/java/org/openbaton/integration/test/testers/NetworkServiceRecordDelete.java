@@ -29,7 +29,7 @@ import org.openbaton.sdk.api.exception.SDKException;
  */
 public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
 
-  public NetworkServiceRecordDelete(Properties properties) throws FileNotFoundException {
+  public NetworkServiceRecordDelete(Properties properties) {
     super(properties, NetworkServiceRecord.class);
   }
 
@@ -39,7 +39,7 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
   }
 
   @Override
-  protected Object doWork() throws SDKException, FileNotFoundException {
+  protected Object doWork() throws SDKException {
     NetworkServiceRecord nsr = (NetworkServiceRecord) param;
     log.info("Delete NSR " + nsr.getName() + " with id " + nsr.getId());
     this.setAbstractRestAgent(requestor.getNetworkServiceRecordAgent());

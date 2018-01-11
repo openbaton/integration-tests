@@ -66,6 +66,7 @@ public abstract class Waiter extends Tester {
     EventEndpoint eventEndpoint = new EventEndpoint();
     eventEndpoint.setEvent(getAction());
     eventEndpoint.setName(name);
+    eventEndpoint.setProjectId("*");
     eventEndpoint.setType(EndpointType.REST);
     return eventEndpoint;
   }
