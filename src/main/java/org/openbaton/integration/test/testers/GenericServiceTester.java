@@ -212,11 +212,7 @@ public class GenericServiceTester extends Tester {
         stop = true;
         continue;
       }
-      try {
-        this.addScript(scriptName);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      this.addScript(scriptName);
     }
   }
 
@@ -356,30 +352,23 @@ public class GenericServiceTester extends Tester {
     return preScripts;
   }
 
-  public void addScript(String scriptName) throws FileNotFoundException {
+  public void addScript(String scriptName) {
     File f = new File(properties.getProperty("scripts-path") + scriptName);
     if (!f.exists()) {
-      InputStream is = Utils.getInputStream(properties.getProperty("scripts-path") + scriptName);
-      File t = null;
-      try {
-        t = new File("/tmp/" + scriptName);
-        OutputStream os = new FileOutputStream(t);
+      File t = new File("/tmp/" + scriptName);
+      try (InputStream is =
+              Utils.getInputStream(properties.getProperty("scripts-path") + scriptName);
+          OutputStream os = new FileOutputStream(t)) {
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = is.read(buffer)) != -1) {
           os.write(buffer, 0, bytesRead);
         }
-        is.close();
-        os.flush();
-        os.close();
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
       } catch (IOException e) {
         e.printStackTrace();
       }
       f = t;
     }
-
     if (!f.exists()) log.warn(scriptName + " does not exist.");
     else scripts.add(f);
   }
