@@ -146,7 +146,7 @@
         {
           "event": "INSTANTIATE",
           "lifecycle_events": [
-            "network_interface_fix.sh",
+            "bring_interfaces_up.sh",
             "ncat-install.sh",
             "ncat-server-setup.sh"
           ]
@@ -290,7 +290,7 @@
         {
           "event": "INSTANTIATE",
           "lifecycle_events": [
-            "network_interface_fix.sh",
+            "bring_interfaces_up.sh",
             "ncat-install.sh",
             "ncat-server-setup.sh"
           ]
