@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.*;
-import org.openbaton.catalogue.security.Project;
 import org.openbaton.catalogue.security.User;
 import org.openbaton.sdk.NFVORequestor;
 import org.openbaton.sdk.api.exception.SDKException;
@@ -107,8 +106,7 @@ public class Utils {
     log.trace("Found dir " + dir.getName());
     log.trace("Found dir " + dir.getAbsolutePath());
 
-    File[] iniFiles =
-        dir.listFiles((dir1, name) -> name.endsWith(".ini"));
+    File[] iniFiles = dir.listFiles((dir1, name) -> name.endsWith(".ini"));
     LinkedList<URL> urls = new LinkedList<>();
     if (iniFiles == null) return urls;
     for (File f : iniFiles) {
@@ -154,6 +152,10 @@ public class Utils {
   }
 
   public static boolean checkFileExists(String filename) {
+    if (filename == null) {
+      log.warn("Given filename is null.");
+      return false;
+    }
     File f = new File(filename);
     if (f.exists()) {
       log.debug("File or folder " + filename + " exists");
@@ -163,18 +165,33 @@ public class Utils {
     return false;
   }
 
-  public static String getProjectIdByName(NFVORequestor requestor, String projectName) throws SDKException {
-    return requestor.getProjectAgent().findAll().stream().filter(p -> p.getName().equals(projectName)).findFirst().orElseThrow(() -> new SDKException("Did not find a project named " + projectName)).getId();
+  public static String getProjectIdByName(NFVORequestor requestor, String projectName)
+      throws SDKException {
+    return requestor
+        .getProjectAgent()
+        .findAll()
+        .stream()
+        .filter(p -> p.getName().equals(projectName))
+        .findFirst()
+        .orElseThrow(() -> new SDKException("Did not find a project named " + projectName))
+        .getId();
   }
 
-  public static String getUserIdByName(NFVORequestor requestor, String userName) throws SDKException {
+  public static String getUserIdByName(NFVORequestor requestor, String userName)
+      throws SDKException {
     User u = getUserByName(requestor, userName);
     if (u == null) return "";
     else return u.getId();
   }
 
   public static User getUserByName(NFVORequestor requestor, String userName) throws SDKException {
-    return requestor.getUserAgent().findAll().stream().filter(u -> u.getUsername().equals(userName)).findFirst().orElseThrow(() -> new SDKException("Did not find a user named " + userName));
+    return requestor
+        .getUserAgent()
+        .findAll()
+        .stream()
+        .filter(u -> u.getUsername().equals(userName))
+        .findFirst()
+        .orElseThrow(() -> new SDKException("Did not find a user named " + userName));
   }
 
   public static TextTable getResultsTable(String[] columns, Map<String, String> content) {
