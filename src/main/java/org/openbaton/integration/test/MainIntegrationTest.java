@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
@@ -61,8 +60,7 @@ public class MainIntegrationTest {
    * @return The {@code Properties} object filled
    * @throws IOException In case of IOException while opening the properties file
    */
-  private static Properties loadProperties()
-      throws IOException {
+  private static Properties loadProperties() throws IOException {
 
     String propertiesFile;
     // Checking whether external properties file exists
@@ -240,7 +238,7 @@ public class MainIntegrationTest {
       String name = splittedUrl[splittedUrl.length - 1];
       if (clArgs.size() > 0
           && !clArgs.contains(
-          name)) // if test names are passed through the command line, only these will be executed
+              name)) // if test names are passed through the command line, only these will be executed
       {
         continue;
       }
@@ -254,10 +252,10 @@ public class MainIntegrationTest {
                   + name
                   + " finished correctly :) in "
                   + String.format(
-                  "%d min, %d sec",
-                  TimeUnit.MILLISECONDS.toMinutes(stopTime),
-                  TimeUnit.MILLISECONDS.toSeconds(stopTime)
-                      - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
+                      "%d min, %d sec",
+                      TimeUnit.MILLISECONDS.toMinutes(stopTime),
+                      TimeUnit.MILLISECONDS.toSeconds(stopTime)
+                          - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
                   + "\n");
           results.put(name, "SUCCESS");
         } else {

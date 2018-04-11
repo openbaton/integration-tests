@@ -19,13 +19,13 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.rholder:gradle-one-jar:1.0.4'
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.11.RELEASE'
         classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
 plugins {
-    id 'net.researchgate.release' version '2.3.4'
+    id 'net.researchgate.release' version '2.6.0'
     id "com.github.sherter.google-java-format" version "0.5"
 }
 apply plugin: 'gradle-one-jar'

@@ -15,7 +15,6 @@
  */
 package org.openbaton.integration.test.testers;
 
-import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.ini4j.Profile;
 import org.openbaton.catalogue.mano.record.NetworkServiceRecord;
