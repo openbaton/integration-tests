@@ -42,7 +42,7 @@ import org.slf4j.Logger;
  */
 public class RestWaiter implements WaiterInterface {
 
-  private HttpServer server;
+  private static HttpServer server;
   private MyHandler myHandler;
   private String name;
   private Logger log;
@@ -61,14 +61,26 @@ public class RestWaiter implements WaiterInterface {
       NFVORequestor nfvoRequestor,
       Gson gsonMapper,
       Logger logger,
-      Properties properties) {
+      Properties properties)
+      throws SubscriptionException {
     name = waiterName;
+    myHandler = new MyHandler();
     requestor = nfvoRequestor;
     mapper = gsonMapper;
     log = logger;
     this.properties = properties;
     ee = null;
     unsubscriptionId = null;
+    try {
+      launchServer();
+    } catch (IOException e) {
+      log.error(
+          "Unable to start the server which is needed for subscribing to NFVO events: "
+              + e.getMessage());
+      throw new SubscriptionException(
+          "Unable to start the server which is needed for subscribing to NFVO events.", e);
+    }
+    addHandlerToServer();
   }
 
   /**
@@ -81,11 +93,6 @@ public class RestWaiter implements WaiterInterface {
   @Override
   public void subscribe(EventEndpoint eventEndpoint)
       throws SDKException, SubscriptionException, FileNotFoundException {
-    try {
-      launchServer();
-    } catch (IOException e) {
-      throw new SubscriptionException("Problems during the launch of the server", e);
-    }
     if (eventEndpoint != null) {
       String localIp;
       try {
@@ -111,14 +118,29 @@ public class RestWaiter implements WaiterInterface {
    * @throws SDKException
    */
   @Override
-  public void unSubscribe() throws SDKException, FileNotFoundException {
-    if (ee == null) throw new NullPointerException("EventEndpoint is null");
-    this.requestor.getEventAgent().requestDelete(unsubscriptionId);
-    stopServer();
-  }
-
-  private void stopServer() {
-    server.stop(10);
+  public void unSubscribe() {
+    try {
+      server.removeContext("/" + name);
+    } catch (Exception e) {
+      log.error(
+          "Exception while removing context /"
+              + name
+              + "from RestWaiter server: "
+              + e.getMessage());
+    }
+    if (unsubscriptionId != null) {
+      try {
+        this.requestor.getEventAgent().requestDelete(unsubscriptionId);
+      } catch (SDKException e) {
+        log.error(
+            "SDKException while requesting the removal of the event with ID "
+                + this.unsubscriptionId
+                + " from the NFVO: "
+                + e.getMessage());
+      }
+    } else {
+      log.warn("Event ID is null, has this waiter subscribed to an event already?");
+    }
   }
 
   @Override
@@ -143,13 +165,15 @@ public class RestWaiter implements WaiterInterface {
   }
 
   private void launchServer() throws IOException {
-
+    if (server != null) return;
     int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "8181"));
     server = HttpServer.create(new InetSocketAddress(port), 1);
-    myHandler = new MyHandler();
-    server.createContext("/" + name, myHandler);
     server.setExecutor(null);
     server.start();
+  }
+
+  private void addHandlerToServer() {
+    server.createContext("/" + name, myHandler);
   }
 
   class MyHandler implements HttpHandler {
@@ -175,7 +199,12 @@ public class RestWaiter implements WaiterInterface {
       payload = jsonElement.getAsJsonObject().get("payload").toString();
       //log.debug("Payload received: "+payload);
       if (actionReceived.equals(ee.getEvent().toString())) return true;
-      else log.error("Received wrong action: " + actionReceived);
+      else
+        log.error(
+            "Received wrong action "
+                + actionReceived
+                + " while expecting "
+                + ee.getEvent().toString());
       return false;
     }
 

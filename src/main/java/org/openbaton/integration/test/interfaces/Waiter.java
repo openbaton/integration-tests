@@ -57,8 +57,13 @@ public abstract class Waiter extends Tester {
   public void subscribe(EventEndpoint eventEndpoint)
       throws SubscriptionException, SDKException, FileNotFoundException {
     if (eventEndpoint == null) throw new NullPointerException("EventEndpoint is null");
-    if (eventEndpoint.getType() == EndpointType.REST)
-      waiter = new RestWaiter(eventEndpoint.getName(), requestor, mapper, log, properties);
+    if (eventEndpoint.getType() == EndpointType.REST) {
+      String name = eventEndpoint.getName();
+      if (eventEndpoint.getNetworkServiceId() != null) name += eventEndpoint.getNetworkServiceId();
+      else if (eventEndpoint.getVirtualNetworkFunctionId() != null)
+        name += eventEndpoint.getVirtualNetworkFunctionId();
+      waiter = new RestWaiter(name, requestor, mapper, log, properties);
+    }
     waiter.subscribe(eventEndpoint);
   }
 
@@ -83,15 +88,12 @@ public abstract class Waiter extends Tester {
     return waiter.waitForEvent(getTimeout());
   }
 
-  /**
-   * Unsubscribe from the previously subscribed event.
-   *
-   * @throws SDKException
-   */
-  public void unSubscribe() throws SDKException, FileNotFoundException {
-    if (waiter == null)
-      throw new NullPointerException(
-          "Waiter is null (use subscribe and waitForEvent before unSubscribe)");
+  /** Unsubscribe from the previously subscribed event. */
+  public void unSubscribe() {
+    if (waiter == null) {
+      log.warn("Waiter is null (use subscribe and waitForEvent before unSubscribe)");
+      return;
+    }
     waiter.unSubscribe();
   }
 

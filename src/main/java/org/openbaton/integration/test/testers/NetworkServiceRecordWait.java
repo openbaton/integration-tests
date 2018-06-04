@@ -82,7 +82,6 @@ public class NetworkServiceRecordWait extends Waiter {
                 + nsr.getId());
         throw new IntegrationTestException("Timeout elapsed.");
       }
-      unSubscribe();
 
     } catch (SubscriptionException e) {
       log.error(
@@ -102,6 +101,8 @@ public class NetworkServiceRecordWait extends Waiter {
               + " nsr name: "
               + nsr.getName());
       throw e;
+    } finally {
+      unSubscribe();
     }
     nsr = mapper.fromJson(getPayload(), NetworkServiceRecord.class);
     return nsr;

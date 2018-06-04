@@ -26,7 +26,7 @@ public interface WaiterInterface {
   void subscribe(EventEndpoint endpoint)
       throws SubscriptionException, SDKException, FileNotFoundException;
 
-  void unSubscribe() throws SDKException, FileNotFoundException;
+  void unSubscribe();
 
   boolean waitForEvent(int timeOut) throws InterruptedException;
 

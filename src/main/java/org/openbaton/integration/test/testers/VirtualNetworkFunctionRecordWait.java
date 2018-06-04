@@ -89,7 +89,6 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
                 + vnfrId);
         throw new IntegrationTestException("Timeout elapsed.");
       }
-      unSubscribe();
 
     } catch (SubscriptionException e) {
       log.error(
@@ -109,6 +108,8 @@ public class VirtualNetworkFunctionRecordWait extends Waiter {
               + " and id:"
               + vnfrId);
       throw e;
+    } finally {
+      unSubscribe();
     }
     //I can choose what to return:
     //-nsr

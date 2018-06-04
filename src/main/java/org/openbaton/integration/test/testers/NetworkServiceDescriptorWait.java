@@ -63,7 +63,6 @@ public class NetworkServiceDescriptorWait extends Waiter {
               + " on nsd with id:"
               + nsd.getId());
       waitForEvent();
-      this.unSubscribe();
       log.debug(name + ": --- Finished waiting for " + getAction() + " on nsd " + nsd.getId());
     } catch (SubscriptionException e) {
       log.error(
@@ -92,6 +91,8 @@ public class NetworkServiceDescriptorWait extends Waiter {
               + " nsd name: "
               + nsd.getName());
       throw e;
+    } finally {
+      this.unSubscribe();
     }
     return nsd.getId();
   }
