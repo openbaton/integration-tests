@@ -244,26 +244,25 @@ public class MainIntegrationTest {
       }
       executedTests = true;
       startTime = System.currentTimeMillis();
-      if (!name.contains("stress")) {
-        if (itm.runTestScenario(properties, url, name)) {
-          stopTime = System.currentTimeMillis() - startTime;
-          log.info(
-              "Test: "
-                  + name
-                  + " finished correctly :) in "
-                  + String.format(
-                      "%d min, %d sec",
-                      TimeUnit.MILLISECONDS.toMinutes(stopTime),
-                      TimeUnit.MILLISECONDS.toSeconds(stopTime)
-                          - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
-                  + "\n");
-          results.put(name, "SUCCESS");
-        } else {
-          log.error("Test: " + name + " completed with errors :(\n");
-          allTestsPassed = false;
-          results.put(name, "FAILED");
-        }
+      if (itm.runTestScenario(properties, url, name)) {
+        stopTime = System.currentTimeMillis() - startTime;
+        log.info(
+            "Test: "
+                + name
+                + " finished correctly :) in "
+                + String.format(
+                    "%d min, %d sec",
+                    TimeUnit.MILLISECONDS.toMinutes(stopTime),
+                    TimeUnit.MILLISECONDS.toSeconds(stopTime)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime)))
+                + "\n");
+        results.put(name, "SUCCESS");
+      } else {
+        log.error("Test: " + name + " completed with errors :(\n");
+        allTestsPassed = false;
+        results.put(name, "FAILED");
       }
+
       if (clearAfterTest) {
         clearOrchestrator(requestor);
       }
