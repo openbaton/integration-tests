@@ -45,7 +45,8 @@ public class NetworkServiceRecordDelete extends Tester<NetworkServiceRecord> {
     try {
       delete(nsr.getId());
     } catch (SDKException sdkEx) {
-      log.error("Exception during deleting of NetworkServiceRecord with id: " + nsr.getId(), sdkEx);
+      log.error(
+          "Exception during deleting of NetworkServiceRecord with id " + nsr.getId() + ": ", sdkEx);
       throw sdkEx;
     }
     log.debug("--- deleted NSR " + nsr.getName() + " with id " + nsr.getId());

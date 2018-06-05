@@ -72,7 +72,7 @@ public class RestWaiter implements WaiterInterface {
     ee = null;
     unsubscriptionId = null;
     try {
-      launchServer();
+      if (server == null) launchServer();
     } catch (IOException e) {
       log.error(
           "Unable to start the server which is needed for subscribing to NFVO events: "
@@ -164,7 +164,7 @@ public class RestWaiter implements WaiterInterface {
     return payload;
   }
 
-  private void launchServer() throws IOException {
+  private synchronized void launchServer() throws IOException {
     if (server != null) return;
     int port = Integer.parseInt(properties.getProperty("rest-waiter-port", "8181"));
     server = HttpServer.create(new InetSocketAddress(port), 1);
