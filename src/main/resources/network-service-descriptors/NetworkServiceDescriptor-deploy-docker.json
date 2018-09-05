@@ -1,0 +1,42 @@
+{
+  "name": "mongo-docker-scenario",
+  "vendor": "TUB",
+  "version": "0.2",
+  "vnfd": [
+    {
+      "name": "MongoDB",
+      "vendor": "TUB",
+      "version": "0.2",
+      "lifecycle_event": [],
+      "configurations": {
+        "configurationParameters": [{
+          "confKey":"KEY",
+          "value":"Value"
+        }],
+        "name": "mongo-configuration"
+      },
+      "virtual_link": [{
+        "name": "new-network"
+      }],
+      "vdu": [{
+        "vm_image": [ "mongo:latest" ],
+        "scale_in_out": 2,
+        "vnfc": [{
+          "connection_point": [{
+            "virtual_link_reference": "new-network"
+          }]
+        }]
+      }],
+      "deployment_flavour": [{
+        "flavour_key": "m1.small"
+      }],
+      "type": "mongodb",
+      "endpoint": "docker"
+    }
+  ],
+  "vld":[
+    {
+      "name":"new-network"
+    }
+  ]
+}

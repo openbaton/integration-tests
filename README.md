@@ -8,20 +8,21 @@
 # Integration Tests
 
 This project provides integration tests for Open Baton. 
-Eleven different tests are provided by default. Extending this set of tests provided is also possible just replicating one of the ones already existing, and providing different descriptors. 
+Thirteen different tests are provided by default. Extending this set of tests provided is also possible just replicating one of the ones already existing, and providing different descriptors.
 
 1. scenario-dummy-iperf
 2. scenario-many-dependencies
 3. scenario-real-iperf
 4. scenario-complex-ncat
 5. scenario-scaling
-6. error-in-configure
-7. error-in-instantiate
-8. error-in-start
-9. error-in-terminate
-10. wrong-lifecycle-event
-11. user-project-test
-12. stress-test
+6. scenario-docker-deploy
+7. error-in-configure
+8. error-in-instantiate
+9. error-in-start
+10. error-in-terminate
+11. wrong-lifecycle-event
+12. user-project-test
+13. stress-test
 
 **scenario-dummy-iperf** uses the [Dummy VNFM][vnfm-dummy] to simulate a VNFM and therefore tests the communication between NFVO and VNFM. 
 It does not actually deploy a network service. The fake network service is a simple iperf scenario with one server and one client. 
@@ -47,6 +48,8 @@ Then it executes some scaling functions like scale out and scale in and checks i
 It also examines if the client instances are provided with the ip addresses of the new server instances, so that they are able to connect to them. 
 To see detailed information about which scaling functions are executed exactly please refer to the *scenario-scaling.ini* file in the project.
 
+The test **scenario-docker-deploy** is a simple deploy and dispose cycle using a single Docker container.
+
 The tests **error-in-configure**, **error-in-instantiate**, **error-in-start**, **error-in-terminate** each deploy a network service from a NSD which contains a failing script in the particular lifecycle event and tests if the NFVO handles it correctly. 
 
 The test **wrong-lifecycle-event** tries to onboard a NSD to the NFVO which contains an undefined lifecycle event. The test will pass if the onboarding is not successful. 
@@ -66,8 +69,8 @@ Therefore the integration tests will execute some scripts for testing on the vir
 Depending on the test cases selected you will probably need at least: 
 
 1. A running NFVO. Follow the documentation [here][openbaton-doc] for several installation mechanisms.
-2. A running VNFM: either the Dummy or the Generic VNFM (in case of execution of all tesitng scenarios you will need both)
-3. A running VIM driver: either the OpenStack or the test one (in case of execution of all tesitng scenarios you will need both)
+2. A running VNFM: either the Dummy, Docker or the Generic VNFM (in case of execution of all testing scenarios you will need all)
+3. A running VIM driver: either the OpenStack, Docker or the test one (in case of execution of all testing scenarios you will need all)
 4. OpenStack as VIM in case of scenarios instantiating resources on a VIM openstack-based.
 
 ## How to install and configure the Integration Tests
@@ -132,11 +135,24 @@ The scenario *error-in-terminate.ini* needs some special configuration in the NF
 
 Then use a terminal to navigate into the project's root directory and execute the command *./integration-tests.sh compile*.
 
+In case you plan to use scenarios which are instantiating Containers on Docker, you can use the following example vim file if the Docker daemon is running on the same machine.
+Make sure that the used MongoDB image [mongo:latest][mongo-image] is available on the Docker machine.
+```json
+{
+  "name": "vim-instance",
+  "authUrl": "unix:///var/run/docker.sock",
+  "tenant": "1.38",
+  "type": "docker"
+}
+```
+
+Name the vim file *docker-vim.json* and add it to the folder *integration-tests/src/main/resources/etc/json_file/vim_instances/* in the project.
+
 ## How to use the Integration Tests
 
 ### Start the Integration Test
 
-Before starting the integration tests be sure that the NFVO, Generic VNFM and Dummy VNFM you want to use are already running. 
+Before starting the integration tests be sure that the NFVO, Generic VNFM, Docker VNFM and Dummy VNFM you want to use are already running.
 Then start the test by executing *./integration-tests.sh start*.
 It is possible to specify the test scenarios you want to run so that not every test in the */src/main/resources/integration-test-scenarios* folder is executed. 
 Therefore use additional command line arguments while starting the integration tests. Every scenario occuring as an argument will be executed. For example *./integration-tests.sh start scenario-real-iperf.ini scenario-scaling.ini* will just execute the tests described in the files *scenario-real-iperf.ini* and *scenario-scaling.ini* located in the folder */src/main/resources/integration-test-scenarios*.
@@ -211,3 +227,4 @@ The Open Baton project provides community support through the Open Baton Public 
 [integration-test-write]: http://openbaton.github.io/documentation/integration-test-write
 [vnfm-dummy]: https://github.com/openbaton/dummy-vnfm-amqp
 [ubuntu-image]:https://uec-images.ubuntu.com/releases/14.04/release/ubuntu-14.04-server-cloudimg-amd64-disk1.img
+[mongo-image]:https://hub.docker.com/r/library/mongo/
