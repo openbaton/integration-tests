@@ -8,7 +8,7 @@
 # Integration Tests
 
 This project provides integration tests for Open Baton. 
-Thirteen different tests are provided by default. Extending this set of tests provided is also possible just replicating one of the ones already existing, and providing different descriptors.
+Fourteen different tests are provided by default. Extending this set of tests provided is also possible just replicating one of the ones already existing, and providing different descriptors.
 
 1. scenario-dummy-iperf
 2. scenario-many-dependencies
@@ -16,13 +16,14 @@ Thirteen different tests are provided by default. Extending this set of tests pr
 4. scenario-complex-ncat
 5. scenario-scaling
 6. scenario-docker-deploy
-7. error-in-configure
-8. error-in-instantiate
-9. error-in-start
-10. error-in-terminate
-11. wrong-lifecycle-event
-12. user-project-test
-13. stress-test
+7. scenario-docker-iperf
+8. error-in-configure
+9. error-in-instantiate
+10. error-in-start
+11. error-in-terminate
+12. wrong-lifecycle-event
+13. user-project-test
+14. stress-test
 
 **scenario-dummy-iperf** uses the [Dummy VNFM][vnfm-dummy] to simulate a VNFM and therefore tests the communication between NFVO and VNFM. 
 It does not actually deploy a network service. The fake network service is a simple iperf scenario with one server and one client. 
@@ -49,6 +50,8 @@ It also examines if the client instances are provided with the ip addresses of t
 To see detailed information about which scaling functions are executed exactly please refer to the *scenario-scaling.ini* file in the project.
 
 The test **scenario-docker-deploy** is a simple deploy and dispose cycle using a single Docker container.
+
+The test **scenario-docker-iperf** deploys the iperf-descriptor as shown in the [documentation][openbaton-docker-tutorial]
 
 The tests **error-in-configure**, **error-in-instantiate**, **error-in-start**, **error-in-terminate** each deploy a network service from a NSD which contains a failing script in the particular lifecycle event and tests if the NFVO handles it correctly. 
 
@@ -136,7 +139,7 @@ The scenario *error-in-terminate.ini* needs some special configuration in the NF
 Then use a terminal to navigate into the project's root directory and execute the command *./integration-tests.sh compile*.
 
 In case you plan to use scenarios which are instantiating Containers on Docker, you can use the following example vim file if the Docker daemon is running on the same machine.
-Make sure that the used MongoDB image [mongo:latest][mongo-image] is available on the Docker machine.
+Make sure that the used MongoDB image [mongo:latest][mongo-image] is available on the Docker machine. Also be sure to build the two iperf containers as described in the [documentation][openbaton-docker-tutorial]
 ```json
 {
   "name": "vim-instance",
@@ -228,3 +231,4 @@ The Open Baton project provides community support through the Open Baton Public 
 [vnfm-dummy]: https://github.com/openbaton/dummy-vnfm-amqp
 [ubuntu-image]:https://uec-images.ubuntu.com/releases/14.04/release/ubuntu-14.04-server-cloudimg-amd64-disk1.img
 [mongo-image]:https://hub.docker.com/r/library/mongo/
+[openbaton-docker-tutorial]:https://openbaton.github.io/documentation/tutorial-docker
