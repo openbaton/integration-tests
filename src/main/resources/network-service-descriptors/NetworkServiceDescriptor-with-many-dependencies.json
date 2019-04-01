@@ -14,7 +14,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -79,7 +78,6 @@
           ],
           "lifecycle_event":[
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -145,7 +143,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -206,7 +203,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -270,7 +266,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -332,7 +327,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -396,7 +390,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {
@@ -459,7 +452,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -525,7 +517,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":3,
           "vnfc":[
             {
@@ -591,7 +582,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":6,
           "vnfc":[
             {
@@ -654,7 +644,6 @@
           "vm_image":[
             "ubuntu-14.04-server-cloudimg-amd64-disk1"
           ],
-          "vimInstanceName":["vim-instance"],
           "scale_in_out":1,
           "vnfc":[
             {

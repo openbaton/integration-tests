@@ -48,8 +48,7 @@
                 }
               ]
             }
-          ],
-          "vimInstanceName":["vim-instance"]
+          ]
         }
       ],
       "configurations": {
@@ -150,7 +149,6 @@
               ]
             }
           ],
-          "vimInstanceName":["vim-instance"],
           "monitoring_parameter":[
             "net.udp.listen[5060]"
           ],

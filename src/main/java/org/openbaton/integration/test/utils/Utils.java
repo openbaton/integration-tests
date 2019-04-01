@@ -152,6 +152,10 @@ public class Utils {
   }
 
   public static boolean checkFileExists(String filename) {
+    if (filename == null) {
+      log.warn("Given filename is null.");
+      return false;
+    }
     File f = new File(filename);
     if (f.exists()) {
       log.debug("File or folder " + filename + " exists");
