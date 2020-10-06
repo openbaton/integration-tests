@@ -24,7 +24,7 @@ function get_property
 
 function output_available_scenarios
 {
-  for f in `ls $SCENARIO_PATH`;
+  for f in `ls $SCENARIO`;
   do
     echo $f | grep "\.ini$"
   done
